@@ -47,7 +47,7 @@ class WorkoutRecommender:
         # Acak hasil rekomendasi agar berbeda tiap kali
         recommendations = recommendations.sample(frac=1).reset_index(drop=True)
         
-        return recommendations[['Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level']]
+        return recommendations[['Title', 'Type', 'BodyPart', 'Equipment', 'Level']]
 
 if __name__ == "__main__":
     # Koneksi ke MongoDB
@@ -69,4 +69,3 @@ if __name__ == "__main__":
     recommendations = recommender.recommend([4, 0, 2, 2])
     print(recommendations)
 
-# Silakan coba jalankan ulang kodenya! 🚀
