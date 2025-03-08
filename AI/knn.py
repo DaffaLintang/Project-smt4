@@ -1,9 +1,26 @@
-from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import LabelEncoder
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import numpy as np
 import pandas as pd
 from pymongo import MongoClient
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import LabelEncoder
 
+
+app = Flask(__name__)
+CORS(app)
+
+# Koneksi ke MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['workout_db']
+collection = db['workouts']
+
+# Ambil data dari MongoDB
+data = pd.DataFrame(list(collection.find()))
+if '_id' in data.columns:
+    data.drop('_id', axis=1, inplace=True)
+
+# Inisialisasi Model
 class WorkoutRecommender:
     def __init__(self, df):
         self.df = df.copy()
@@ -11,9 +28,9 @@ class WorkoutRecommender:
         self.encoder_bodypart = LabelEncoder()
         self.encoder_equipment = LabelEncoder()
         self.encoder_level = LabelEncoder()
-        self.model = NearestNeighbors(n_neighbors=3, metric='cosine')
+        self.model = NearestNeighbors(n_neighbors=1, metric='cosine')
         self.prepare_data()
-    
+
     def prepare_data(self):
         self.df['Rating'] = self.df['Rating'].fillna(self.df['Rating'].mean())
         self.df['Type'] = self.encoder_type.fit_transform(self.df['Type'].fillna('Unknown'))
@@ -22,50 +39,54 @@ class WorkoutRecommender:
         self.df['Level'] = self.encoder_level.fit_transform(self.df['Level'].fillna('Unknown'))
         self.features = self.df[['Type', 'BodyPart', 'Equipment', 'Level']]
         self.model.fit(self.features)
-    
-    def print_encodings(self):
-        print("Type Encoding:", dict(zip(self.encoder_type.classes_, self.encoder_type.transform(self.encoder_type.classes_))))
-        print("BodyPart Encoding:", dict(zip(self.encoder_bodypart.classes_, self.encoder_bodypart.transform(self.encoder_bodypart.classes_))))
-        print("Equipment Encoding:", dict(zip(self.encoder_equipment.classes_, self.encoder_equipment.transform(self.encoder_equipment.classes_))))
-        print("Level Encoding:", dict(zip(self.encoder_level.classes_, self.encoder_level.transform(self.encoder_level.classes_))))
-    
+
     def recommend(self, workout_input):
         input_df = pd.DataFrame([workout_input], columns=self.features.columns)
         distances, indices = self.model.kneighbors(input_df)
         recommendations = self.df.iloc[indices[0]]
-        
-        # Filter rekomendasi untuk BodyPart, Type, Equipment, dan Level
+
         recommendations = recommendations[(recommendations['BodyPart'] == workout_input[1]) &
                                           (recommendations['Type'] == workout_input[0]) &
                                           (recommendations['Equipment'] == workout_input[2]) &
                                           (recommendations['Level'] == workout_input[3])]
-        
-        # Kalau tidak ada yang cocok, kasih tahu
+
         if recommendations.empty:
-            return "Tidak ada workout yang cocok untuk kombinasi yang dipilih. Coba input lain!"
-        
-        # Acak hasil rekomendasi agar berbeda tiap kali
-        recommendations = recommendations.sample(frac=1).reset_index(drop=True)
-        
-        return recommendations[['Title', 'Type', 'BodyPart', 'Equipment', 'Level']]
+            return []
 
-if __name__ == "__main__":
-    # Koneksi ke MongoDB
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['workout_db']
-    collection = db['workouts']
-    
-    # Ambil data dari MongoDB dan ubah jadi DataFrame
-    data = pd.DataFrame(list(collection.find()))
-    
-    # Hapus kolom _id kalau ada
-    if '_id' in data.columns:
-        data.drop('_id', axis=1, inplace=True)
-    
-    recommender = WorkoutRecommender(data)
-    recommender.print_encodings()
-    
-    # Contoh input
-    recommendations = recommender.recommend([4, 0, 2, 2])
-    print(recommendations)
+        return recommendations[['Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level']].to_dict(orient='records')
 
+recommender = WorkoutRecommender(data)
+
+import json
+import numpy as np
+
+@app.route('/recommend', methods=['POST'])
+def get_recommendations():
+    try:
+        input_data = request.json
+        workout_input = [input_data['Type'], input_data['BodyPart'], input_data['Equipment'], input_data['Level']]
+        recommendations = recommender.recommend(workout_input)
+
+        # Konversi ke DataFrame untuk manipulasi data
+        recommendations = pd.DataFrame(recommendations).fillna("")
+
+        # Dekode kembali nilai numerik ke label aslinya
+        recommendations['Type'] = recommender.encoder_type.inverse_transform(recommendations['Type'])
+        recommendations['BodyPart'] = recommender.encoder_bodypart.inverse_transform(recommendations['BodyPart'])
+        recommendations['Equipment'] = recommender.encoder_equipment.inverse_transform(recommendations['Equipment'])
+        recommendations['Level'] = recommender.encoder_level.inverse_transform(recommendations['Level'])
+
+        # Konversi ke list of dict untuk JSON response
+        recommendations_list = recommendations.to_dict(orient='records')
+
+        return app.response_class(
+            response=json.dumps({'recommendations': recommendations_list}, ensure_ascii=False),
+            mimetype='application/json'
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
