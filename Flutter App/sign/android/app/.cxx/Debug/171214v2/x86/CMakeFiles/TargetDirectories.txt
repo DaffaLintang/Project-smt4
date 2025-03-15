@@ -1,0 +1,2 @@
+C:/daffa/njajal/TA-Semester 4/Flutter App/sign/android/app/.cxx/Debug/171214v2/x86/CMakeFiles/edit_cache.dir
+C:/daffa/njajal/TA-Semester 4/Flutter App/sign/android/app/.cxx/Debug/171214v2/x86/CMakeFiles/rebuild_cache.dir

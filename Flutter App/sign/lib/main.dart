@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/bmi', // Langsung menuju BMI Calculator saat aplikasi dibuka
+      initialRoute: '/', // Langsung menuju BMI Calculator saat aplikasi dibuka
       routes: {
         '/': (context) => LoginPage(),
         '/forgot-password': (context) => ForgotPassword(),

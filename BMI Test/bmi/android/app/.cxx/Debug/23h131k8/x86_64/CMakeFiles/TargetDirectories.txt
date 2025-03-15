@@ -1,2 +1,0 @@
-C:/daffa/njajal/TA-Semester 4/BMI Test/bmi/android/app/.cxx/Debug/23h131k8/x86_64/CMakeFiles/edit_cache.dir
-C:/daffa/njajal/TA-Semester 4/BMI Test/bmi/android/app/.cxx/Debug/23h131k8/x86_64/CMakeFiles/rebuild_cache.dir

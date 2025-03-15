@@ -69,7 +69,8 @@ class LoginPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 120),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 120),
                   ),
                   child: Text(
                     'LOGIN',
@@ -101,11 +102,13 @@ class LoginPage extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signup'); // Navigasi ke Sign Up
+                    Navigator.pushNamed(
+                        context, '/signup'); // Navigasi ke Sign Up
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 120),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 120),
                   ),
                   child: Text('SIGN UP', style: TextStyle(color: Colors.white)),
                 ),
