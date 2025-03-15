@@ -10,5 +10,5 @@ class Workout extends Model
     use HasFactory;
 
     protected $collection = 'workouts';
-    protected $fillable =  ['Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level', 'Rating'];
+    protected $fillable =  ['Unnamed: 0','Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level', 'Rating', 'RatingDesc'];
 }

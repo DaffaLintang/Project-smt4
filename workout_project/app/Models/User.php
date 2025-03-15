@@ -49,4 +49,8 @@ class User extends Authenticatable
     public function result(){
         return $this->hasOne(Result::class);
     }
+
+    public function histori(){
+        return $this->hasOne((Histori::class));
+    }
 }
