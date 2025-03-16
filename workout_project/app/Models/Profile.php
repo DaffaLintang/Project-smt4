@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Result extends Model
+class Profile extends Model
 {
     use HasFactory;
-    protected $fillable =  ['title', 'desc', 'type', 'bodyPart', 'equipment', 'level'];
+
+    protected $fillable =  ['full_name', 'email', 'phone', 'birth', 'weight', 'height'];
 
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function histori(){
-        return $this->hasOne(Histori::class);
-    }
+
 }

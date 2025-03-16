@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+
 class WorkoutController extends Controller
 {
     public function recomend(Request $request){
