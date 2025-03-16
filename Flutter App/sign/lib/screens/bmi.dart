@@ -23,7 +23,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
-  
+
   String _result = "";
   String _gender = "Select a Gender";
   String _category = "";
@@ -44,7 +44,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     double weight = double.parse(_weightController.text);
     double height = double.parse(_heightController.text);
     double bmi = weight / ((height / 100) * (height / 100));
-    
+
     setState(() {
       if (bmi < 18.5) {
         _category = "Berat Rendah";
@@ -64,7 +64,8 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
         _bmiRange = "≥ 30";
       }
 
-      _result = "BMI Kamu: ${bmi.toStringAsFixed(1)} ($_category)\nRange Sehat: $_bmiRange";
+      _result =
+          "BMI Kamu: ${bmi.toStringAsFixed(1)} ($_category)\nRange Sehat: $_bmiRange";
     });
   }
 
@@ -76,7 +77,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
           // Kotak merah atas lebih kecil
           Container(
             color: Colors.red,
-            padding: EdgeInsets.only(top: 25, bottom: 5), 
+            padding: EdgeInsets.only(top: 25, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -102,20 +103,26 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
               children: [
                 Text(
                   "Hitung BMI mu Sekarang",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
                 SizedBox(height: 35), // Jarak antar teks dan input
-                
+
                 // Row pertama: Height & Weight
                 Row(
                   children: [
-                    Expanded(child: buildTextField("Tinggi (cm)", _heightController)),
+                    Expanded(
+                        child:
+                            buildTextField("Tinggi (cm)", _heightController)),
                     SizedBox(width: 70),
-                    Expanded(child: buildTextField("Berat (kg)", _weightController)),
+                    Expanded(
+                        child: buildTextField("Berat (kg)", _weightController)),
                   ],
                 ),
                 SizedBox(height: 30), // Jarak antar baris input
-                
+
                 // Row kedua: Age & Gender
                 Row(
                   children: [
@@ -225,10 +232,18 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
               children: [
                 Text(
                   _category,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: _categoryColor),
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: _categoryColor),
                 ),
                 SizedBox(height: 5),
-                Text(_result, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black)),
+                Text(_result,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black)),
               ],
             ),
           )
