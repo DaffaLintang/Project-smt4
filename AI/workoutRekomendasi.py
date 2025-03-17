@@ -1,14 +1,11 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import numpy as np
+from flask import Blueprint, request, jsonify
 import pandas as pd
+import json
 from pymongo import MongoClient
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import LabelEncoder
 
-
-app = Flask(__name__)
-CORS(app)
+workout_api = Blueprint('workout_api', __name__)
 
 # Koneksi ke MongoDB
 client = MongoClient('mongodb://localhost:27017/')
@@ -57,10 +54,20 @@ class WorkoutRecommender:
 
 recommender = WorkoutRecommender(data)
 
-import json
-import numpy as np
 
-@app.route('/recommend', methods=['POST'])
+@workout_api.route('/encoding-info', methods=['GET'])
+def get_encoding_info():
+    try:
+        encoding_info = {
+            "Type": {index: label for index, label in enumerate(recommender.encoder_type.classes_)},
+            "BodyPart": {index: label for index, label in enumerate(recommender.encoder_bodypart.classes_)},
+            "Equipment": {index: label for index, label in enumerate(recommender.encoder_equipment.classes_)},
+            "Level": {index: label for index, label in enumerate(recommender.encoder_level.classes_)}
+        }
+        return jsonify(encoding_info)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+@workout_api.route('/recommend', methods=['POST'])
 def get_recommendations():
     try:
         input_data = request.json
@@ -79,14 +86,8 @@ def get_recommendations():
         # Konversi ke list of dict untuk JSON response
         recommendations_list = recommendations.to_dict(orient='records')
 
-        return app.response_class(
-            response=json.dumps({'recommendations': recommendations_list}, ensure_ascii=False),
-            mimetype='application/json'
-        )
+        return jsonify({'recommendations': recommendations_list})
     except Exception as e:
         return jsonify({'error': str(e)})
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    
+    

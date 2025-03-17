@@ -7,4 +7,3 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/workout', [WorkoutController::class, 'index']);
