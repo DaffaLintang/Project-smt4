@@ -27,8 +27,8 @@ class ProfileResource extends JsonResource
     {
         return [
             'success' => $this->status,
-            'massage' => $this->massage,
-            'data' => $this->data
+            'massage' => $this->message,
+            'data' => $this->resource
         ];
     }
 }
