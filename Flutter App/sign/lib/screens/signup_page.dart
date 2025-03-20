@@ -4,20 +4,21 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 50), // Menggeser tampilan ke atas
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Semua elemen ke tengah
+            mainAxisAlignment: MainAxisAlignment.start, // Mengatur agar elemen lebih ke atas
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo di atas
+              // Logo
               Image.asset(
-                'assets/image/logo.png', // Sesuaikan path gambar
-                height: 200,
+                'assets/image/logo.png',
+                height: 180, // Ukuran sedikit dikurangi
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20), // Kurangi jarak agar lebih ke atas
 
-              // "Create Account" (Judul di tengah)
+              // "Create Account"
               Text(
                 'Create Account',
                 style: TextStyle(
@@ -25,48 +26,41 @@ class SignUpPage extends StatelessWidget {
                   fontWeight: FontWeight.w900, // Extra bold
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15),
 
               // Input Email
-              Center(
-                child: SizedBox(
-                  width: 350, // Lebih pendek
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: UnderlineInputBorder(),
-                    ),
+              SizedBox(
+                width: 350,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: UnderlineInputBorder(),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
 
               // Input Password
-              Center(
-                child: SizedBox(
-                  width: 350, // Lebih pendek
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: UnderlineInputBorder(),
-                    ),
+              SizedBox(
+                width: 350,
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: UnderlineInputBorder(),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
 
               // Input Konfirmasi Password
-              Center(
-                child: SizedBox(
-                  width: 350, // Lebih pendek
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Confirmation Password',
-                      border: UnderlineInputBorder(),
-                    ),
+              SizedBox(
+                width: 350,
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmation Password',
+                    border: UnderlineInputBorder(),
                   ),
                 ),
               ),
@@ -75,12 +69,11 @@ class SignUpPage extends StatelessWidget {
               // Tombol Sign Up
               ElevatedButton(
                 onPressed: () {
-                  // Nanti bisa ditambahkan logika registrasi
-                  print("Sign Up button pressed");
+                  // Tambahkan logika registrasi di sini
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[900],
-                  minimumSize: Size(300, 50), // Lebar tombol
+                  minimumSize: Size(300, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -90,7 +83,6 @@ class SignUpPage extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
