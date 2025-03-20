@@ -8,19 +8,22 @@ Route::get('/', function () {
 });
 
 Route::get('/workout', [WorkoutController::class, 'index']);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 
-Route::get('/home', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
+Route::get('/users', function () {
+    return view('users.index'); // Buat file ini nanti jika diperlukan
+})->name('users.index');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/settings', function () {
+    return view('settings'); // Buat file ini nanti jika diperlukan
+})->name('settings');
 
-use App\Http\Controllers\DashboardController;
+Route::get('/logout', function () {
+    // Tambahkan logika logout di sini
+    return redirect('/login');
+})->name('logout');
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
-Route::middleware([])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index']);
-});
 
 
