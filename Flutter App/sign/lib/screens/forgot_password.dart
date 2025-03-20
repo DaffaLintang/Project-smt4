@@ -4,21 +4,21 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 50), // Menambahkan padding atas
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center, // Semua elemen tetap di tengah
+            mainAxisAlignment: MainAxisAlignment.start, // Menggeser ke atas
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Logo tetap di tengah
               Image.asset(
                 'assets/image/logo.png',
-                height: 200,
+                height: 180, // Ukuran sedikit dikurangi agar lebih ke atas
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20), // Kurangi jarak antara elemen
 
-              // Judul "Forgot Password" di tengah
+              // Judul "Forgot Password"
               Text(
                 'Forgot Password',
                 textAlign: TextAlign.center,
@@ -29,7 +29,7 @@ class ForgotPassword extends StatelessWidget {
               ),
               SizedBox(height: 10),
 
-              // Deskripsi tetap di tengah
+              // Deskripsi
               Text(
                 'Enter your registered email. We will send you a token to recover your account.',
                 textAlign: TextAlign.center,
@@ -38,42 +38,40 @@ class ForgotPassword extends StatelessWidget {
                   color: Colors.black54,
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 25), // Kurangi jarak
 
-              // Input Email berada di tengah
+              // Input Email
               SizedBox(
-                width: 350, // Lebih pendek
+                width: 350,
                 child: TextField(
-                  textAlign: TextAlign.center, // Teks di tengah
                   decoration: InputDecoration(
                     labelText: 'Email',
                     border: UnderlineInputBorder(),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 15), // Kurangi jarak
 
-              // Input Token Verification berada di tengah
+              // Input Token Verification
               SizedBox(
-                width: 350, // Lebih pendek
+                width: 350,
                 child: TextField(
-                  textAlign: TextAlign.center, // Teks di tengah
                   decoration: InputDecoration(
                     labelText: 'Token Verification',
                     border: UnderlineInputBorder(),
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30), // Kurangi jarak
 
-              // Tombol Send Token tetap di tengah
+              // Tombol Send Token
               ElevatedButton(
                 onPressed: () {
                   // Aksi ketika tombol ditekan
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[900],
-                  minimumSize: Size(300, 50), // Disesuaikan dengan input
+                  minimumSize: Size(300, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -81,19 +79,6 @@ class ForgotPassword extends StatelessWidget {
                 child: Text(
                   'SEND TOKEN',
                   style: TextStyle(color: Colors.white),
-                ),
-              ),
-
-              SizedBox(height: 20),
-
-              // Tombol kembali ke halaman Login tetap di tengah
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Kembali ke halaman sebelumnya
-                },
-                child: Text(
-                  'Back to Login',
-                  style: TextStyle(color: Colors.blue),
                 ),
               ),
             ],

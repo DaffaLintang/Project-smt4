@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/login_page.dart';
 import 'screens/forgot_password.dart';
 import 'screens/signup_page.dart';
-import 'screens/bmi.dart'; // Tambahkan halaman BMI Calculator
+import 'screens/bmi.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,13 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/bmi', // Langsung menuju BMI Calculator saat aplikasi dibuka
+      initialRoute: '/', // Halaman awal saat aplikasi dibuka
       routes: {
         '/': (context) => LoginPage(),
         '/forgot-password': (context) => ForgotPassword(),
         '/signup': (context) => SignUpPage(),
-        '/bmi': (context) => BMICalculatorApp(), // Route untuk BMI Calculator
-      },
-    );
-  }
+        '/bmi': (context) => BMICalculatorApp(),
+     },
+);
+}
 }
