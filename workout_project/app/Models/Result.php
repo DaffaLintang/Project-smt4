@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Result extends Model
 {
     use HasFactory;
-    protected $fillable =  ['Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level'];
+    protected $fillable =  ['title', 'desc', 'type', 'bodyPart', 'equipment', 'level'];
 
     public function user(){
         return $this->belongsTo(User::class);
     }
     public function histori(){
-        return $this->hasOne((Histori::class));
+        return $this->hasOne(Histori::class);
     }
 }

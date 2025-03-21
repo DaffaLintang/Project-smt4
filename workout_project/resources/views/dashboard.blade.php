@@ -72,7 +72,11 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
                 datasets: [{
                     label: 'Total Pengguna',
+<<<<<<< HEAD
                     data: [30, 15, 90, 10, 70, 80, 90, 100],
+=======
+                    data: [30, 40, 50, 60, 70, 80, 90, 100],
+>>>>>>> 5cd34da825a90a5590789045e12cf652c913d5ec
                     borderColor: 'blue',
                     backgroundColor: 'rgba(0, 0, 255, 0.2)',
                     fill: true
@@ -96,4 +100,8 @@
 </body>
 </html>
 
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+>>>>>>> 5cd34da825a90a5590789045e12cf652c913d5ec

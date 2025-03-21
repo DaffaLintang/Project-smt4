@@ -4,7 +4,7 @@ import 'package:sign/screens/menu.dart';
 import 'screens/login_page.dart';
 import 'screens/forgot_password.dart';
 import 'screens/signup_page.dart';
-import 'screens/bmi.dart'; // Tambahkan halaman BMI Calculator
+import 'screens/bmi.dart';
 
 void main() {
   runApp(MyApp());

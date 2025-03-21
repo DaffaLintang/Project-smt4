@@ -27,3 +27,6 @@ Route::get('/logout', function () {
 
 
 
+Route::get('/landingpage', function () {
+    return view('landingpage');
+});

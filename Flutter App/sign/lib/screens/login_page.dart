@@ -4,58 +4,50 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: 30.0, vertical: 50), // Menggeser tampilan ke atas
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment
+                .start, // Mengatur agar teks input tidak di tengah
             children: [
-              // Menampilkan Gambar dari Aset (Tetap di tengah)
+              // Gambar logo tetap di tengah
               Center(
                 child: Image.asset(
                   'assets/image/logo.png',
-                  height: 200,
+                  height: 180, // Ukuran sedikit dikurangi
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20), // Kurangi jarak agar lebih ke atas
 
+              // "Hello, Welcome!"
               Center(
                 child: Text(
-                  'Hello, Welcome !',
+                  'Hello, Welcome!',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20),
 
-              // Input Username lebih pendek
-              Center(
-                child: SizedBox(
-                  width: 350, // Lebih pendek
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
+              // Input Username (Tidak center)
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: UnderlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
 
-              // Input Password lebih pendek
-              Center(
-                child: SizedBox(
-                  width: 350, // Lebih pendek
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
+              // Input Password (Tidak center)
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: UnderlineInputBorder(),
                 ),
               ),
               SizedBox(height: 20),
@@ -64,13 +56,14 @@ class LoginPage extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Fungsi login bisa ditambahkan di sini
                     print("Login button pressed");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 120),
+                    minimumSize: Size(300, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
                   child: Text(
                     'LOGIN',
@@ -92,7 +85,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 120),
+              SizedBox(height: 50), // Mengurangi tinggi agar lebih ke atas
 
               // "Don't Have an Account?" tetap di tengah
               Center(child: Text("Don't Have an Account?")),
@@ -102,13 +95,14 @@ class LoginPage extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(
-                        context, '/signup'); // Navigasi ke Sign Up
+                    Navigator.pushNamed(context, '/signup');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],
-                    padding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 120),
+                    minimumSize: Size(300, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                   ),
                   child: Text('SIGN UP', style: TextStyle(color: Colors.white)),
                 ),
