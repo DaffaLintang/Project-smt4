@@ -16,7 +16,7 @@ class User extends Model
         'name',
         'email',
         'password',
-        'role'
+        'role', // Pastikan kolom role bisa diisi
     ];
 
     protected $hidden = [

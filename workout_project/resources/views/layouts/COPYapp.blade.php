@@ -130,13 +130,7 @@
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="dropdown-item text-danger">Logout</button>
-    </form>
-</li>
-
+                    <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
                 </ul>
             </div>
         </nav>
