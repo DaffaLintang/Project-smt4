@@ -2,27 +2,27 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $connection = 'mongodb'; // Pastikan ini menggunakan MongoDB
-    protected $collection = 'users';   // Nama koleksi di MongoDB
-
+    protected $table = 'users'; // Pastikan sesuai dengan nama tabel di MySQL
+    protected $connection = 'mysql'; // Gunakan MySQL
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // Pastikan kolom role bisa diisi
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+
 
     protected function casts(): array
     {

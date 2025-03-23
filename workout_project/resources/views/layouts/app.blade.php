@@ -118,11 +118,7 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-custom d-flex justify-content-end px-3">
             <div class="dropdown user-profile d-flex align-items-center">
-<<<<<<< HEAD
             <img src="{{ asset('images/profile.jpg') }}" alt="User" class="rounded-circle me-2" width="40">
-=======
-                <img src="https://via.placeholder.com/40" alt="User" class="rounded-circle me-2">
->>>>>>> 5cd34da825a90a5590789045e12cf652c913d5ec
                 <a class="text-white text-decoration-none dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     Annisa Nurul Hidayatil Jannah
                 </a>
@@ -149,8 +145,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 5cd34da825a90a5590789045e12cf652c913d5ec

@@ -21,4 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
 
     }
+    // app/Providers/RouteServiceProvider.php
+public const HOME = '/landingpage'; // Ubah ke halaman yang diinginkan
+
 }
