@@ -8,22 +8,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard untuk User
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/workout', [WorkoutController::class, 'index']);
 
-// Dashboard untuk Admin (Hanya bisa diakses oleh admin)
-Route::get('/admin', function () {
+Route::get('/home', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
+
+Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
-})->middleware(['auth', AdminMiddleware::class])->name('admin.dashboard');
+})->name('admin.dashboard');
 
-// Profile Routes (Tetap sama)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+use App\Http\Controllers\DashboardController;
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+Route::middleware([])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index']);
 });
 
-require __DIR__.'/auth.php';
 
