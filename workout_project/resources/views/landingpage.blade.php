@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fitness Landing Page</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap" rel="stylesheet">
     <style>
@@ -15,6 +17,7 @@
         .menu-items a {
             font-size: 12px;
         }
+        
         .btn-login, .btn-signup {
             transition: all 0.3s ease-in-out;
         }
@@ -50,6 +53,7 @@
             img {
         transform: translateX(5%);
     }
+    
 }
 
     </style>
@@ -302,28 +306,117 @@
         
     </div>
 
-    <!-- MODAL LOGIN -->
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
-            <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
-            <h2 class="text-xl font-bold mb-4 text-center">LOGIN</h2>
-            <form>
-                <label class="block mb-2">Enter email</label>
-                <input type="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email">
-                <label class="block mb-2">Enter Password</label>
-                <input type="password" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your password">
-                <div class="text-right text-red-600 text-sm mb-3">
-                    <a href="#" class="forgot-password-link hover:underline">Forgot Password?</a>
-                </div>
-                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-black">LOGIN</button>
-            </form>
-            <div class="text-center mt-4">
-                <p>Don't Have an Account?</p>
-                <a href="#" class="signup-link text-red-600 hover:underline">SIGN UP</a>
+   <!-- MODAL LOGIN -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
+        <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
+        <h2 class="text-xl font-bold mb-4 text-center">LOGIN</h2>
+
+        <!-- Form Login Laravel Breeze -->
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <label class="block mb-2">Enter Email</label>
+            <input type="email" name="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email" required>
+
+            <label class="block mb-2">Enter Password</label>
+            <input type="password" name="password" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your password" required>
+
+            <!-- Forgot Password -->
+            <div class="text-right text-red-600 text-sm mb-3">
+            <a href="#" class="forgot-password-link hover:underline">Forgot Password?</a>
+
+
             </div>
+
+            <!-- Tombol Login -->
+            <button id="openLoginModal" class="border px-3 py-1 rounded-lg text-base">LOGIN</button>
+        </form>
+
+        <!-- Link ke Register -->
+        <div class="text-center mt-4">
+            <p>Don't Have an Account?</p>
+            <a href="{{ route('register') }}" class="text-red-600 hover:underline">SIGN UP</a>
         </div>
     </div>
+</div>
+
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Smooth Scrolling
+    document.querySelectorAll('.scroll-link').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 60,
+                    behavior: 'smooth'
+                });
+            }
+
+            if (targetId === "home") {
+                const homeImage = document.getElementById("homeImage");
+                homeImage.classList.remove("show");
+                setTimeout(() => homeImage.classList.add("show"), 300);
+            }
+        });
+    });
+
+    // Animasi saat halaman dimuat
+    window.onload = function() {
+        setTimeout(() => {
+            document.getElementById("homeImage").classList.add("show");
+        }, 300);
+    };
+
+    // Modal Login
+    const loginButton = document.querySelector(".btn-login");
+    const aboutLoginButton = document.getElementById("aboutLoginButton");
+    const signupButton = document.querySelector(".btn-signup"); // Tambahkan tombol Sign Up
+    const loginModal = document.getElementById("loginModal");
+    const signupModal = document.getElementById("signupModal"); // Tambahkan modal Sign Up
+    const closeLoginModal = document.getElementById("closeModal");
+    const closeSignupModal = document.getElementById("closeSignupModal");
+
+    // Menampilkan modal login
+    loginButton.addEventListener("click", () => {
+        loginModal.classList.remove("hidden");
+    });
+
+    aboutLoginButton.addEventListener("click", () => {
+        loginModal.classList.remove("hidden");
+    });
+
+    // Menampilkan modal Sign Up
+    signupButton.addEventListener("click", () => {
+        signupModal.classList.remove("hidden");
+    });
+
+    // Menutup modal login
+    closeLoginModal.addEventListener("click", () => {
+        loginModal.classList.add("hidden");
+    });
+
+    // Menutup modal Sign Up
+    closeSignupModal.addEventListener("click", () => {
+        signupModal.classList.add("hidden");
+    });
+
+    // Tombol navigasi aktif saat diklik
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.nav-link').forEach(nav => {
+                nav.classList.remove('bg-black', 'text-white');
+                nav.classList.add('text-gray-500');
+            });
+
+            this.classList.add('bg-black', 'text-white');
+            this.classList.remove('text-gray-500');
+        });
+    });
+});
+
        document.querySelectorAll('.scroll-link').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -383,61 +476,102 @@
     </script>
     
 
-    <!-- MODAL FORGOT PASSWORD -->
+   <!-- MODAL FORGOT PASSWORD -->
 <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
         <button id="closeForgotModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
         <h2 class="text-xl font-bold mb-4 text-center">FORGOT PASSWORD</h2>
         <p class="text-sm text-gray-600 text-center mb-4">
-            Enter your registered email. We will send you a token to recover your account.
+            Enter your registered email. We will send you a password reset link.
         </p>
-        <form>
+        <form id="forgotPasswordForm">
             <label class="block mb-2">Enter email</label>
-            <input type="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email">
-
-            <label class="block mb-2">Token Verification</label>
-            <input type="text" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter verification token">
-
-            <p class="text-red-600 text-sm mb-3 hidden" id="errorMessage">Incorrect verification token</p>
+            <input type="email" id="forgotEmail" name="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email" required>
 
             <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-black">SEND</button>
         </form>
+
+        <p id="forgotPasswordSuccess" class="hidden text-green-600 text-sm text-center mt-2"></p>
+        <p id="forgotPasswordError" class="hidden text-red-600 text-sm text-center mt-2"></p>
     </div>
 </div>
 
 <script>
-    // Ambil elemen tombol dan modal forgot password
-    const forgotPasswordLink = document.querySelector(".forgot-password-link");
+document.addEventListener("DOMContentLoaded", function () {
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
     const forgotPasswordModal = document.getElementById("forgotPasswordModal");
     const closeForgotModal = document.getElementById("closeForgotModal");
+    const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
+    const forgotPasswordError = document.getElementById("forgotPasswordError");
+    
+    // Pastikan elemen ada sebelum menambahkan event listener
+    const forgotPasswordLink = document.querySelector(".forgot-password-link");
 
-    // Jika "Forgot Password?" diklik, tutup modal login dan buka modal forgot password
-    forgotPasswordLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        loginModal.classList.add("hidden");
-        forgotPasswordModal.classList.remove("hidden");
-    });
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener("click", (e) => {
+            e.preventDefault(); // Hindari redirect ke halaman Laravel
+            forgotPasswordModal.classList.remove("hidden");
+        });
+    }
 
-    // Sembunyikan modal forgot password saat tombol close ditekan
+    // Tutup modal saat tombol close diklik
     closeForgotModal.addEventListener("click", () => {
         forgotPasswordModal.classList.add("hidden");
     });
-</script>
 
+    // Handle form submit untuk forgot password
+    forgotPasswordForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("forgotEmail").value;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        forgotPasswordSuccess.classList.add("hidden");
+        forgotPasswordError.classList.add("hidden");
+
+        try {
+            const response = await fetch("{{ route('password.email') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                forgotPasswordSuccess.textContent = "Reset link sent! Check your email.";
+                forgotPasswordSuccess.classList.remove("hidden");
+            } else {
+                forgotPasswordError.textContent = data.message || "Failed to send reset link.";
+                forgotPasswordError.classList.remove("hidden");
+            }
+        } catch (error) {
+            forgotPasswordError.textContent = "Something went wrong, please try again.";
+            forgotPasswordError.classList.remove("hidden");
+        }
+    });
+});
+</script>
 <!-- MODAL SIGN UP -->
 <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
         <button id="closeSignupModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
         <h2 class="text-xl font-bold mb-4 text-center">SIGN UP</h2>
-        <form>
-            <label class="block mb-2">Enter email</label>
-            <input type="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email">
+        <form id="signupForm">
+            <label class="block mb-2">Enter Name</label>
+            <input type="text" name="name" id="name" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your name" required>
+
+            <label class="block mb-2">Enter Email</label>
+            <input type="email" name="email" id="email" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your email" required>
 
             <label class="block mb-2">Enter Password</label>
-            <input type="password" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your password">
+            <input type="password" name="password" id="password" class="w-full p-2 border rounded-lg mb-3" placeholder="Enter your password" required>
 
             <label class="block mb-2">Confirm Password</label>
-            <input type="password" class="w-full p-2 border rounded-lg mb-3" placeholder="Confirm your password">
+            <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border rounded-lg mb-3" placeholder="Confirm your password" required>
 
             <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-black">SIGN UP</button>
         </form>
@@ -449,35 +583,83 @@
 </div>
 
 <script>
-    // Ambil elemen tombol dan modal Sign Up
-    const signupLink = document.querySelector(".signup-link");
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const signupForm = document.getElementById("signupForm");
     const signupModal = document.getElementById("signupModal");
     const closeSignupModal = document.getElementById("closeSignupModal");
-
-    // Jika "Sign Up" diklik di modal login, tutup modal login dan buka modal signup
-    signupLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        loginModal.classList.add("hidden");
-        signupModal.classList.remove("hidden");
-    });
-
-    // Jika "Login" diklik di modal signup, tutup modal signup dan buka modal login
-    document.querySelector(".login-link").addEventListener("click", (e) => {
-        e.preventDefault();
-        signupModal.classList.add("hidden");
-        loginModal.classList.remove("hidden");
-    });
-
-    // Tombol close modal signup
-    closeSignupModal.addEventListener("click", () => {
-        signupModal.classList.add("hidden");
-    });
-
-    // Tombol Sign Up di navbar
+    const loginModal = document.getElementById("loginModal"); // Pastikan ini ada
+    const signupLink = document.querySelector(".signup-link");
+    const loginLink = document.querySelector(".login-link");
     const signupButton = document.querySelector(".btn-signup");
-    signupButton.addEventListener("click", () => {
-        signupModal.classList.remove("hidden");
-    });
+
+    // Event listener untuk form signup
+    if (signupForm) {
+        signupForm.addEventListener("submit", async function (e) {
+            e.preventDefault(); // Mencegah form melakukan submit default (GET request)
+
+            const formData = new FormData(signupForm);
+
+            try {
+                const response = await fetch("/register", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+    "Content-Type": "application/json",
+    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+}
+
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Sign Up Successful! Redirecting to Dashboard...");
+                    window.location.href = "/dashboard"; // Ganti sesuai dengan halaman setelah login
+                } else {
+                    alert("Error: " + (data.message || "Sign Up Failed!"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Something went wrong, please try again.");
+            }
+        });
+    }
+
+    // Event listener untuk tombol Sign Up di navbar
+    if (signupButton) {
+        signupButton.addEventListener("click", () => {
+            signupModal.classList.remove("hidden");
+        });
+    }
+
+    // Event listener untuk membuka modal Sign Up dari modal Login
+    if (signupLink) {
+        signupLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (loginModal) loginModal.classList.add("hidden");
+            signupModal.classList.remove("hidden");
+        });
+    }
+
+    // Event listener untuk membuka modal Login dari modal Sign Up
+    if (loginLink) {
+        loginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            signupModal.classList.add("hidden");
+            if (loginModal) loginModal.classList.remove("hidden");
+        });
+    }
+
+    // Event listener untuk tombol close pada modal Sign Up
+    if (closeSignupModal) {
+        closeSignupModal.addEventListener("click", () => {
+            signupModal.classList.add("hidden");
+        });
+    }
+});
+
 </script>
 
 </body>
