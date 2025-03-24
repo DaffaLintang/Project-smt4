@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('image');
             $table->string('full_name');
             $table->string('email');
-            $table->int('phone');
+            $table->integer('phone');
             $table->date('birth');
-            $table->int('weight');
-            $table->int('height');
+            $table->integer('weight');
+            $table->integer('height');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('user')->on('user')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

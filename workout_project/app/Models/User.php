@@ -4,13 +4,15 @@ namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
-    protected $connection = 'mongodb'; // Pastikan ini menggunakan MongoDB
-    protected $collection = 'users';   // Nama koleksi di MongoDB
+    // protected $connection = 'mongodb'; // Pastikan ini menggunakan MongoDB
+    // protected $collection = 'users';   // Nama koleksi di MongoDB
 
     protected $fillable = [
         'name',

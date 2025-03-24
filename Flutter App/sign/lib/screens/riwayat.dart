@@ -81,7 +81,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     // Add more decoration..
                   ),
                   hint: const Text(
@@ -156,7 +156,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     // Add more decoration..
                   ),
                   hint: const Text(
@@ -231,7 +231,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     // Add more decoration..
                   ),
                   hint: const Text(
@@ -306,7 +306,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     // Add more decoration..
                   ),
                   hint: const Text(
@@ -381,7 +381,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     // Add more decoration..
                   ),
                   hint: const Text(

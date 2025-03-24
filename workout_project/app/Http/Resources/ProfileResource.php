@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProfileResource extends JsonResource
 {
-    public $status;
+     public $status;
     public $message;
     public $resource;
     /**

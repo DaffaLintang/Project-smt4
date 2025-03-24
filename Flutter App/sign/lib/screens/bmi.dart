@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(BMICalculatorApp());
@@ -73,6 +74,13 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Get.back(); // Menggunakan GetX untuk kembali
+          },
+        ),
+        automaticallyImplyLeading: true,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
@@ -88,61 +96,79 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color.fromRGBO(159, 0, 0, 1),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "BMI",
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
+              child: Text(
+                "BMI",
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: const Color.fromRGBO(196, 196, 196, 0.7),
             ),
             SizedBox(height: 20),
-            Text(
-              "Hitung BMI mu Sekarang",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            SizedBox(height: 35),
-            Row(
-              children: [
-                Expanded(
-                    child: buildTextField("Tinggi (cm)", _heightController)),
-                SizedBox(width: 25),
-                Expanded(
-                    child: buildTextField("Berat (kg)", _weightController)),
-              ],
-            ),
-            SizedBox(height: 40),
-            Row(
-              children: [
-                Expanded(child: buildTextField("Usia", _ageController)),
-                SizedBox(width: 25),
-                Expanded(child: buildDropdown()),
-              ],
-            ),
-            SizedBox(height: 40),
-            Row(
-              children: [
-                Expanded(child: buildButton("CALCULATE", _calculateBMI)),
-                SizedBox(width: 25),
-                Expanded(
-                    child: buildButton("RESET", () {
-                  setState(() {
-                    _weightController.clear();
-                    _heightController.clear();
-                    _ageController.clear();
-                    _gender = null;
-                    _result = "";
-                    _category = "";
-                    _categoryColor = Colors.black;
-                  });
-                })),
-              ],
-            ),
-            SizedBox(height: 100),
-            buildResult(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hitung BMI mu Sekarang",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                  SizedBox(height: 35),
+                  Row(
+                    children: [
+                      Expanded(
+                          child:
+                              buildTextField("Tinggi (cm)", _heightController)),
+                      SizedBox(width: 25),
+                      Expanded(
+                          child:
+                              buildTextField("Berat (kg)", _weightController)),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  Row(
+                    children: [
+                      Expanded(child: buildTextField("Usia", _ageController)),
+                      SizedBox(width: 25),
+                      Expanded(child: buildDropdown()),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  Row(
+                    children: [
+                      Expanded(child: buildButton("CALCULATE", _calculateBMI)),
+                      SizedBox(width: 25),
+                      Expanded(
+                          child: buildButton("RESET", () {
+                        setState(() {
+                          _weightController.clear();
+                          _heightController.clear();
+                          _ageController.clear();
+                          _gender = null;
+                          _result = "";
+                          _category = "";
+                          _categoryColor = Colors.black;
+                        });
+                      })),
+                    ],
+                  ),
+                  SizedBox(height: 30),
+                  Center(child: buildResult()),
+                ],
+              ),
+            )
           ],
         ),
       ),
