@@ -9,9 +9,10 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingpage');
 });
 
 Route::get('/dashboard', function () {
@@ -38,7 +39,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-    
+
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 });
@@ -52,7 +53,7 @@ Route::post('/logout', function () {
     return redirect('/login'); // Redirect ke halaman login
 })->name('logout');
 
-Route::get('/landingpage', function () {
-    return view('landingpage');
-});
+// Route::get('/landingpage', function () {
+//     return view('landingpage');
+// });
 require __DIR__.'/auth.php';
