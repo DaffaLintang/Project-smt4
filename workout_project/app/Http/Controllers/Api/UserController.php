@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -64,21 +65,48 @@ public function update(Request $request, $id){
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $id,
         'role' => 'required|string|in:admin,user',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'full_name' => 'required|string|max:255',
+        'phone' => 'required|digits_between:10,15',
+        'birth' => 'required|date',
+        'weight' => 'required|integer',
+        'height' => 'required|integer',
     ]);
 
     if ($validator->fails()) {
         return response()->json($validator->errors(), 422);
     }
 
-    $user = User::find($id);
+    $user = User::findOrFail($id); // Pastikan user ditemukan
 
-    $user->update([
+    $data = [
         'name'     => $request->name,
         'email'    => $request->email,
         'role'     => strtolower($request->role),
-    ]);
+        'full_name' => $request->full_name,
+        'phone' => $request->phone,
+        'birth' => $request->birth,
+        'weight' => $request->weight,
+        'height' => $request->height,
+    ];
 
-    return new UserResource(true, 'Data Post Berhasil Diubah!', $user);
+    // Jika ada file gambar yang diunggah
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama jika ada
+        if ($user->image) {
+            Storage::delete(str_replace('storage/', 'public/', $user->image));
+        }
+
+        // Simpan gambar baru
+        $image = $request->file('image');
+        $imagePath = $image->store('profiles', 'public');
+        $data['image'] = 'storage/' . $imagePath;
+    }
+
+    // Update user dengan semua data yang sudah disiapkan
+    $user->update($data);
+
+    return new UserResource(true, 'Data User Berhasil Diubah!', $user);
 }
 
 public function destroy($id){

@@ -27,8 +27,8 @@ class HistoriResource extends JsonResource
     {
         return [
             'success' => $this->status,
-            'massage' => $this->massage,
-            'data' => $this->data
+            'mdssage' => $this->message,
+            'data' => $this->resource
         ];
     }
 }
