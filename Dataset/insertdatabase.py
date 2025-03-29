@@ -1,15 +1,26 @@
 import pandas as pd
-from pymongo import MongoClient
+from sqlalchemy import create_engine
 
-# Load dataset CSV
-file_path = "C:/daffa/njajal/TA-Semester 4/Dataset/obesity_data.csv"
-df = pd.read_csv(file_path)
+# Load kedua dataset CSV
+file_path1 = "C:/daffa/njajal/TA-Semester 4/Dataset/obesity_data.csv"
+file_path2 = "C:/daffa/njajal/TA-Semester 4/Dataset/megaGymDataset(1).csv"
 
-# Koneksi ke MongoDB
-client = MongoClient("mongodb://localhost:27017/")
-db = client["workout_db"]
-collection = db["obesity"]
+df1 = pd.read_csv(file_path1)
+df2 = pd.read_csv(file_path2)
 
-# Konversi dataset ke JSON lalu masukkan ke MongoDB
-data = df.to_dict(orient="records")
-collection.insert_many(data)
+# Koneksi ke MySQL
+username = "root"   # Ganti dengan username MySQL
+password = "admin"       # Isi jika ada password
+host = "localhost"  # Sesuaikan dengan host MySQL
+database = "workout_db"  # Nama database
+
+# Buat engine koneksi
+engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
+
+# Masukkan df1 ke tabel "obesity"
+df1.to_sql(name="obesity", con=engine, if_exists="replace", index=False)
+
+# Masukkan df2 ke tabel "workouts"
+df2.to_sql(name="workouts", con=engine, if_exists="replace", index=False)
+
+print("Data dari kedua file berhasil dimasukkan ke MySQL dalam tabel berbeda!")

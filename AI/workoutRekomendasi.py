@@ -1,21 +1,28 @@
 from flask import Blueprint, request, jsonify
 import pandas as pd
-import json
-from pymongo import MongoClient
+import pymysql
+from sqlalchemy import create_engine
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import LabelEncoder
 
 workout_api = Blueprint('workout_api', __name__)
 
-# Koneksi ke MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['workout_db']
-collection = db['workouts']
+# Koneksi ke MySQL
+username = "root"   # Ganti dengan username MySQL
+password = "admin"       # Isi jika ada password
+host = "localhost"  # Sesuaikan dengan host MySQL
+database = "workout_db"  # Nama database
 
-# Ambil data dari MongoDB
-data = pd.DataFrame(list(collection.find()))
-if '_id' in data.columns:
-    data.drop('_id', axis=1, inplace=True)
+# Buat engine koneksi
+engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
+
+# Ambil data dari MySQL
+query = "SELECT * FROM workouts"
+data = pd.read_sql(query, con=engine)
+
+# Pastikan data tidak kosong
+if data.empty:
+    raise ValueError("Data dari MySQL kosong. Pastikan tabel 'workouts' terisi!")
 
 # Inisialisasi Model
 class WorkoutRecommender:
@@ -54,7 +61,6 @@ class WorkoutRecommender:
 
 recommender = WorkoutRecommender(data)
 
-
 @workout_api.route('/encoding-info', methods=['GET'])
 def get_encoding_info():
     try:
@@ -67,6 +73,7 @@ def get_encoding_info():
         return jsonify(encoding_info)
     except Exception as e:
         return jsonify({'error': str(e)})
+
 @workout_api.route('/recommend', methods=['POST'])
 def get_recommendations():
     try:
@@ -89,5 +96,3 @@ def get_recommendations():
         return jsonify({'recommendations': recommendations_list})
     except Exception as e:
         return jsonify({'error': str(e)})
-    
-    
