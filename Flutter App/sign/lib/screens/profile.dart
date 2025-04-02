@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sign/controllers/profile_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -8,6 +10,18 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final ProfileController profileController = Get.put(ProfileController());
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
+  }
+
+  void fetchProfile() async {
+    await profileController.getProfile();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     double getCircleDiameter(BuildContext context) =>

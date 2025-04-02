@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sign/controllers/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -36,9 +37,10 @@ class LoginPage extends StatelessWidget {
               // Input Username (Tidak center)
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   border: UnderlineInputBorder(),
                 ),
+                controller: LoginController.emailController,
               ),
               SizedBox(height: 15),
 
@@ -49,6 +51,7 @@ class LoginPage extends StatelessWidget {
                   labelText: 'Password',
                   border: UnderlineInputBorder(),
                 ),
+                controller: LoginController.passwordController,
               ),
               SizedBox(height: 20),
 
@@ -56,7 +59,7 @@ class LoginPage extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    print("Login button pressed");
+                    LoginController().auth();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],
