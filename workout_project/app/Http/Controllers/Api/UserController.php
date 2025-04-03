@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -35,7 +36,7 @@ class UserController extends Controller
         ], 422);
     }
 
-    // Simpan ke database MongoDB
+
     $user = User::create([
         'name'     => $request->name,
         'email'    => $request->email,
@@ -60,11 +61,12 @@ public function show($id)
     return new UserResource(true, 'Detail Data User', $user);
 }
 
-public function update(Request $request, $id){
+public function update(Request $request, $id) {
+    $user = User::findOrFail($id); // Pastikan user ditemukan
+    $authUser = Auth::user(); // User yang sedang login
+
     $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $id,
-        'role' => 'required|string|in:admin,user',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'full_name' => 'required|string|max:255',
         'phone' => 'required|digits_between:10,15',
@@ -77,12 +79,10 @@ public function update(Request $request, $id){
         return response()->json($validator->errors(), 422);
     }
 
-    $user = User::findOrFail($id); // Pastikan user ditemukan
-
     $data = [
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'role'     => strtolower($request->role),
+        'name' => $authUser->name,
+        'role' => strtolower($authUser->role),
+        'email' => $request->email,
         'full_name' => $request->full_name,
         'phone' => $request->phone,
         'birth' => $request->birth,
@@ -92,18 +92,15 @@ public function update(Request $request, $id){
 
     // Jika ada file gambar yang diunggah
     if ($request->hasFile('image')) {
-        // Hapus gambar lama jika ada
         if ($user->image) {
             Storage::delete(str_replace('storage/', 'public/', $user->image));
         }
 
-        // Simpan gambar baru
         $image = $request->file('image');
         $imagePath = $image->store('profiles', 'public');
         $data['image'] = 'storage/' . $imagePath;
     }
 
-    // Update user dengan semua data yang sudah disiapkan
     $user->update($data);
 
     return new UserResource(true, 'Data User Berhasil Diubah!', $user);

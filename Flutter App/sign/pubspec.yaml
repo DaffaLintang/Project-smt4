@@ -39,6 +39,8 @@ dependencies:
   sp_util: ^2.0.3
   flutter_easyloading: ^3.0.5
   http: ^1.3.0
+  image_picker: ^1.1.2
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

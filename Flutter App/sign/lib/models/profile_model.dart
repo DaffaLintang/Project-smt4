@@ -8,8 +8,8 @@ class User {
   final String? fullName;
   final String? phone;
   final String? birth;
-  final double? weight;
-  final double? height;
+  final int? weight;
+  final int? height;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -40,8 +40,8 @@ class User {
       fullName: json['full_name'],
       phone: json['phone'],
       birth: json['birth'],
-      weight: json['weight']?.toDouble(),
-      height: json['height']?.toDouble(),
+      weight: json['weight'],
+      height: json['height'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
