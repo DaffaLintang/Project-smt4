@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UserController extends Controller
 {
-    public function dashboard()
+    public function index()
     {
-        return view('user.dashboardUser');
+        $users = User::all(); // Ambil semua data user dari database
+        return view('admin.users.index', compact('users'));
     }
 }

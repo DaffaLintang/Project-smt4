@@ -22,9 +22,12 @@
             <i class="bi bi-chevron-down"></i>
         </a>
         <div class="collapse" id="dataMasterMenu">
-            <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+        <li>
+            <a href="{{ route('admin.users') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
                 <i class="bi bi-people me-2"></i> Manajemen Pengguna
             </a>
+            </li>
+
             <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
                 <i class="bi-clipboard-check"></i> Manajemen Latihan
             </a>

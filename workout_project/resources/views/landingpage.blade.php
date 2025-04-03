@@ -476,7 +476,7 @@
     </script>
     
 
-   <!-- MODAL FORGOT PASSWORD -->
+    <!-- MODAL FORGOT PASSWORD -->
 <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
         <button id="closeForgotModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
@@ -496,14 +496,15 @@
     </div>
 </div>
 
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
     const forgotPasswordForm = document.getElementById("forgotPasswordForm");
     const forgotPasswordModal = document.getElementById("forgotPasswordModal");
     const closeForgotModal = document.getElementById("closeForgotModal");
     const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
     const forgotPasswordError = document.getElementById("forgotPasswordError");
-    
+
     // Pastikan elemen ada sebelum menambahkan event listener
     const forgotPasswordLink = document.querySelector(".forgot-password-link");
 
@@ -524,17 +525,13 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         const email = document.getElementById("forgotEmail").value;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-        forgotPasswordSuccess.classList.add("hidden");
-        forgotPasswordError.classList.add("hidden");
 
         try {
-            const response = await fetch("{{ route('password.email') }}", {
+            const response = await fetch("/forgot-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify({ email: email })
             });
@@ -544,17 +541,22 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 forgotPasswordSuccess.textContent = "Reset link sent! Check your email.";
                 forgotPasswordSuccess.classList.remove("hidden");
+                forgotPasswordError.classList.add("hidden");
             } else {
                 forgotPasswordError.textContent = data.message || "Failed to send reset link.";
                 forgotPasswordError.classList.remove("hidden");
+                forgotPasswordSuccess.classList.add("hidden");
             }
         } catch (error) {
             forgotPasswordError.textContent = "Something went wrong, please try again.";
             forgotPasswordError.classList.remove("hidden");
+            forgotPasswordSuccess.classList.add("hidden");
         }
     });
 });
+
 </script>
+
 <!-- MODAL SIGN UP -->
 <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg w-96 shadow-lg relative">
@@ -584,12 +586,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 
-
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const signupForm = document.getElementById("signupForm");
     const signupModal = document.getElementById("signupModal");
     const closeSignupModal = document.getElementById("closeSignupModal");
-    const loginModal = document.getElementById("loginModal"); // Pastikan ini ada
+    const loginModal = document.getElementById("loginModal");
     const signupLink = document.querySelector(".signup-link");
     const loginLink = document.querySelector(".login-link");
     const signupButton = document.querySelector(".btn-signup");
@@ -597,28 +598,35 @@ document.addEventListener("DOMContentLoaded", function () {
     // Event listener untuk form signup
     if (signupForm) {
         signupForm.addEventListener("submit", async function (e) {
-            e.preventDefault(); // Mencegah form melakukan submit default (GET request)
+            e.preventDefault();
 
             const formData = new FormData(signupForm);
+
+            console.log("Password:", formData.get("password"));
+            console.log("Password Confirmation:", formData.get("password_confirmation"));
 
             try {
                 const response = await fetch("/register", {
                     method: "POST",
                     body: formData,
                     headers: {
-    "Content-Type": "application/json",
-    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-}
-
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    }
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
                     alert("Sign Up Successful! Redirecting to Dashboard...");
-                    window.location.href = "/dashboard"; // Ganti sesuai dengan halaman setelah login
+                    window.location.href = "/dashboard";
                 } else {
-                    alert("Error: " + (data.message || "Sign Up Failed!"));
+                    let errorMessage = "Sign Up Failed!";
+                    if (data.errors) {
+                        errorMessage = Object.values(data.errors).flat().join("\n");
+                    } else if (data.message) {
+                        errorMessage = data.message;
+                    }
+                    alert("Error: " + errorMessage);
                 }
             } catch (error) {
                 console.error("Error:", error);
@@ -627,14 +635,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Event listener untuk tombol Sign Up di navbar
     if (signupButton) {
         signupButton.addEventListener("click", () => {
             signupModal.classList.remove("hidden");
         });
     }
 
-    // Event listener untuk membuka modal Sign Up dari modal Login
     if (signupLink) {
         signupLink.addEventListener("click", (e) => {
             e.preventDefault();
@@ -643,7 +649,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Event listener untuk membuka modal Login dari modal Sign Up
     if (loginLink) {
         loginLink.addEventListener("click", (e) => {
             e.preventDefault();
@@ -652,7 +657,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Event listener untuk tombol close pada modal Sign Up
     if (closeSignupModal) {
         closeSignupModal.addEventListener("click", () => {
             signupModal.classList.add("hidden");

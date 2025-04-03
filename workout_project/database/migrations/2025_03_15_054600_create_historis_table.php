@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('catatan');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('user')->on('id')->onDelete('cascade');
-            $table->foreign('id_result')->references('result')->on('id')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_result')->references('id')->on('result')->onDelete('cascade');
         });
 
 
