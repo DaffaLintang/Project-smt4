@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory, HasApiTokens;
 
     protected $table = 'users'; // Pastikan sesuai dengan nama tabel di MySQL
     protected $connection = 'mysql'; // Gunakan MySQL
@@ -15,6 +17,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image','full_name',
+        'phone',
+        'birth',
+        'weight',
+        'height'
     ];
 
     protected $hidden = [
@@ -38,9 +45,5 @@ class User extends Authenticatable
 
     public function histori(){
         return $this->hasOne(Histori::class);
-    }
-
-    public function profile(){
-        return $this->hasMany(Profile::class);
     }
 }

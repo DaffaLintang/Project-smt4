@@ -3,12 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model; // ✅ PAKAI ELOQUENT MYSQL
+
 
 class Workout extends Model
 {
     use HasFactory;
 
-    protected $collection = 'workouts';
-    protected $fillable =  ['Unnamed: 0','Title', 'Desc', 'Type', 'BodyPart', 'Equipment', 'Level', 'Rating', 'RatingDesc'];
+    protected $table = 'workouts'; // Nama tabel di database
+
+    protected $fillable = ['Unnamed: 0',
+        'title',
+        'desc',
+        'type',
+        'bodypart',
+        'equipment',
+        'level',
+        'rating',
+        'rating_desc'
+    ];
 }

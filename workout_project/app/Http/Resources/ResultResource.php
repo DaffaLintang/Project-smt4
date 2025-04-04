@@ -23,12 +23,13 @@ class ResultResource extends JsonResource
         $this->message  = $message;
     }
 
+
     public function toArray(Request $request): array
     {
         return [
             'success' => $this->status,
-            'massage' => $this->massage,
-            'data' => $this->data
+            'message' => $this->message,
+            'data' => $this->resource
         ];
     }
 }

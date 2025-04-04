@@ -1,25 +1,31 @@
 import pandas as pd
-from pymongo import MongoClient
+import pymysql
+from sqlalchemy import create_engine
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
-# Koneksi ke MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['workout_db']
-collection = db['obesity']
+# Koneksi ke MySQL
+username = "root"   # Ganti dengan username MySQL
+password = "admin"       # Isi jika ada password
+host = "localhost"  # Sesuaikan dengan host MySQL
+database = "workout_db"  # Nama database
 
-# Ambil data dari MongoDB
-data = pd.DataFrame(list(collection.find()))
+# Buat engine koneksi
+engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
+
+# Ambil data dari MySQL
+query = "SELECT * FROM obesity"
+data = pd.read_sql(query, con=engine)
 
 # Pastikan data tidak kosong
 if data.empty:
-    raise ValueError("Data dari MongoDB kosong. Pastikan koleksi terisi!")
+    raise ValueError("Data dari MySQL kosong. Pastikan tabel 'obesity' terisi!")
 
 # Hapus kolom yang tidak relevan
-irrelevant_columns = ['_id', 'PhysicalActivityLevel']
+irrelevant_columns = ['PhysicalActivityLevel']
 for col in irrelevant_columns:
     if col in data.columns:
         data = data.drop(columns=[col])

@@ -15,30 +15,29 @@
         </div>
     </div>
 
-    <!-- Data Master -->
-    <div class="mb-2">
-        <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none" data-bs-toggle="collapse" href="#dataMasterMenu">
-            <span class="fw-bold">DATA MASTER</span>
-            <i class="bi bi-chevron-down"></i>
+<!-- Data Master -->
+<div class="mb-2">
+    <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none" data-bs-toggle="collapse" href="#dataMasterMenu">
+        <span class="fw-bold">DATA MASTER</span>
+        <i class="bi bi-chevron-down"></i>
+    </a>
+    <div class="collapse" id="dataMasterMenu">
+        <a href="{{ route('admin.users') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+            <i class="bi bi-people me-2"></i> Manajemen Pengguna
         </a>
-        <div class="collapse" id="dataMasterMenu">
-        <li>
-            <a href="{{ route('admin.users') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                <i class="bi bi-people me-2"></i> Manajemen Pengguna
-            </a>
-            </li>
+        <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+            <i class="bi bi-clipboard-check"></i> Manajemen Latihan
+        </a>
+        <a href="{{ route('admin.results') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+            <i class="bi bi-check2-circle"></i> Manajemen Result
+        </a>
+        <a href="{{ route('admin.workouts') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+    <i class="bi bi-lightbulb"></i> Manajemen Rekomendasi Workout
+</a>
 
-            <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                <i class="bi-clipboard-check"></i> Manajemen Latihan
-            </a>
-            <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                <i class="bi-check2-circle"></i> Manajemen Result
-            </a>
-            <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                <i class="bi-lightbulb"></i> Manajemen Rekomendasi Workout
-            </a>
-        </div>
     </div>
+</div>
+
 
     <!-- Setting -->
     <div class="mb-2">
