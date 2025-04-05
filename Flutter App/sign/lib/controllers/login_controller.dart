@@ -31,9 +31,6 @@ class LoginController extends GetxController {
             SpUtil.putInt('user_id', responseData["user_id"]);
             SpUtil.putString('token', responseData["token"]);
 
-            print(SpUtil.getString('token'));
-            print(SpUtil.getInt('user_id'));
-
             Get.offAll(() => Menu());
             Get.snackbar('Success', 'Login Berhasil',
                 backgroundColor: Color.fromARGB(255, 75, 212, 146),
