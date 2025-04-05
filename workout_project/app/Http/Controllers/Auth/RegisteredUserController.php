@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,61 +25,57 @@ class RegisteredUserController extends Controller
     /**
      * Handle an incoming registration request.
      */
-    public function store(Request $request)
-    {
-        try {
-            // Validasi input
-            $validatedData = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
+   /**
+ * Handle an incoming registration request.
+ */
+public function store(Request $request)
+{
+    try {
+        // Validasi input
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-            // Buat user baru
-            $user = User::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
+        // Buat user baru
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
 
-            // Event untuk proses registrasi
-            event(new Registered($user));
+        // Event untuk proses registrasi
+        event(new Registered($user));
 
-            // Login user
-            Auth::login($user);
+        // Auto login setelah registrasi
+        Auth::login($user);
 
-            // Jika request dari AJAX, kembalikan response JSON
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'redirect' => url('/landingpage')
-                ], 200);
-            }
-
-            // Redirect ke landing page jika bukan AJAX
-            return redirect('/landingpage');
-
-        } catch (ValidationException $e) {
-            // Tangani error validasi
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            return back()->withErrors($e->errors());
-        } catch (\Exception $e) {
-            // Tangani error lainnya
-            \Log::error('Registration failed', ['error' => $e->getMessage()]);
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Something went wrong. Please try again.'
-                ], 500);
-            }
-
-            return back()->withErrors(['registration' => 'Something went wrong.']);
+        // **Pastikan Laravel hanya merespons JSON jika request adalah AJAX**
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful!',
+                'redirect' => url('/dashboard')
+            ], 200);
         }
+
+        // Redirect hanya untuk request non-AJAX
+        return redirect('/dashboard');
+
+    } catch (ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'errors' => $e->errors()
+        ], 422);
+        
+    } catch (\Exception $e) {
+        \Log::error('Registration failed', ['error' => $e->getMessage()]);
+
+        return response()->json([
+            'success' => false,
+            'error' => 'Something went wrong. Please try again.'
+        ], 500);
     }
+}
 }

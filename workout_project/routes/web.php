@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ResultController;
+use App\Http\Controllers\WorkoutController;
 
 Route::get('/', function () {
     return view('landingpage');
@@ -42,8 +44,29 @@ Route::middleware('guest')->group(function () {
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+
+    Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+
+    
+
+
 });
 
+Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+Route::resource('users', UserController::class);
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+
+Route::get('/admin/results', [ResultController::class, 'index'])->name('admin.results');
+Route::resource('results', ResultController::class);
+
+// Menampilkan daftar workout di halaman admin
+Route::get('/admin/workouts', [WorkoutController::class, 'index'])->name('admin.workouts');
+
+// Resource Controller untuk CRUD Workout
+Route::resource('workouts', WorkoutController::class);
 
 
 Route::post('/logout', function () {
@@ -57,3 +80,4 @@ Route::post('/logout', function () {
 //     return view('landingpage');
 // });
 require __DIR__.'/auth.php';
+
