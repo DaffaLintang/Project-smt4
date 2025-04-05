@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:sign/apiVar.dart';
+import 'package:sign/models/result_model.dart';
 import 'package:sign/providers/rekomendasi_providers.dart';
 import 'package:sp_util/sp_util.dart';
+import 'package:http/http.dart' as http;
 
 class RekomendasiController extends GetxController {
+  final isLoading = false.obs;
   var title = ''.obs;
   var RecomBodyPart = ''.obs;
   var RecomDesc = ''.obs;
@@ -13,6 +19,7 @@ class RekomendasiController extends GetxController {
   var RecomType = ''.obs;
 
   int? userId = SpUtil.getInt('user_id');
+  String? token = SpUtil.getString('token');
 
   void rekomendasi(type, bodyPart, equipment, level) {
     try {
@@ -123,18 +130,42 @@ class RekomendasiController extends GetxController {
           "id_user": userIds
         };
 
-        print("Posting result data: $data");
-
         RekomendasiProviders().result(data).then((value) {
-          print("API Response: ${value.body}");
-          print("API Response: ${value.statusCode}");
-
           EasyLoading.dismiss();
         });
       }
     } catch (e, stackTrace) {
       print('Exception occurred: $e\n$stackTrace');
       EasyLoading.dismiss();
+    }
+  }
+
+  Future<List<Result>?> getResults() async {
+    try {
+      isLoading.value = true;
+      final uri = Uri.parse("$ResultApi/$userId");
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final List<dynamic> dataList = jsonResponse['data'];
+        isLoading.value = false;
+        return dataList.map((item) => Result.fromJson(item)).toList();
+      } else {
+        print('Error: Unexpected response format');
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      isLoading.value = false;
+      print('Error: ${e.toString()}');
+      return null;
     }
   }
 }

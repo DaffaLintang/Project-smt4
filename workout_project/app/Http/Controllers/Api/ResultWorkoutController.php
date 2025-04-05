@@ -50,19 +50,20 @@ class ResultWorkoutController extends Controller
     return new ResultResource(true, 'Result Workout berhasil ditambahkan!', $result);
 }
 
-public function show($id)
+public function show($userId)
 {
-    $result = Result::with('user')->find($id); // Jenssegers sudah mendukung ObjectId otomatis
+    $results = Result::with('user')->where('id_user', $userId)->get();
 
-    if (!$result) {
+    if ($results->isEmpty()) {
         return response()->json([
             'success' => false,
-            'message' => 'Result tidak ditemukan'
+            'message' => 'Tidak ada result untuk user ini'
         ], 404);
     }
 
-    return new ResultResource(true, 'Detail Data Resul tWorkout', $result);
+    return new ResultResource(true, 'List Result Milik User', $results);
 }
+
 
 public function update(Request $request, $id){
     $validator = Validator::make($request->all(), [
