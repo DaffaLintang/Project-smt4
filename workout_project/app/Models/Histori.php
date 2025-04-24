@@ -18,4 +18,6 @@ class Histori extends Model
     public function result(){
         return $this->belongsTo(Result::class, "id_result");
     }
+
+    
 }

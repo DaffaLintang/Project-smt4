@@ -12,24 +12,30 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\WorkoutController;
-
+use App\Http\Controllers\LatihanController;
+use App\Http\Controllers\DashboardController;
 Route::get('/', function () {
     return view('landingpage');
 });
 
-Route::get('/dashboard', function () {
-    return view('user.dashboardUser');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/dashboard', function () {
+  //  return view('user.dashboardUser');
+//})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/admin', function () {
     return view('admin.dashboard');
 })->middleware(['auth', AdminMiddleware::class])->name('admin.dashboard');
+
+Route::get('/admin', [DashboardController::class, 'index'])
+    ->middleware(['auth', AdminMiddleware::class]) // Pastikan namespace middleware benar
+    ->name('admin.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/admin/bmi', [App\Http\Controllers\Admin\BMIController::class, 'index'])->name('admin.bmi');
 
 // Route::middleware('guest')->group(function () {
 //     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
@@ -75,6 +81,10 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/login'); // Redirect ke halaman login
 })->name('logout');
+Route::get('/admin/latihan', [LatihanController::class, 'index'])->name('admin.latihan');
+
+
+
 
 // Route::get('/landingpage', function () {
 //     return view('landingpage');
