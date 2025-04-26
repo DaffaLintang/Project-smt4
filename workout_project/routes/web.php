@@ -12,6 +12,10 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\WorkoutController;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
+
 
 Route::get('/', function () {
     return view('landingpage');
@@ -49,8 +53,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
-    
-
 
 });
 
@@ -80,4 +82,12 @@ Route::post('/logout', function () {
 //     return view('landingpage');
 // });
 require __DIR__.'/auth.php';
-
+Route::get('/test-mongo', function() {
+    try {
+        // Coba mengambil data dari koleksi 'users'
+        $users = \App\Models\User::all();
+        return response()->json($users);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Connection failed: ' . $e->getMessage()]);
+    }
+});
