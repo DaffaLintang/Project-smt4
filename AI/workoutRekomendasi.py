@@ -9,7 +9,7 @@ workout_api = Blueprint('workout_api', __name__)
 
 # Koneksi ke MySQL
 username = "root"   # Ganti dengan username MySQL
-password = "admin"       # Isi jika ada password
+password = "1234"       # Isi jika ada password
 host = "localhost"  # Sesuaikan dengan host MySQL
 database = "workout_db"  # Nama database
 
