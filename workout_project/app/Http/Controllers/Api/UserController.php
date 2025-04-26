@@ -94,7 +94,7 @@ class UserController extends Controller
 
     // Validasi input
     $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
+        'name' => 'string|max:255',
         'email' => 'required|email|unique:users,email,' . $objectId . ',_id',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'full_name' => 'required|string|max:255',

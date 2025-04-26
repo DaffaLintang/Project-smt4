@@ -8,7 +8,7 @@ import 'package:sp_util/sp_util.dart';
 
 class RiwayatController extends GetxController {
   final isLoading = false.obs;
-  int? userId = SpUtil.getInt('user_id');
+  String? userId = SpUtil.getString('user_id');
 
   TextEditingController levelController = TextEditingController();
   TextEditingController repetisiController = TextEditingController();
@@ -16,6 +16,8 @@ class RiwayatController extends GetxController {
   TextEditingController durasiController = TextEditingController();
 
   void historiPost(idResult, durasi, repetisi, kesulitan, catatan) {
+    int repetisiInt = int.parse(repetisi);
+    int durasiInt = int.parse(durasi);
     try {
       if (idResult == null ||
           durasi == null ||
@@ -32,8 +34,8 @@ class RiwayatController extends GetxController {
         var data = {
           "id_user": userId,
           "id_result": idResult,
-          "durasi": durasi,
-          "repetisi": repetisi,
+          "durasi": durasiInt,
+          "repetisi": repetisiInt,
           "kesulitan": kesulitan,
           "catatan": catatan
         };
