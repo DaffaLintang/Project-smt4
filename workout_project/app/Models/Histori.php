@@ -24,4 +24,6 @@ class Histori extends Model
     {
         return $this->belongsTo(Result::class, 'id_result');
     }
+
+    
 }
