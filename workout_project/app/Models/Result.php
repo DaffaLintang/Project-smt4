@@ -2,18 +2,26 @@
 
 namespace App\Models;
 
+use MongoDB\Laravel\Eloquent\Model; // Ganti dari Illuminate
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Result extends Model
 {
     use HasFactory;
-    protected $fillable =  ['title', 'desc', 'type', 'bodyPart', 'equipment', 'level', 'id_user'];
 
-    public function user(){
-        return $this->belongsTo(User::class, "id_user");
+    protected $connection = 'mongodb';
+
+    protected $fillable = [
+        'title', 'desc', 'type', 'bodyPart', 'equipment', 'level', 'id_user'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
     }
-    public function histori(){
-        return $this->hasOne(Histori::class);
+
+    public function histori()
+    {
+        return $this->hasOne(Histori::class, 'id_result');
     }
 }

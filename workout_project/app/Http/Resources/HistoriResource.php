@@ -7,28 +7,29 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class HistoriResource extends JsonResource
 {
-    public $status;
-    public $message;
-    public $resource;
     /**
      * Transform the resource into an array.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
-
-    public function __construct($status, $message, $resource)
-    {
-        parent::__construct($resource);
-        $this->status = $status;
-        $this->message  = $message;
-    }
-
     public function toArray(Request $request): array
     {
         return [
-            'success' => $this->status,
-            'mdssage' => $this->message,
-            'data' => $this->resource
+            'id' => $this->_id,
+            'durasi' => $this->durasi,
+            'repetisi' => $this->repetisi,
+            'kesulitan' => $this->kesulitan,
+            'catatan' => $this->catatan,
+            'result' => new ResultResource($this->result),
+        ];
+    }
+
+    public function with(Request $request): array
+    {
+        return [
+            'success' => true,
+            'message' => 'List Histori Workout'
         ];
     }
 }

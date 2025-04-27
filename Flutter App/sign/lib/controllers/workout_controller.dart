@@ -18,7 +18,7 @@ class RekomendasiController extends GetxController {
   var RecomLevel = ''.obs;
   var RecomType = ''.obs;
 
-  int? userId = SpUtil.getInt('user_id');
+  String? userId = SpUtil.getString('user_id');
   String? token = SpUtil.getString('token');
 
   void rekomendasi(type, bodyPart, equipment, level) {

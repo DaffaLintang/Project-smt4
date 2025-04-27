@@ -2,48 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use MongoDB\Laravel\Eloquent\Model; // Ganti dari Illuminate
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use Notifiable, HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens;
 
-    protected $table = 'users'; // Pastikan sesuai dengan nama tabel di MySQL
-    protected $connection = 'mysql'; // Gunakan MySQL
+    protected $connection = 'mongodb';
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'image','full_name',
-        'phone',
-        'birth',
-        'weight',
-        'height'
+        'name', 'email', 'password', 'role', 'full_name', 'phone', 'birth', 'weight', 'height', 'image'
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-
-
-    protected function casts(): array
+    // Relasi dengan histori
+    public function historis()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Histori::class, 'id_user');
     }
 
-    public function result(){
-        return $this->hasOne(Result::class);
-    }
-
-    public function histori(){
-        return $this->hasOne(Histori::class);
+    // Relasi dengan result
+    public function results()
+    {
+        return $this->hasMany(Result::class, 'id_user');
     }
 }

@@ -7,12 +7,13 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:sign/apiVar.dart';
 import 'package:sign/models/profile_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:sign/screens/menu.dart';
 import 'package:sp_util/sp_util.dart';
 
 class ProfileController extends GetxController {
   final isLoading = false.obs;
   String? token = SpUtil.getString('token');
-  int? userId = SpUtil.getInt('user_id');
+  String? userId = SpUtil.getString('user_id');
 
   static TextEditingController fullNameController = TextEditingController();
   static TextEditingController emailController = TextEditingController();
@@ -66,8 +67,6 @@ class ProfileController extends GetxController {
         return;
       }
 
-      print(phone);
-
       EasyLoading.show();
 
       var request = http.MultipartRequest("POST", endpoint);
@@ -97,6 +96,7 @@ class ProfileController extends GetxController {
       EasyLoading.dismiss();
 
       if (response.statusCode == 200) {
+        Get.offAll(() => Menu());
         Get.snackbar('Success', 'Data Berhasil Diperbarui',
             backgroundColor: Colors.green, colorText: Colors.white);
       } else {

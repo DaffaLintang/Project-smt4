@@ -1,6 +1,6 @@
 class User {
-  final int id;
-  final String name;
+  final String id;
+  // final String name;
   final String email;
   final String role;
   final String? emailVerifiedAt;
@@ -8,14 +8,14 @@ class User {
   final String? fullName;
   final String? phone;
   final String? birth;
-  final int? weight;
-  final int? height;
+  final String? weight;
+  final String? height;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   User({
     required this.id,
-    required this.name,
+    // required this.name,
     required this.email,
     required this.role,
     this.emailVerifiedAt,
@@ -32,7 +32,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      name: json['name'],
+      // name: json['name'],
       email: json['email'],
       role: json['role'],
       emailVerifiedAt: json['email_verified_at'],
@@ -50,7 +50,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      // 'name': name,
       'email': email,
       'role': role,
       'email_verified_at': emailVerifiedAt,

@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void fetchProfile() async {
     user = await profileController.getProfile();
-    age = calculateAge(user!.birth.toString());
+    age = calculateAge(user?.birth.toString() ?? DateTime.now().toString());
     if (user?.fullName != null && user!.fullName!.isNotEmpty) {
       ProfileController.fullNameController.text = user!.fullName!;
     }
@@ -66,9 +66,11 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  int calculateAge(String birthDateString) {
+  int calculateAge(String? birthDateString) {
     // Mengubah tanggal lahir dari String ke DateTime
-    DateTime birthDate = DateTime.parse(birthDateString);
+    DateTime birthDate = (birthDateString != null)
+        ? DateTime.tryParse(birthDateString) ?? DateTime.now()
+        : DateTime.now();
 
     // Mengambil tanggal saat ini
     DateTime currentDate = DateTime.now();
