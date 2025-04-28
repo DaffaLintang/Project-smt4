@@ -2,15 +2,15 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 # Load kedua dataset CSV
-file_path1 = "C:/daffa/njajal/TA-Semester 4/Dataset/obesity_data.csv"
-file_path2 = "C:/daffa/njajal/TA-Semester 4/Dataset/megaGymDataset(1).csv"
+file_path1 = "C:/Projectsem4/Project-smt4/Dataset/obesity_data.csv"
+file_path2 = "C:/Projectsem4/Project-smt4/Dataset/megaGymDataset(1).csv"
 
 df1 = pd.read_csv(file_path1)
 df2 = pd.read_csv(file_path2)
 
 # Koneksi ke MySQL
 username = "root"   # Ganti dengan username MySQL
-password = "admin"       # Isi jika ada password
+password = ""       # Isi jika ada password
 host = "localhost"  # Sesuaikan dengan host MySQL
 database = "workout_db"  # Nama database
 
