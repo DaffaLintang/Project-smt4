@@ -1,28 +1,23 @@
 from flask import Blueprint, request, jsonify
 import pandas as pd
-import pymysql
-from sqlalchemy import create_engine
+from pymongo import MongoClient
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import LabelEncoder
 
 workout_api = Blueprint('workout_api', __name__)
 
-# Koneksi ke MySQL
-username = "root"   # Ganti dengan username MySQL
-password = "1234"       # Isi jika ada password
-host = "localhost"  # Sesuaikan dengan host MySQL
-database = "workout_db"  # Nama database
+# Koneksi ke MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['workout_db']  # Nama database MongoDB
+collection = db['workouts']  # Nama collection
 
-# Buat engine koneksi
-engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
-
-# Ambil data dari MySQL
-query = "SELECT * FROM workouts"
-data = pd.read_sql(query, con=engine)
+# Ambil data dari MongoDB
+data_cursor = collection.find()
+data = pd.DataFrame(list(data_cursor))
 
 # Pastikan data tidak kosong
 if data.empty:
-    raise ValueError("Data dari MySQL kosong. Pastikan tabel 'workouts' terisi!")
+    raise ValueError("Data dari MongoDB kosong. Pastikan collection 'workouts' terisi!")
 
 # Inisialisasi Model
 class WorkoutRecommender:
@@ -36,7 +31,8 @@ class WorkoutRecommender:
         self.prepare_data()
 
     def prepare_data(self):
-        self.df['Rating'] = self.df['Rating'].fillna(self.df['Rating'].mean())
+        # Pastikan kolom ada
+        self.df['Rating'] = self.df.get('Rating', pd.Series()).fillna(self.df['Rating'].mean() if 'Rating' in self.df else 0)
         self.df['Type'] = self.encoder_type.fit_transform(self.df['Type'].fillna('Unknown'))
         self.df['BodyPart'] = self.encoder_bodypart.fit_transform(self.df['BodyPart'].fillna('Unknown'))
         self.df['Equipment'] = self.encoder_equipment.fit_transform(self.df['Equipment'].fillna('Unknown'))
@@ -83,6 +79,9 @@ def get_recommendations():
 
         # Konversi ke DataFrame untuk manipulasi data
         recommendations = pd.DataFrame(recommendations).fillna("")
+
+        if recommendations.empty:
+            return jsonify({'recommendations': []})
 
         # Dekode kembali nilai numerik ke label aslinya
         recommendations['Type'] = recommender.encoder_type.inverse_transform(recommendations['Type'])

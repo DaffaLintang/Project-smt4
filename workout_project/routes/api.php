@@ -16,13 +16,6 @@ Route::post('/users', [UserController::class, 'store']);
 Route::apiResource('/resultWo', ResultWorkoutController::class)->middleware('auth:sanctum');
 Route::apiResource('/historiWo', HistoritController::class)->middleware('auth:sanctum');
 
-
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::apiResource('/profile', ProfileController::class);
-// });
-
-
-
 Route::prefix('auth')->group(function() {
     Route::post('/login', [AuthController::class, 'login']);
 });
