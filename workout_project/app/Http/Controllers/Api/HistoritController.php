@@ -7,6 +7,7 @@ use App\Http\Resources\HistoriResource;
 use App\Models\Histori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use MongoDB\BSON\ObjectId; // << WAJIB! Untuk bikin ObjectId
 
 class HistoritController extends Controller
 {
@@ -14,13 +15,17 @@ class HistoritController extends Controller
     {
         $histori = Histori::with(['user', 'result'])->get();
 
-        return new HistoriResource(true, 'List Histori Workout', $histori);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Histori Workout',
+            'data' => HistoriResource::collection($histori)
+        ]);
     }
-        public function store(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_user' => 'required|integer',
-            'id_result' => 'required|integer',
+            'id_user' => 'required|string|size:24',   // <<< MongoDB id_user harus string panjang 24
+            'id_result' => 'required|string|size:24', // <<< MongoDB id_result harus string panjang 24
             'durasi' => 'required|integer',
             'repetisi' => 'required|integer',
             'kesulitan' => 'required|string',
@@ -35,35 +40,50 @@ class HistoritController extends Controller
         }
 
         $histori = Histori::create([
-            'id_user'     => $request->id_user,
-            'id_result'    => $request->id_result,
-            'durasi'    => $request->durasi,
-            'kesulitan'    => $request->kesulitan,
+            'id_user'     => new ObjectId($request->id_user),
+            'id_result'   => new ObjectId($request->id_result),
+            'durasi'      => $request->durasi,
             'repetisi'    => $request->repetisi,
-            'catatan'    => $request->catatan,
+            'kesulitan'   => $request->kesulitan,
+            'catatan'     => $request->catatan,
         ]);
 
-        return new HistoriResource(true, 'Histori berhasil ditambahkan!', $histori);
+        return new HistoriResource($histori,true, 'Histori berhasil ditambahkan!');
     }
 
     public function show($id)
     {
-        $histori = Histori::with(['user', 'result'])->find($id); // Jenssegers sudah mendukung ObjectId otomatis
+        if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID tidak valid'
+            ], 400);
+        }
+
+        $histori = Histori::with(['user', 'result'])->find(new ObjectId($id));
 
         if (!$histori) {
             return response()->json([
                 'success' => false,
-                'message' => 'Result tidak ditemukan'
+                'message' => 'Histori tidak ditemukan'
             ], 404);
         }
 
-        return new HistoriResource(true, 'Detail Data Resul tWorkout', $histori);
+        return new HistoriResource($histori, true, 'Detail Histori Workout');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
+        if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID tidak valid'
+            ], 400);
+        }
+
         $validator = Validator::make($request->all(), [
-            'id_user' => 'required|integer',
-            'id_result' => 'required|integer',
+            'id_user' => 'required|string|size:24',
+            'id_result' => 'required|string|size:24',
             'durasi' => 'required|integer',
             'repetisi' => 'required|integer',
             'kesulitan' => 'required|string',
@@ -71,30 +91,57 @@ class HistoritController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $histori = Histori::findOrFail($id);
+        $histori = Histori::find(new ObjectId($id));
 
-        $data = [
-            'id_user'     => $request->id_user,
-            'id_result'    => $request->id_result,
-            'durasi'    => $request->durasi,
-            'kesulitan'    => $request->kesulitan,
-            'repetisi'    => $request->repetisi,
+        if (!$histori) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Histori tidak ditemukan'
+            ], 404);
+        }
+
+        $histori->update([
+            'id_user'    => new ObjectId($request->id_user),
+            'id_result'  => new ObjectId($request->id_result),
+            'durasi'     => $request->durasi,
+            'repetisi'   => $request->repetisi,
+            'kesulitan'  => $request->kesulitan,
             'catatan'    => $request->catatan,
-        ];
+        ]);
 
-        $histori->update($data);
-
-        return new HistoriResource(true, 'Data Result Workout Berhasil Diubah!', $histori);
+        return new HistoriResource($histori, true, 'Data Histori Workout Berhasil Diubah!');
     }
 
-    public function destroy($id){
-        $user = Histori::find($id);
-
-        $user->delete();
-
-        return new HistoriResource(true, 'Data Result Workout Berhasil Dihapus!', null);
+    public function destroy($id)
+{
+    if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'ID tidak valid'
+        ], 400);
     }
+
+    $histori = Histori::find(new ObjectId($id));
+
+    if (!$histori) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Histori tidak ditemukan'
+        ], 404);
+    }
+
+    $histori->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Data Histori Workout Berhasil Dihapus!',
+        'data' => null
+    ], 200);
+}
 }

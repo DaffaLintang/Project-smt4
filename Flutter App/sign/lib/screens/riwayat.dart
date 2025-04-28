@@ -1,5 +1,9 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sign/controllers/riwayat_controller.dart';
+import 'package:sign/controllers/workout_controller.dart';
+import 'package:sign/models/result_model.dart';
 
 class RiwayatWorkout extends StatefulWidget {
   const RiwayatWorkout({super.key});
@@ -9,10 +13,19 @@ class RiwayatWorkout extends StatefulWidget {
 }
 
 class _RiwayatWorkoutState extends State<RiwayatWorkout> {
-  final List<String> genderItems = [
-    'Male',
-    'Female',
-  ];
+  final riwayatController = Get.put(RiwayatController());
+  List<Result>? result;
+  String? selectedResultId;
+
+  void initState() {
+    super.initState();
+    fetchResult();
+  }
+
+  void fetchResult() async {
+    result = await RekomendasiController().getResults();
+    setState(() {});
+  }
 
   String? selectedValue;
   @override
@@ -82,109 +95,40 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 7),
-                    // Add more decoration..
                   ),
                   hint: const Text(
                     'Select Workout',
                     style: TextStyle(fontSize: 14),
                   ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
+                  value: selectedResultId,
+                  items: result != null
+                      ? result!
+                          .map((item) => DropdownMenuItem<String>(
+                                value: item.id
+                                    .toString(), // simpan ID sebagai value
+                                child: Text(
+                                  item.title,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ))
+                          .toList()
+                      : [],
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select gender.';
+                      return 'Please select workout.';
                     }
                     return null;
                   },
                   onChanged: (value) {
-                    //Do something when selected item is changed.
+                    setState(() {
+                      selectedResultId = value;
+                      final selected =
+                          result!.firstWhere((r) => r.id.toString() == value);
+                      riwayatController.levelController.text = selected.level;
+                    });
                   },
                   onSaved: (value) {
-                    selectedValue = value.toString();
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Color.fromRGBO(137, 10, 10, 1),
-                    ),
-                    iconSize: 24,
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    "Durasi Latihan",
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                DropdownButtonFormField2<String>(
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(137, 10, 10, 1), width: 2),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(137, 10, 10, 1), width: 2),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
-                    // Add more decoration..
-                  ),
-                  hint: const Text(
-                    'Durasi Latihan',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender.';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when selected item is changed.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
+                    selectedResultId = value;
                   },
                   buttonStyleData: const ButtonStyleData(
                     padding: EdgeInsets.only(right: 8),
@@ -218,8 +162,9 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                 SizedBox(
                   height: 10,
                 ),
-                DropdownButtonFormField2<String>(
-                  isExpanded: true,
+                TextField(
+                  controller: riwayatController.levelController,
+                  readOnly: true,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -231,53 +176,9 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
-                    // Add more decoration..
-                  ),
-                  hint: const Text(
-                    'Kesulitan',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender.';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when selected item is changed.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Color.fromRGBO(137, 10, 10, 1),
-                    ),
-                    iconSize: 24,
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    hintText: "Kesulitan",
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 7, horizontal: 20),
                   ),
                 ),
                 SizedBox(
@@ -293,8 +194,9 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                 SizedBox(
                   height: 10,
                 ),
-                DropdownButtonFormField2<String>(
-                  isExpanded: true,
+                TextField(
+                  controller: riwayatController.repetisiController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -306,53 +208,41 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
-                    // Add more decoration..
+                    hintText: "Masukkan repetisi",
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 7, horizontal: 20),
                   ),
-                  hint: const Text(
-                    'Repetisi (Reps)',
-                    style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Text(
+                    "Durasi",
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
                   ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender.';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when selected item is changed.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Color.fromRGBO(137, 10, 10, 1),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: riwayatController.durasiController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(137, 10, 10, 1), width: 2),
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                    iconSize: 24,
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(137, 10, 10, 1), width: 2),
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    hintText: "Masukkan Durasi",
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 7, horizontal: 20),
                   ),
                 ),
                 SizedBox(
@@ -368,8 +258,8 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                 SizedBox(
                   height: 10,
                 ),
-                DropdownButtonFormField2<String>(
-                  isExpanded: true,
+                TextField(
+                  controller: riwayatController.catatanController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -381,53 +271,9 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                           color: Color.fromRGBO(137, 10, 10, 1), width: 2),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
-                    // Add more decoration..
-                  ),
-                  hint: const Text(
-                    'Catatan (Opsional)',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender.';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when selected item is changed.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Color.fromRGBO(137, 10, 10, 1),
-                    ),
-                    iconSize: 24,
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    hintText: "Tulis Catatan (Opsional)",
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 7, horizontal: 20),
                   ),
                 ),
                 SizedBox(
@@ -435,7 +281,14 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
                 ),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      RiwayatController().historiPost(
+                          selectedResultId,
+                          riwayatController.durasiController.text,
+                          riwayatController.repetisiController.text,
+                          riwayatController.levelController.text,
+                          riwayatController.catatanController.text);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(159, 0, 0, 1),
                       padding:

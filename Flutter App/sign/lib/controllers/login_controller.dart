@@ -28,11 +28,8 @@ class LoginController extends GetxController {
             password = '';
             final responseData = value.body; // Pastikan ini berupa Map
 
-            SpUtil.putInt('user_id', responseData["user_id"]);
-            SpUtil.putString('token', responseData["token"]);
-
-            print(SpUtil.getString('token'));
-            print(SpUtil.getInt('user_id'));
+            SpUtil.putString('user_id', responseData["data"]["user"]["id"]);
+            SpUtil.putString('token', responseData["data"]["token"]);
 
             Get.offAll(() => Menu());
             Get.snackbar('Success', 'Login Berhasil',

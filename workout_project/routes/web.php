@@ -14,6 +14,8 @@ use App\Http\Controllers\ResultController;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\LatihanController;
 use App\Http\Controllers\DashboardController;
+
+
 Route::get('/', function () {
     return view('landingpage');
 });
@@ -55,8 +57,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
-    
-
 
 });
 
@@ -90,4 +90,3 @@ Route::get('/admin/latihan', [LatihanController::class, 'index'])->name('admin.l
 //     return view('landingpage');
 // });
 require __DIR__.'/auth.php';
-

@@ -9,21 +9,34 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use MongoDB\BSON\ObjectId;
 
 class UserController extends Controller
 {
-    public function index(){
-        $user = User::get();
+    // Menampilkan semua user
+    public function index()
+    {
+        $users = User::all(); // Ambil semua user tanpa memuat relasi yang tidak perlu
 
-        return new UserResource(true, 'List User', $user);
+        return UserResource::collection($users);
     }
 
+    // Menambahkan user baru
     public function store(Request $request)
 {
-    // Validasi input termasuk role
     $validator = Validator::make($request->all(), [
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
+        'email' => [
+            'required',
+            'email',
+            function ($attribute, $value, $fail) {
+                if (User::where('email', $value)->exists()) {
+                    $fail('The email has already been taken.');
+                }
+            },
+        ],
         'password' => 'required|min:6',
         'role' => 'required|string|in:admin,user', // Validasi role
     ]);
@@ -35,36 +48,54 @@ class UserController extends Controller
         ], 422);
     }
 
-    // Simpan ke database MongoDB
+    // Membuat user baru
     $user = User::create([
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'password' => Hash::make($request->password), // Enkripsi password
-        'role'     => strtolower($request->role), // Simpan role dalam format lowercase
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => strtolower($request->role),
     ]);
 
-    return new UserResource(true, 'User berhasil ditambahkan!', $user);
+    return new UserResource($user, true, 'User berhasil ditambahkan!');
 }
 
-public function show($id)
-{
-    $user = User::find($id); // Jenssegers sudah mendukung ObjectId otomatis
+    // Menampilkan detail user berdasarkan ID
+    public function show($id)
+    {
+        // Validasi manual: panjang harus 24 dan karakter hex
+        if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+            return response()->json(['success' => false, 'message' => 'ID tidak valid'], 400);
+        }
 
-    if (!$user) {
-        return response()->json([
-            'success' => false,
-            'message' => 'User tidak ditemukan'
-        ], 404);
+        $objectId = new ObjectId($id);
+
+        $user = User::with(['historis', 'results'])->where('_id', $objectId)->first();
+
+        if (!$user) {
+            Log::error('User tidak ditemukan untuk ID: ' . $id);
+            return response()->json(['success' => false, 'message' => 'User tidak ditemukan'], 404);
+        }
+
+        return new UserResource($user, true, 'Detail Data User');
     }
 
-    return new UserResource(true, 'Detail Data User', $user);
-}
+    // Mengupdate data user
+    public function update(Request $request, $id)
+{
+    // Validasi ID agar ObjectId valid
+    if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+        return response()->json(['success' => false, 'message' => 'ID tidak valid'], 400);
+    }
 
-public function update(Request $request, $id){
+    $objectId = new ObjectId($id);
+    $user = User::findOrFail($objectId); // MongoDB _id pakai ObjectId
+
+    $authUser = Auth::user();
+
+    // Validasi input
     $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $id,
-        'role' => 'required|string|in:admin,user',
+        'name' => 'string|max:255',
+        'email' => 'required|email|unique:users,email,' . $objectId . ',_id',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'full_name' => 'required|string|max:255',
         'phone' => 'required|digits_between:10,15',
@@ -77,12 +108,10 @@ public function update(Request $request, $id){
         return response()->json($validator->errors(), 422);
     }
 
-    $user = User::findOrFail($id); // Pastikan user ditemukan
-
     $data = [
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'role'     => strtolower($request->role),
+        'name' => $request->name,
+        'role' => strtolower($authUser->role),
+        'email' => $request->email,
         'full_name' => $request->full_name,
         'phone' => $request->phone,
         'birth' => $request->birth,
@@ -90,30 +119,48 @@ public function update(Request $request, $id){
         'height' => $request->height,
     ];
 
-    // Jika ada file gambar yang diunggah
+    // Proses upload gambar
     if ($request->hasFile('image')) {
         // Hapus gambar lama jika ada
-        if ($user->image) {
+        if ($user->image && Storage::exists(str_replace('storage/', 'public/', $user->image))) {
             Storage::delete(str_replace('storage/', 'public/', $user->image));
         }
 
-        // Simpan gambar baru
         $image = $request->file('image');
         $imagePath = $image->store('profiles', 'public');
         $data['image'] = 'storage/' . $imagePath;
     }
 
-    // Update user dengan semua data yang sudah disiapkan
     $user->update($data);
 
-    return new UserResource(true, 'Data User Berhasil Diubah!', $user);
+    return new UserResource($user, true, 'Data User Berhasil Diubah!');
 }
 
-public function destroy($id){
-    $user = User::find($id);
+    // Menghapus user
+    public function destroy($id)
+    {
+        // Validasi ID
+        if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID tidak valid'
+            ], 400);
+        }
 
-    $user->delete();
+        $objectId = new ObjectId($id);
 
-    return new UserResource(true, 'Data User Berhasil Dihapus!', null);
+        $user = User::find($objectId);
+
+        if ($user) {
+            $user->delete();  // delete() aman untuk MongoDB Eloquent
+
+            return new UserResource(null, true, 'Data User Berhasil Dihapus!');
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User tidak ditemukan'
+        ], 404);
+    }
 }
-}
+

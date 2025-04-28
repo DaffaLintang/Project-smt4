@@ -2,41 +2,52 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-
     public function login(Request $request)
     {
-        $request->validate([
+        // Validasi input
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
         ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        // Buat token
+        // Mencari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
+
+        // Buat token dengan Sanctum
         $token = $user->createToken('Token-' . $user->id)->plainTextToken;
 
-
-        // Return response dengan ID dan Token
         return response()->json([
             'success' => true,
-            'message' => 'Login berhasil!',
-            'user_id' => $user->id,
-            'token' => $token
-        ], 200);
+            'message' => 'Login successful',
+            'data' => [
+                'user' => $user,
+                'token' => $token,
+            ],
+        ]);
     }
-
 }
+

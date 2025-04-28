@@ -8,9 +8,9 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.31",
-        "laravel/sanctum": "*",
+        "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.9",
-        "mongodb/laravel-mongodb": "^5.2",
+        "mongodb/laravel-mongodb": "^5.4",
         "open-admin-org/open-admin": "^1.0"
     },
     "require-dev": {
