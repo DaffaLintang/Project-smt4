@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model; // Ganti dari Illuminate
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\Laravel\Eloquent\Model as Eloquent;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+class User extends Eloquent implements AuthenticatableContract
 {
-    use HasFactory, HasApiTokens;
+    use HasApiTokens, Authenticatable;
 
     protected $connection = 'mongodb';
 
@@ -16,13 +17,11 @@ class User extends Model
         'name', 'email', 'password', 'role', 'full_name', 'phone', 'birth', 'weight', 'height', 'image'
     ];
 
-    // Relasi dengan histori
     public function historis()
     {
         return $this->hasMany(Histori::class, 'id_user');
     }
 
-    // Relasi dengan result
     public function results()
     {
         return $this->hasMany(Result::class, 'id_user');

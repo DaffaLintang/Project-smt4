@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model; // ✅ PAKAI ELOQUENT MYSQL
-
+use MongoDB\Laravel\Eloquent\Model; // ✅ Pakai model MongoDB
 
 class Workout extends Model
 {
-    use HasFactory;
+    protected $connection = 'mongodb'; // ✅ Wajib
+    protected $collection = 'workouts'; // ✅ Nama koleksi di MongoDB
 
-    protected $table = 'workouts'; // Nama tabel di database
-
-    protected $fillable = ['Unnamed: 0',
+    protected $fillable = [
+        'Unnamed: 0',
         'title',
         'desc',
         'type',

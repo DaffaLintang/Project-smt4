@@ -12,23 +12,24 @@ class ResultController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $search = strtolower($request->input('search'));
+{
+    $search = strtolower($request->input('search'));
 
-        $results = Result::when($search, function ($query, $search) {
-            return $query->where('title', 'like', "%$search%")
-                         ->orWhere('desc', 'like', "%$search%")
-                         ->orWhere('type', 'like', "%$search%");
-        })->paginate(5);
+    $results = Result::when($search, function ($query, $search) {
+        return $query->where('title', 'like', "%$search%")
+                     ->orWhere('desc', 'like', "%$search%")
+                     ->orWhere('type', 'like', "%$search%");
+    })->paginate(5);
 
-        if ($request->ajax()) {
-            return response()->json([
-                'html' => view('admin.results.index', compact('results'))->render()
-            ]);
-        }
-    
-        return view('admin.results.index', compact('results'));
+    if ($request->ajax()) {
+        return response()->json([
+            'html' => view('admin.results.index', compact('results'))->render()
+        ]);
     }
+
+    return view('admin.results.index', compact('results'));
+}
+
 
     /**
      * Show the form for creating a new resource.

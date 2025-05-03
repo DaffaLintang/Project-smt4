@@ -32,12 +32,12 @@
             <tbody>
                 @forelse($history as $h)
                 <tr>
-                    <td>{{ $h->user->name }}</td>
+                    <td>{{ $h->_id}}</td>
                     <td>{{ $h->durasi }} menit</td>
                     <td>{{ $h->repetisi }}</td>
                     <td>{{ $h->kesulitan }}</td>
                     <td>{{ $h->catatan }}</td>
-                    <td>{{ $h->created_at->format('d M Y H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($h->created_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
                 </tr>
                 @empty
                     <tr>
