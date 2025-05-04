@@ -3,18 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Workout;
-use App\Models\BMI;
-use App\Models\User; // Import model User
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Result;
+
 class DashboardController extends Controller
 {
     public function index()
     {
         $totalWorkouts = Workout::count();
-        $totalBMI = BMI::count();
-        $totalUsers = User::count(); // Menghitung total user
+        $totalUsers = User::count();
         $totalResults = Result::count(); 
+        $totalBMI = DB::connection('mongodb')->table('obesity')->count(); // Ambil dari MongoDB
+
         return view('admin.dashboard', [
             'totalWorkouts' => $totalWorkouts,
             'totalBMI' => $totalBMI,

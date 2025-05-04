@@ -24,18 +24,27 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
 {
-    $request->authenticate();
-    $request->session()->regenerate();
+    $credentials = $request->only('email', 'password');
 
-    // Cek role pengguna
-    $user = Auth::user();
-
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.dashboard'); // Sesuaikan dengan route admin yang kamu miliki
+    if (!Auth::guard('web')->attempt($credentials, $request->filled('remember'))) {
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
     }
 
-    return redirect()->route('dashboard'); // Redirect ke dashboard user biasa
+    $request->session()->regenerate();
+
+    $user = Auth::guard('web')->user(); // pakai guard web juga di sini
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'user') {
+        return redirect()->route('dashboard');
+    }
+
+    return redirect()->route('home');
 }
+
 
     /**
      * Destroy an authenticated session.
@@ -43,11 +52,11 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
+    
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
+    
         return redirect('/');
     }
+    
 }

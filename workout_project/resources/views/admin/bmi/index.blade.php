@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($bmi as $data)
+                @forelse($bmis as $data)
                 <tr>
                     <td>{{ $data->Age }}</td>
                     <td>{{ $data->Gender }}</td>
@@ -50,6 +50,8 @@
         </table>
     </div>
 
-    {{ $bmi->links() }}
+    {{ $bmis->links('vendor.pagination.simple-tailwind') }}
+
+
 </div>
 @endsection

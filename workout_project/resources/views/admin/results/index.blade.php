@@ -36,7 +36,7 @@
             <tbody>
                 @forelse ($results as $result)
                     <tr>
-                        <td>{{ $result->id }}</td>
+                        <td>{{ $result->_id }}</td>
                         <td>{{ $result->title }}</td>
                         <td>{{ $result->desc }}</td>
                         <td>{{ $result->type }}</td>

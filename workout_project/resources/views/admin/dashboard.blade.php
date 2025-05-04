@@ -65,7 +65,7 @@
             <div class="card p-3 stat-box">
                 <i class="fa-solid fa-weight-scale card-icon"></i>
                 <h4>{{ $totalBMI }}</h4>
-                <p>Total Input BMI</p>
+                <p>Data BMI</p>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
