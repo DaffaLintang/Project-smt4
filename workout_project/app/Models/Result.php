@@ -10,6 +10,7 @@ class Result extends Model
     use HasFactory;
 
     protected $connection = 'mongodb';
+    public $timestamps = true;
 
     protected $fillable = [
         'title', 'desc', 'type', 'bodyPart', 'equipment', 'level', 'id_user'

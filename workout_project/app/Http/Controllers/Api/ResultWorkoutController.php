@@ -8,6 +8,7 @@ use App\Models\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use MongoDB\BSON\ObjectId;
+use Carbon\Carbon;
 
 class ResultWorkoutController extends Controller
 {
@@ -51,6 +52,8 @@ class ResultWorkoutController extends Controller
             'equipment' => $request->equipment,
             'level'     => $request->level,
             'id_user'   => new ObjectId($request->id_user),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
 
         return new ResultResource($result, true, 'Result Workout berhasil ditambahkan!');

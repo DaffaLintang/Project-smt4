@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 100.0),
+                    padding: const EdgeInsets.only(top: 130.0),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 40),
                       decoration: BoxDecoration(

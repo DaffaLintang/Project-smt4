@@ -35,6 +35,8 @@ class ResultResource extends JsonResource
                         'equipment' => $result->equipment,
                         'level' => $result->level,
                         'user_id' => $result->id_user,
+                        'created_at' => $this->created_at,
+                        'updated_at' => $this->updated_at,
                     ];
                 }),
             ];
@@ -53,6 +55,8 @@ class ResultResource extends JsonResource
                 'equipment' => $this->equipment,
                 'level' => $this->level,
                 'user_id' => $this->id_user,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ]
         ];
     }

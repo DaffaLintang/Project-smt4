@@ -18,8 +18,7 @@ class UserController extends Controller
     // Menampilkan semua user
     public function index()
     {
-        $users = User::all(); // Ambil semua user tanpa memuat relasi yang tidak perlu
-
+        $users = User::all();
         return UserResource::collection($users);
     }
 

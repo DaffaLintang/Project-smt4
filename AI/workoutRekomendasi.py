@@ -32,7 +32,6 @@ class WorkoutRecommender:
 
     def prepare_data(self):
         # Pastikan kolom ada
-        self.df['Rating'] = self.df.get('Rating', pd.Series()).fillna(self.df['Rating'].mean() if 'Rating' in self.df else 0)
         self.df['Type'] = self.encoder_type.fit_transform(self.df['Type'].fillna('Unknown'))
         self.df['BodyPart'] = self.encoder_bodypart.fit_transform(self.df['BodyPart'].fillna('Unknown'))
         self.df['Equipment'] = self.encoder_equipment.fit_transform(self.df['Equipment'].fillna('Unknown'))
