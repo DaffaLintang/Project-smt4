@@ -37,7 +37,8 @@
                     <td>{{ $h->repetisi }}</td>
                     <td>{{ $h->kesulitan }}</td>
                     <td>{{ $h->catatan }}</td>
-                    <td>{{ \Carbon\Carbon::parse($h->created_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($h->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
+
                 </tr>
                 @empty
                     <tr>

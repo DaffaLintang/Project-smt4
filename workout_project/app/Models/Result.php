@@ -8,14 +8,11 @@ class Result extends Model
 {
     protected $connection = 'mongodb';
     public $timestamps = true;
-    protected $collection = 'results'; // opsional jika nama koleksi default sudah benar
+    protected $collection = 'results'; 
 
     protected $fillable = [
         'title', 'desc', 'type', 'bodyPart', 'equipment', 'level', 'id_user'
     ];
-
-    // ⚠️ Relasi di bawah ini hanya bersifat konvensional,
-    // Anda harus handle query manual jika relasinya tidak jalan
 
     public function user()
     {
