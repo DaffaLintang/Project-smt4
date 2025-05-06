@@ -152,12 +152,11 @@ class RekomendasiController extends GetxController {
           'Accept': 'application/json',
         },
       );
-
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         final List<dynamic> dataList = jsonResponse['data'];
         isLoading.value = false;
-        return dataList.map((item) => Result.fromJson(item)).toList();
+        return dataList.map((item) => Result.fromJson(item['data'])).toList();
       } else {
         print('Error: Unexpected response format');
         throw Exception('Failed to load data: ${response.statusCode}');

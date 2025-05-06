@@ -78,7 +78,10 @@ class ResultWorkoutController extends Controller
             ], 404);
         }
 
-        return new ResultResource($results, true, 'List Result Milik User');
+        return ResultResource::collection($results)->additional([
+            'success' => true,
+            'message' => 'List Result Milik User',
+        ]);
     }
 
     public function update(Request $request, $id)

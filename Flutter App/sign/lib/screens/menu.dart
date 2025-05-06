@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign/screens/bmi.dart';
+import 'package:sign/screens/latihan_page.dart';
 import 'package:sign/screens/profile.dart';
 import 'package:sign/screens/riwayat.dart';
 import 'package:sign/screens/workout.dart';
@@ -142,6 +143,39 @@ class _MenuState extends State<Menu> {
                                   image: DecorationImage(
                                       image:
                                           AssetImage('assets/image/jam.png'))),
+                            ),
+                            Text(
+                              "Latihan",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Color.fromRGBO(137, 0, 0, 100)),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(RiwayatLatihan());
+                      },
+                      child: Container(
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: Color.fromRGBO(137, 0, 0, 100),
+                                width: 1)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/image/Desk_alt_light.png'))),
                             ),
                             Text(
                               "Riwayat",

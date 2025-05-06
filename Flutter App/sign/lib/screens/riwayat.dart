@@ -24,6 +24,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
 
   void fetchResult() async {
     result = await RekomendasiController().getResults();
+    print(result);
     setState(() {});
   }
 
@@ -54,7 +55,7 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
             child: Text(
-              "Riwayat Workout",
+              "Input Latihan",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
             ),
           ),

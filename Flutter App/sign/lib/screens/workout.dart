@@ -13,13 +13,6 @@ class WorkoutRecomendation extends StatefulWidget {
 class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
   final RekomendasiController controller = Get.put(RekomendasiController());
 
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    print("Title from API: ${controller.title.value}");
-    super.setState(fn);
-  }
-
   final List<String> bodyParts = [
     "Abdominals",
     "Abductors",
