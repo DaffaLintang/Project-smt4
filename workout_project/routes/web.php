@@ -13,6 +13,7 @@ use App\Http\Controllers\ResultController;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\LatihanController;
 use App\Http\Controllers\DashboardController;
+use App\Models\Histori;
 
 // Halaman Landing Page
 Route::get('/', function () {
@@ -65,6 +66,19 @@ Route::resource('results', ResultController::class);
 // Admin Workouts
 Route::get('/admin/workouts', [WorkoutController::class, 'index'])->name('admin.workouts');
 Route::resource('workouts', WorkoutController::class);
+
+Route::get('/workout-distribution', function () {
+    $data = Histori::select('kesulitan')
+        ->get()
+        ->groupBy('kesulitan')
+        ->map(fn($group) => $group->count());
+
+    return response()->json([
+        'Beginner' => $data['Beginner'] ?? 0,
+        'Intermediate' => $data['Intermediate'] ?? 0,
+        'Expert' => $data['Expert'] ?? 0,
+    ]);
+});
 
 // Admin Latihan
 Route::get('/admin/latihan', [LatihanController::class, 'index'])->name('admin.latihan');
