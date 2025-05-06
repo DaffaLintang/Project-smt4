@@ -93,87 +93,58 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx1 = document.getElementById('userChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            datasets: [{
-                label: 'Total Pengguna',
-                data: [30, 15, 90, 10, 70, 80, 90, 100],
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true, // Enable chart responsiveness
-            maintainAspectRatio: true, // Maintain aspect ratio
-            plugins: {
-                legend: {
-                    position: 'bottom', // Reposition legend for better mobile view
-                }
-            },
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: false,  // Remove x-axis title on small screens if needed
-                        text: 'Bulan'
-                    }
-                },
-                y: {
-                    display: true,
-                    title: {
-                        display: false, // Remove y-axis title on small screens if needed
-                        text: 'Jumlah Pengguna'
-                    },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+fetch('/workout-distribution')
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('workoutChart').getContext('2d');
 
-    const ctx2 = document.getElementById('workoutChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-            datasets: [{
-                label: 'Latihan',
-                data: [10, 20, 30, 40, 50, 60, 70],
-                backgroundColor: 'blue'
-            }]
-        },
-        options: {
-            responsive: true,  // Enable chart responsiveness.
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom', //  Move legend to the bottom
-                }
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Beginner', 'Intermediate', 'Expert'],
+                datasets: [{
+                    data: [data.Beginner, data.Intermediate, data.Expert],
+                    backgroundColor: ['green', 'orange', 'red']
+                }]
             },
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: false,
-                        text: 'Hari'
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutBounce'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
                     }
                 },
-                y: {
-                    display: true,
-                    title: {
-                        display: false,
-                        text: 'Jumlah Latihan'
-                    },
-                    beginAtZero: true
+                plugins: {
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                    }
                 }
             }
-        }
+        });
     });
 </script>
+
+
 </body>
 </html>
 @endsection
