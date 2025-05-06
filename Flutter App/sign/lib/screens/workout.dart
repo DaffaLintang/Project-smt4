@@ -73,6 +73,11 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
   int? level;
   int? equipment;
 
+  String? bodyPartString;
+  String? typeString;
+  String? levelString;
+  String? equipmentString;
+
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
@@ -169,6 +174,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           bodyPart = value;
+                          bodyPartString = bodyParts[value!];
                         });
                       },
                       onSaved: (value) {
@@ -249,6 +255,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           equipment = value;
+                          equipmentString = equipments[value!];
                         });
                       },
                       onSaved: (value) {
@@ -329,6 +336,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           type = value;
+                          typeString = types[value!];
                         });
                       },
                       onSaved: (value) {
@@ -409,6 +417,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           level = value;
+                          levelString = levels[value!];
                         });
                       },
                       onSaved: (value) {
@@ -459,7 +468,9 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       ),
                     ),
                     Text(
-                      "HASIL: ${controller.title.value}",
+                      controller.title.value.isEmpty
+                          ? ""
+                          : "HASIL: Jika anda ingin membentuk tubuh bagian ${bodyPartString} dengan peralatan ${equipmentString} dengan tujuan latihan anda ${typeString} dan tingkat latihan ${levelString} anda perlu mencoba latihan ${controller.title.value}",
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
