@@ -48,12 +48,13 @@ class UserController extends Controller
     }
 
     // Membuat user baru
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => strtolower($request->role),
-    ]);
+   $user = User::create([
+    'name' => $request->name,
+    'email' => $request->email,
+    'password' => Hash::make($request->password),
+    'role' => strtolower($request->role),
+    'image' => null,
+]);
 
     return new UserResource($user, true, 'User berhasil ditambahkan!');
 }

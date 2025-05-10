@@ -1,9 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign/apiVar.dart';
 import 'package:sign/controllers/riwayat_controller.dart';
 import 'package:sign/controllers/workout_controller.dart';
 import 'package:sign/models/result_model.dart';
+import 'package:sp_util/sp_util.dart';
 
 class RiwayatWorkout extends StatefulWidget {
   const RiwayatWorkout({super.key});
@@ -13,6 +15,7 @@ class RiwayatWorkout extends StatefulWidget {
 }
 
 class _RiwayatWorkoutState extends State<RiwayatWorkout> {
+  String? profileImage = SpUtil.getString('profileImage');
   final riwayatController = Get.put(RiwayatController());
   List<Result>? result;
   String? selectedResultId;
@@ -24,7 +27,6 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
 
   void fetchResult() async {
     result = await RekomendasiController().getResults();
-    print(result);
     setState(() {});
   }
 
@@ -35,15 +37,27 @@ class _RiwayatWorkoutState extends State<RiwayatWorkout> {
       appBar: AppBar(
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/image/profil.png'))),
-            ),
-          )
+              padding: const EdgeInsets.only(right: 20),
+              child: profileImage == null
+                  ? Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Icon(Icons.person),
+                    )
+                  : Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage('$MainUrl/$profileImage'),
+                        ),
+                      ),
+                    ))
         ],
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color.fromRGBO(159, 0, 0, 1),

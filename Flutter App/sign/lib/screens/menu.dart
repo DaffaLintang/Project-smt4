@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign/apiVar.dart';
 import 'package:sign/screens/bmi.dart';
 import 'package:sign/screens/latihan_page.dart';
 import 'package:sign/screens/profile.dart';
 import 'package:sign/screens/riwayat.dart';
 import 'package:sign/screens/workout.dart';
+import 'package:sp_util/sp_util.dart';
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -14,6 +16,8 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  String? profileImage = SpUtil.getString('profileImage');
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,17 +25,29 @@ class _MenuState extends State<Menu> {
         Padding(
           padding: const EdgeInsets.only(right: 20),
           child: GestureDetector(
-            onTap: () {
-              Get.to(ProfilePage());
-            },
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/image/profil.png'))),
-            ),
-          ),
+              onTap: () {
+                Get.to(ProfilePage());
+              },
+              child: profileImage == null
+                  ? Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Icon(Icons.person),
+                    )
+                  : Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage('$MainUrl/$profileImage'),
+                        ),
+                      ),
+                    )),
         )
       ], automaticallyImplyLeading: false),
       body: Column(

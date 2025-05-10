@@ -22,7 +22,6 @@ class LoginController extends GetxController {
         EasyLoading.show();
         var data = {"email": email, "password": password};
         LoginProvider().auth(data).then((value) {
-          print(value.body);
           if (value.statusCode == 200) {
             email = '';
             password = '';
@@ -30,7 +29,8 @@ class LoginController extends GetxController {
 
             SpUtil.putString('user_id', responseData["data"]["user"]["id"]);
             SpUtil.putString('token', responseData["data"]["token"]);
-
+            SpUtil.putString(
+                'profileImage', responseData['data']['user']['image'] ?? '');
             Get.offAll(() => Menu());
             Get.snackbar('Success', 'Login Berhasil',
                 backgroundColor: Color.fromARGB(255, 75, 212, 146),

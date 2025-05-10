@@ -6,9 +6,11 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 50), // Menggeser tampilan ke atas
+          padding: EdgeInsets.symmetric(
+              horizontal: 30.0, vertical: 50), // Menggeser tampilan ke atas
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start, // Mengatur agar elemen lebih ke atas
+            mainAxisAlignment:
+                MainAxisAlignment.start, // Mengatur agar elemen lebih ke atas
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Logo
@@ -81,6 +83,20 @@ class SignUpPage extends StatelessWidget {
                 child: Text(
                   'SIGN UP',
                   style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 10),
+
+              // Forgot Password tetap di tengah
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/');
+                  },
+                  child: Text(
+                    'Back To Login Page',
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ),
             ],
