@@ -42,7 +42,7 @@ class RiwayatLatihanState extends State<RiwayatLatihan> {
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: profileImage == null
+              child: profileImage!.isEmpty
                   ? Container(
                       height: 40,
                       width: 40,

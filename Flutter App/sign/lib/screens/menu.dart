@@ -17,7 +17,8 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   String? profileImage = SpUtil.getString('profileImage');
-  @override
+  String? fullName = SpUtil.getString('fullName');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +29,7 @@ class _MenuState extends State<Menu> {
               onTap: () {
                 Get.to(ProfilePage());
               },
-              child: profileImage == null
+              child: profileImage!.isEmpty
                   ? Container(
                       height: 40,
                       width: 40,
@@ -59,7 +60,7 @@ class _MenuState extends State<Menu> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Hello, Nissa!",
+                  "Hello, ${fullName}",
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
                 ),
                 SizedBox(

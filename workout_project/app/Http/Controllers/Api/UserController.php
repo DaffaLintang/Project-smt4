@@ -54,6 +54,7 @@ class UserController extends Controller
     'password' => Hash::make($request->password),
     'role' => strtolower($request->role),
     'image' => null,
+    'full_name' => null
 ]);
 
     return new UserResource($user, true, 'User berhasil ditambahkan!');
