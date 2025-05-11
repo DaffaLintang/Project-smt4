@@ -2,6 +2,11 @@
 
 @section('content')
 
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+</head>
+
+
 <div class="container">
     <h2>Edit Pengguna</h2>
 
@@ -48,13 +53,16 @@
             <label for="image" class="form-label">Foto Profil</label>
             <input type="file" name="image" id="image" class="form-control">
             @if ($user->image)
-                <img src="{{ asset('storage/' . $user->image) }}" width="100" class="mt-2">
+            <img src="{{ asset('storage/' . $user->image) }}" alt="Foto Profil" width="100">
+
             @endif
         </div>
 
         <button type="submit" class="btn btn-success">Simpan Perubahan</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">Batal</a>
     </form>
+
+    
 </div>
 
 @endsection

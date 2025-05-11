@@ -170,14 +170,23 @@
         <button onclick="toggleSidebar()" class="menu-btn">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="dropdown user-profile ms-auto">
-           
+        @php
+    $user = Auth::user();
+@endphp
+
+<div class="dropdown user-profile ms-auto">
+    @if ($user && $user->image)
+        <img src="{{ asset('storage/' . $user->image) }}" alt="Foto Profil" width="40" height="40" class="rounded-circle">
+    @else
+        <img src="{{ asset('images/default.png') }}" alt="Default" width="40" height="40" class="rounded-circle">
+    @endif
+
 
             <a class="text-white text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ Auth::user()->name }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.users') }}">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>

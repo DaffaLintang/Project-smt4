@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
+
 
 class UserController extends Controller
 {
@@ -57,13 +59,24 @@ public function update(Request $request, $id)
 
     // Jika ada upload gambar baru
     if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('users', 'public');
+        $imagePath = $request->file('image')->store('profiles', 'public');
         $user->image = $imagePath;
     }
 
     $user->save();
 
     return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
+
+    if ($request->has('croppedImage')) {
+        $base64Image = $request->input('croppedImage');
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+        $fileName = 'profiles/' . uniqid() . '.png';
+        Storage::disk('public')->put($fileName, $imageData);
+    
+        $user->image = $fileName;
+        $user->save();
+    }
+    
 }
 
 }
