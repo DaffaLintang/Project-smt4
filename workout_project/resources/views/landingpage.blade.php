@@ -335,6 +335,7 @@
 
     <!-- Custom Scripts -->
     <script>
+        
         // Home image animation script
         document.addEventListener("DOMContentLoaded", function() {
             // Feature card toggle

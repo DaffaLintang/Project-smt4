@@ -14,32 +14,32 @@
         body { background-color: #f8f9fa; }
         .card-icon { font-size: 30px; color:rgb(154, 0, 0); }
         .card { border-left: 4px solidrgb(255, 250, 250);
-                margin-bottom: 20px; /* Add margin between cards for better mobile spacing */
+                margin-bottom: 20px;  
         }
         .stat-box h4 {
-            font-size: 1.2rem; /* Adjust font size for smaller screens */
+            font-size: 1.2rem;  
             margin-bottom: 0.5rem;
         }
         .stat-box p {
-            font-size: 0.9rem; /* Adjust font size for smaller screens */
+            font-size: 0.9rem;  
         }
         .chart-container {
-            margin-bottom: 20px; /* Add margin below charts */
+            margin-bottom: 20px;  
         }
 
-        /* Responsive adjustments for smaller screens */
+         
         @media (max-width: 768px) {
             .col-md-6 {
-                margin-bottom: 20px; /* Add margin between chart columns on small screens */
+                margin-bottom: 20px; 
             }
             .card-icon {
-                font-size: 24px; /* Smaller icon on very small screens */
+                font-size: 24px;  
             }
             .stat-box h4 {
-                font-size: 1rem;  /* Further reduce heading size on very small screens */
+                font-size: 1rem; 
             }
             .stat-box p {
-                font-size: 0.8rem;  /* Further reduce paragraph size */
+                font-size: 0.8rem; 
             }
         }
     </style>
