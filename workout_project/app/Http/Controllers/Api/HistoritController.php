@@ -51,16 +51,16 @@ class HistoritController extends Controller
         return new HistoriResource($histori,true, 'Histori berhasil ditambahkan!');
     }
 
-    public function show($id)
+    public function show($userId)
     {
-        if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
+        if (!preg_match('/^[a-f\d]{24}$/i', $userId)) {
             return response()->json([
                 'success' => false,
                 'message' => 'ID tidak valid'
             ], 400);
         }
 
-        $histori = Histori::with(['user', 'result'])->find(new ObjectId($id));
+        $histori = Histori::with(['user', 'result'])->where('id_user', new ObjectId($userId))->get();
 
         if (!$histori) {
             return response()->json([
@@ -69,7 +69,10 @@ class HistoritController extends Controller
             ], 404);
         }
 
-        return new HistoriResource($histori, true, 'Detail Histori Workout');
+        return HistoriResource::collection($histori)->additional([
+            'success' => true,
+            'message' => 'Detail Histori Workout'
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -109,8 +112,8 @@ class HistoritController extends Controller
         $histori->update([
             'id_user'    => new ObjectId($request->id_user),
             'id_result'  => new ObjectId($request->id_result),
-            'durasi'     => $request->durasi,
-            'repetisi'   => $request->repetisi,
+            'durasi' => (int) $request->durasi,
+            'repetisi' => (int) $request->repetisi,
             'kesulitan'  => $request->kesulitan,
             'catatan'    => $request->catatan,
         ]);

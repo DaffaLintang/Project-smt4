@@ -1,7 +1,9 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign/apiVar.dart';
 import 'package:sign/controllers/workout_controller.dart';
+import 'package:sp_util/sp_util.dart';
 
 class WorkoutRecomendation extends StatefulWidget {
   const WorkoutRecomendation({super.key});
@@ -11,14 +13,8 @@ class WorkoutRecomendation extends StatefulWidget {
 }
 
 class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
+  String? profileImage = SpUtil.getString('profileImage');
   final RekomendasiController controller = Get.put(RekomendasiController());
-
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    print("Title from API: ${controller.title.value}");
-    super.setState(fn);
-  }
 
   final List<String> bodyParts = [
     "Abdominals",
@@ -73,6 +69,11 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
   int? level;
   int? equipment;
 
+  String? bodyPartString;
+  String? typeString;
+  String? levelString;
+  String? equipmentString;
+
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
@@ -80,15 +81,27 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
           appBar: AppBar(
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/image/profil.png'))),
-                ),
-              )
+                  padding: const EdgeInsets.only(right: 20),
+                  child: profileImage!.isEmpty
+                      ? Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(Icons.person),
+                        )
+                      : Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage('$MainUrl/$profileImage'),
+                            ),
+                          ),
+                        ))
             ],
             iconTheme: IconThemeData(color: Colors.white),
             backgroundColor: Color.fromRGBO(159, 0, 0, 1),
@@ -169,6 +182,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           bodyPart = value;
+                          bodyPartString = bodyParts[value!];
                         });
                       },
                       onSaved: (value) {
@@ -249,6 +263,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           equipment = value;
+                          equipmentString = equipments[value!];
                         });
                       },
                       onSaved: (value) {
@@ -329,6 +344,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           type = value;
+                          typeString = types[value!];
                         });
                       },
                       onSaved: (value) {
@@ -409,6 +425,7 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       onChanged: (value) {
                         setState(() {
                           level = value;
+                          levelString = levels[value!];
                         });
                       },
                       onSaved: (value) {
@@ -459,7 +476,9 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                       ),
                     ),
                     Text(
-                      "HASIL: ${controller.title.value}",
+                      controller.title.value.isEmpty
+                          ? ""
+                          : "HASIL: Jika anda ingin membentuk tubuh bagian ${bodyPartString} dengan peralatan ${equipmentString} dengan tujuan latihan anda ${typeString} dan tingkat latihan ${levelString} anda perlu mencoba latihan ${controller.title.value}",
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import 'package:sign/apiVar.dart';
 import 'package:sign/controllers/profile_controller.dart';
 import 'package:sign/models/profile_model.dart';
 import 'package:intl/intl.dart';
+import 'package:sign/screens/login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -152,13 +153,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
-                            child: Text(
-                              "${user!.fullName}",
-                              style: TextStyle(
-                                color: Color.fromRGBO(159, 0, 0, 1),
-                                fontSize: 25,
-                              ),
-                            ),
+                            child: user!.fullName == null
+                                ? Text(
+                                    "Nama",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(159, 0, 0, 1),
+                                      fontSize: 25,
+                                    ),
+                                  )
+                                : Text(
+                                    "${user!.fullName}",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(159, 0, 0, 1),
+                                      fontSize: 25,
+                                    ),
+                                  ),
                           ),
                           SizedBox(
                             height: 10,
@@ -179,7 +188,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               Column(
                                 children: [
-                                  Text("${user!.weight} Kg"),
+                                  user!.weight == null
+                                      ? Text("")
+                                      : Text("${user!.weight} Kg"),
                                   Text("WEIGHT")
                                 ],
                               ),
@@ -198,7 +209,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Column(
                                 children: [
-                                  Text("${user!.height} Cm"),
+                                  user!.height == null
+                                      ? Text("")
+                                      : Text("${user!.height} Cm"),
                                   Text("HEIGHT")
                                 ],
                               ),
@@ -329,56 +342,74 @@ class _ProfilePageState extends State<ProfilePage> {
                           SizedBox(
                             height: 30,
                           ),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Get.offAll(() => LoginPage());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromRGBO(159, 0, 0, 1),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 40, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                elevation: 5,
+                              ),
+                              child: Text(
+                                "LOGOUT",
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
                         ],
                       ),
                     ),
                   ),
                   Center(
-                    child: user!.image == null
-                        ? GestureDetector(
-                            onTap: () {
-                              _pickImage1(ImageSource.gallery);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: Color(0xff9E0507)),
-                                  color: Colors.white),
-                              height: 100,
-                              width: 100,
-                              child: Center(
-                                  child: Text(
-                                "No Image",
-                                textAlign: TextAlign.center,
-                              )),
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () {
-                              _pickImage1(ImageSource.gallery);
-                            },
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                border: Border.all(color: Color(0xff9E0507)),
-                              ),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: _image1 != null
-                                      ? Center(
-                                          child: Icon(Icons.person, size: 50),
-                                        )
-                                      : Image.network(
-                                          '${MainUrl}/${user!.image}',
-                                          fit: BoxFit.cover,
-                                          width: 100,
-                                          height: 100,
-                                        )),
-                            ),
-                          ),
-                  ),
+                      child: GestureDetector(
+                    onTap: () => _pickImage1(ImageSource.gallery),
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(color: Color(0xff9E0507)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: _image1 != null
+                            ? Image.file(
+                                _image1!,
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              )
+                            : (user!.image != null
+                                ? Image.network(
+                                    '$MainUrl/${user!.image}',
+                                    fit: BoxFit.cover,
+                                    width: 100,
+                                    height: 100,
+                                  )
+                                : Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    height: 100,
+                                    width: 100,
+                                    child: Center(
+                                        child: Text(
+                                      "No Image",
+                                      textAlign: TextAlign.center,
+                                    )),
+                                  )),
+                      ),
+                    ),
+                  )),
                 ],
               ),
             ),
