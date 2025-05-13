@@ -276,7 +276,7 @@
             </div>
         </div>
     </div>
-
+iyaaa mendfing diem ooo
     <!-- MODAL FORGOT PASSWORD -->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
@@ -308,7 +308,8 @@
         <div class="bg-white p-4 md:p-6 rounded-lg w-full max-w-xs md:max-w-md shadow-lg relative mx-4">
             <button id="closeSignupModal" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl font-bold mb-4 text-center">SIGN UP</h2>
-            <form id="signupForm">
+            <form id="signupForm" action="{{ route('register') }}" method="POST">
+            @csrf
                 <label class="block mb-1 text-gray-700">Enter Name</label>
                 <input type="text" name="name" id="name" class="w-full p-2 border-2 border-red-600 rounded-full mb-3 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your name" required>
 
@@ -335,6 +336,36 @@
 
     <!-- Custom Scripts -->
     <script>
+        
+    // document.getElementById('signupForm').addEventListener('submit', async function (e) {
+    //     e.preventDefault();
+
+    //     const name = document.getElementById('name').value;
+    //     const email = document.getElementById('email').value;
+    //     const password = document.getElementById('password').value;
+    //     const password_confirmation = document.getElementById('password_confirmation').value;
+
+    //     if (password !== password_confirmation) {
+    //         alert('Passwords do not match!');
+    //         return;
+    //     }
+
+    //     const response = await fetch('http://localhost:5000/signup', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ name, email, password })
+    //     });
+
+    //     const data = await response.json();
+    //     if (response.ok) {
+    //         alert(data.message);
+    //         document.getElementById('signupForm').reset();
+    //     } else {
+    //         alert(data.message);
+    //     }
+    // });
+
+
         
         // Home image animation script
         document.addEventListener("DOMContentLoaded", function() {
@@ -473,11 +504,11 @@
             // Sign up form submission
             if (signupForm) {
                 signupForm.addEventListener("submit", function (e) {
-                    e.preventDefault();
+                    // e.preventDefault();
                     
-                    // Get form values
-                    const name = document.getElementById("name").value;
-                    const email = document.getElementById("email").value;
+                    // // Get form values
+                    // const name = document.getElementById("name").value;
+                    // const email = document.getElementById("email").value;
                     const password = document.getElementById("password").value;
                     const passwordConfirmation = document.getElementById("password_confirmation").value;
                     
@@ -487,11 +518,11 @@
                         return;
                     }
                     
-                    // Here you would normally send data to server
-                    // For now, just show a success message
-                    alert("Sign Up Successful! You can now login with your credentials.");
-                    signupModal.classList.add("hidden");
-                    loginModal.classList.remove("hidden");
+                    // // Here you would normally send data to server
+                    // // For now, just show a success message
+                    // alert("Sign Up Successful! You can now login with your credentials.");
+                    // signupModal.classList.add("hidden");
+                    // loginModal.classList.remove("hidden");
                 });
             }
 
