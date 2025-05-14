@@ -17,22 +17,43 @@ class _ChartWorkoutState extends State<ChartWorkout> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi minggu ini
+    // Inisialisasi tanggal dari awal minggu (Senin)
     final now = DateTime.now();
     final monday = now.subtract(Duration(days: now.weekday - 1));
     weekDates = List.generate(7, (index) => monday.add(Duration(days: index)));
 
-    // Jika minggu sudah diinisialisasi, panggil setState
-    setState(() {});
+    // Pastikan hari ini ada dan selalu di urutan terakhir
+    reorderWeekDates();
+  }
+
+  void reorderWeekDates() {
+    DateTime today = DateTime.now();
+
+    // Cek apakah tanggal hari ini sudah ada di list
+    bool containsToday = weekDates.any((d) =>
+        d.year == today.year && d.month == today.month && d.day == today.day);
+
+    // Jika belum ada, tambahkan
+    if (!containsToday) {
+      weekDates.add(DateTime(today.year, today.month, today.day));
+    }
+
+    // Urutkan dan pindahkan hari ini ke akhir
+    weekDates.sort((a, b) => a.compareTo(b));
+    weekDates = [
+      ...weekDates.where((d) => !(d.year == today.year &&
+          d.month == today.month &&
+          d.day == today.day)),
+      DateTime(today.year, today.month, today.day),
+    ];
   }
 
   Map<int, int> getWeeklyRepetitions(List<Histori?> historiList) {
-    Map<int, int> result = {for (var i = 0; i < 7; i++) i: 0};
+    Map<int, int> result = {for (var i = 0; i < weekDates.length; i++) i: 0};
 
     for (var item in historiList) {
       if (item == null) continue;
       final date = item.result.data.createdAt;
-      print(date);
       for (int i = 0; i < weekDates.length; i++) {
         if (date.year == weekDates[i].year &&
             date.month == weekDates[i].month &&
@@ -44,24 +65,6 @@ class _ChartWorkoutState extends State<ChartWorkout> {
     }
     return result;
   }
-
-  BarTouchData get barTouchData => BarTouchData(
-        enabled: false,
-        touchTooltipData: BarTouchTooltipData(
-          getTooltipColor: (group) => Colors.transparent,
-          tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            return BarTooltipItem(
-              rod.toY.round().toString(),
-              const TextStyle(
-                color: Color.fromRGBO(137, 0, 0, 1),
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          },
-        ),
-      );
 
   Widget getTitles(double value, TitleMeta meta) {
     final style = const TextStyle(
@@ -100,6 +103,24 @@ class _ChartWorkoutState extends State<ChartWorkout> {
         ),
       );
 
+  BarTouchData get barTouchData => BarTouchData(
+        enabled: false,
+        touchTooltipData: BarTouchTooltipData(
+          getTooltipColor: (group) => Colors.transparent,
+          tooltipPadding: EdgeInsets.zero,
+          tooltipMargin: 8,
+          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+            return BarTooltipItem(
+              rod.toY.round().toString(),
+              const TextStyle(
+                color: Color.fromRGBO(137, 0, 0, 1),
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
+      );
+
   FlBorderData get borderData => FlBorderData(show: false);
 
   LinearGradient get _barsGradient => const LinearGradient(
@@ -113,7 +134,7 @@ class _ChartWorkoutState extends State<ChartWorkout> {
 
   List<BarChartGroupData> get barGroups {
     final dataMap = getWeeklyRepetitions(widget.histori);
-    return List.generate(7, (index) {
+    return List.generate(weekDates.length, (index) {
       final value = (dataMap[index] ?? 0).toDouble();
       return BarChartGroupData(
         x: index,
@@ -126,6 +147,13 @@ class _ChartWorkoutState extends State<ChartWorkout> {
         showingTooltipIndicators: [0],
       );
     });
+  }
+
+  double getMaxY(List<Histori?> historiList) {
+    final dataMap = getWeeklyRepetitions(historiList);
+    final max =
+        dataMap.values.fold<int>(0, (prev, curr) => curr > prev ? curr : prev);
+    return (max + 10).toDouble(); // memberi ruang di atas bar tertinggi
   }
 
   @override
@@ -145,12 +173,5 @@ class _ChartWorkoutState extends State<ChartWorkout> {
         maxY: getMaxY(widget.histori),
       ),
     );
-  }
-
-  double getMaxY(List<Histori?> historiList) {
-    final dataMap = getWeeklyRepetitions(historiList);
-    final max =
-        dataMap.values.fold<int>(0, (prev, curr) => curr > prev ? curr : prev);
-    return (max + 10).toDouble(); // memberi ruang di atas bar tertinggi
   }
 }
