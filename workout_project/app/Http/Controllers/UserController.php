@@ -29,41 +29,83 @@ class UserController extends Controller
     }
 
     public function edit($id)
-{
-    $user = User::findOrFail($id);
-    return view('admin.users.edit', compact('user'));
-}
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . $id,
-        'full_name' => 'nullable|string|max:255',
-        'phone' => 'nullable|string|max:15',
-        'birth' => 'nullable|date',
-        'weight' => 'nullable|numeric',
-        'height' => 'nullable|numeric',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    $user = User::findOrFail($id);
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->full_name = $request->full_name;
-    $user->phone = $request->phone;
-    $user->birth = $request->birth;
-    $user->weight = $request->weight;
-    $user->height = $request->height;
-
-    // Jika ada upload gambar baru
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('users', 'public');
-        $user->image = $imagePath;
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
     }
 
-    $user->save();
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $id,
+            'full_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'birth' => 'nullable|date',
+            'weight' => 'nullable|numeric',
+            'height' => 'nullable|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
-}
+        try {
+            $user = User::findOrFail($id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->full_name = $request->full_name;
+            $user->phone = $request->phone;
+            $user->birth = $request->birth;
+            $user->weight = $request->weight;
+            $user->height = $request->height;
 
+            // Jika ada upload gambar baru
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('users', 'public');
+                $user->image = $imagePath;
+            }
+
+            $user->save();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data pengguna berhasil diperbarui.'
+                ]);
+            }
+
+            return redirect()->route('admin.users')->with('success', 'Data pengguna berhasil diperbarui.');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat memperbarui data.'
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.');
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data pengguna berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('admin.users')->with('success', 'Data pengguna berhasil dihapus.');
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus data.'
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
+    }
 }

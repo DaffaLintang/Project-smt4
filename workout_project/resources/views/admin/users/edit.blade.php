@@ -5,7 +5,7 @@
 <div class="container">
     <h2>Edit Pengguna</h2>
 
-    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data" id="editUserForm">
         @csrf
         @method('PUT')
 
@@ -53,8 +53,38 @@
         </div>
 
         <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-        <a href="{{ route('users.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.users') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
+
+@push('scripts')
+<script>
+document.getElementById('editUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "{{ route('admin.users') }}";
+        } else {
+            alert('Terjadi kesalahan saat mengupdate data');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengupdate data');
+    });
+});
+</script>
+@endpush
 
 @endsection

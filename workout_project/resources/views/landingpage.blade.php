@@ -239,12 +239,17 @@
             <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl font-bold mb-4 md:mb-6 text-center">LOGIN</h2>
 
+            <!-- Error Messages -->
+            <div id="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm hidden">
+                <p id="errorMessage"></p>
+            </div>
+
             <!-- Form Login Laravel Breeze -->
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
 
                 <label class="block mb-1 text-gray-700">Enter email</label>
-                <input type="email" name="email" class="w-full p-2 border-2 border-red-600 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your email" required>
+                <input type="email" name="email" id="loginEmail" class="w-full p-2 border-2 border-red-600 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your email" required>
 
                 <label class="block mb-1 text-gray-700">Enter Password</label>
                 <div class="relative mb-4">
@@ -282,24 +287,38 @@
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
             <button id="closeForgotModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center">FORGOT PASSWORD</h2>
-            <p class="text-xs md:text-sm text-gray-600 text-center mb-4 md:mb-6">
-                Enter your registered email. We will send you a token to recover your account.
-            </p>
-            <form id="forgotPasswordForm" class="space-y-3 md:space-y-4">
-                <div>
-                    <label class="block text-gray-700 mb-1">Enter email</label>
-                    <input type="email" id="forgotEmail" name="email" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Enter your email" required>
-                </div>
-                <div>
-                    <label class="block text-gray-700 mb-1">Token Verification</label>
-                    <input type="text" id="tokenVerification" name="token" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Enter your token" required>
-                </div>
+            
+            <!-- Step 1: Email Form -->
+            <div id="emailStep">
+                <p class="text-xs md:text-sm text-gray-600 text-center mb-4 md:mb-6">
+                    Masukkan email yang terdaftar. Kami akan mengirimkan token verifikasi ke email Anda.
+                </p>
+                <form id="forgotPasswordEmailForm" class="space-y-3 md:space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-1">Masukkan email</label>
+                        <input type="email" id="forgotEmail" name="email" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Masukkan email Anda" required>
+                    </div>
+                    <p id="emailError" class="hidden text-red-600 text-xs md:text-sm text-center mt-2"></p>
+                    <p id="emailSuccess" class="hidden text-green-600 text-xs md:text-sm text-center mt-2"></p>
+                    <button type="submit" class="w-full bg-red-700 text-white py-2 md:py-3 rounded-full hover:bg-black transition-all">SEND</button>
+                </form>
+            </div>
 
-                <p id="forgotPasswordError" class="hidden text-red-600 text-xs md:text-sm text-center mt-2">incorrect verification token</p>
-                <p id="forgotPasswordSuccess" class="hidden text-green-600 text-xs md:text-sm text-center mt-2"></p>
-
-                <button type="submit" class="w-full bg-red-700 text-white py-2 md:py-3 rounded-full hover:bg-black transition-all">SEND</button>
-            </form>
+            <!-- Step 2: Token Verification Form (Initially Hidden) -->
+            <div id="tokenStep" class="hidden">
+                <p class="text-xs md:text-sm text-gray-600 text-center mb-4 md:mb-6">
+                    Masukkan token verifikasi yang telah dikirim ke email Anda.
+                </p>
+                <form id="forgotPasswordTokenForm" class="space-y-3 md:space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-1">Token Verifikasi</label>
+                        <input type="text" id="tokenVerification" name="token" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Masukkan token verifikasi" required>
+                    </div>
+                    <p id="tokenError" class="hidden text-red-600 text-xs md:text-sm text-center mt-2"></p>
+                    <p id="tokenSuccess" class="hidden text-green-600 text-xs md:text-sm text-center mt-2"></p>
+                    <button type="submit" class="w-full bg-red-700 text-white py-2 md:py-3 rounded-full hover:bg-black transition-all">VERIFIKASI</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -465,9 +484,14 @@
 
             // Form submissions
             const signupForm = document.getElementById("signupForm");
-            const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-            const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
-            const forgotPasswordError = document.getElementById("forgotPasswordError");
+            const forgotPasswordEmailForm = document.getElementById("forgotPasswordEmailForm");
+            const forgotPasswordTokenForm = document.getElementById("forgotPasswordTokenForm");
+            const emailStep = document.getElementById("emailStep");
+            const tokenStep = document.getElementById("tokenStep");
+            const emailError = document.getElementById("emailError");
+            const emailSuccess = document.getElementById("emailSuccess");
+            const tokenError = document.getElementById("tokenError");
+            const tokenSuccess = document.getElementById("tokenSuccess");
 
             // Sign up form submission
             if (signupForm) {
@@ -495,28 +519,52 @@
             }
 
             // Forgot password form submission
-            if (forgotPasswordForm) {
-                forgotPasswordForm.addEventListener("submit", function (e) {
+            if (forgotPasswordEmailForm) {
+                forgotPasswordEmailForm.addEventListener("submit", function (e) {
                     e.preventDefault();
                     
                     const email = document.getElementById("forgotEmail").value;
+                    
+                    // Simulasi pengiriman email (ganti dengan API call yang sebenarnya)
+                    if (email === "test@example.com") {
+                        emailSuccess.textContent = "Token telah dikirim ke email Anda!";
+                        emailSuccess.classList.remove("hidden");
+                        emailError.classList.add("hidden");
+                        
+                        // Tampilkan form token setelah 1 detik
+                        setTimeout(() => {
+                            emailStep.classList.add("hidden");
+                            tokenStep.classList.remove("hidden");
+                        }, 1000);
+                    } else {
+                        emailError.textContent = "Email tidak terdaftar dalam sistem";
+                        emailError.classList.remove("hidden");
+                        emailSuccess.classList.add("hidden");
+                    }
+                });
+            }
+
+            if (forgotPasswordTokenForm) {
+                forgotPasswordTokenForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    
                     const token = document.getElementById("tokenVerification").value;
                     
-                    // Simulate verification (replace with actual API call)
-                    if (token === "123456") { // Example verification token
-                        forgotPasswordSuccess.textContent = "Password reset link sent to your email!";
-                        forgotPasswordSuccess.classList.remove("hidden");
-                        forgotPasswordError.classList.add("hidden");
+                    // Simulasi verifikasi token (ganti dengan API call yang sebenarnya)
+                    if (token === "123456") {
+                        tokenSuccess.textContent = "Token valid! Link reset password telah dikirim ke email Anda.";
+                        tokenSuccess.classList.remove("hidden");
+                        tokenError.classList.add("hidden");
                         
-                        // Close modal after success
+                        // Kembali ke form login setelah 3 detik
                         setTimeout(() => {
                             forgotPasswordModal.classList.add("hidden");
                             loginModal.classList.remove("hidden");
                         }, 3000);
                     } else {
-                        forgotPasswordError.textContent = "Incorrect verification token. Please try again.";
-                        forgotPasswordError.classList.remove("hidden");
-                        forgotPasswordSuccess.classList.add("hidden");
+                        tokenError.textContent = "Token tidak valid. Silakan coba lagi.";
+                        tokenError.classList.remove("hidden");
+                        tokenSuccess.classList.add("hidden");
                     }
                 });
             }
@@ -550,6 +598,61 @@
             
             // Initialize active nav on page load
             updateActiveNav();
+
+            // Login form submission
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('passwordInput').value;
+
+                    // Basic validation
+                    if (!email || !password) {
+                        showError('Mohon isi semua field yang diperlukan');
+                        return;
+                    }
+
+                    // Email format validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showError('Format email tidak valid');
+                        return;
+                    }
+
+                    // Password validation
+                    if (password.length < 6) {
+                        showError('Password harus minimal 6 karakter');
+                        return;
+                    }
+
+                    // Simulasi validasi login (ganti dengan API call yang sebenarnya)
+                    if (email === 'admin@mail.com' && password === '123456') {
+                        // Login berhasil
+                        this.submit();
+                    } else {
+                        if (email !== 'admin@mail.com') {
+                            showError('Email tidak terdaftar');
+                        } else {
+                            showError('Password yang Anda masukkan salah');
+                        }
+                    }
+                });
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                loginError.classList.remove('hidden');
+                
+                // Sembunyikan error setelah 3 detik
+                setTimeout(() => {
+                    loginError.classList.add('hidden');
+                }, 3000);
+            }
         });
 
         // Mobile menu toggle
