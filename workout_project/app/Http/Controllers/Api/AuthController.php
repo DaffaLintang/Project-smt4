@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use Laravel\Sanctum\PersonalAccessToken;
+use App\Models\LoginLog;
+
 
 class AuthController extends Controller
 {
@@ -39,6 +39,12 @@ class AuthController extends Controller
 
         // Buat token dengan Sanctum
         $token = $user->createToken('Token-' . $user->id)->plainTextToken;
+
+        LoginLog::create([
+        'user_id' => $user->id,
+        'ip_address' => $request->ip(),
+        'user_agent' => $request->userAgent(),
+        ]);
 
         return response()->json([
             'success' => true,

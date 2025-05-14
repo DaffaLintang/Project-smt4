@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sign/apiVar.dart';
+import 'package:sp_util/sp_util.dart';
 
 void main() {
   runApp(BMICalculatorApp());
@@ -21,6 +23,7 @@ class BMICalculatorScreen extends StatefulWidget {
 }
 
 class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
+  String? profileImage = SpUtil.getString('profileImage');
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -83,15 +86,27 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
         automaticallyImplyLeading: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/image/profil.png'))),
-            ),
-          )
+              padding: const EdgeInsets.only(right: 20),
+              child: profileImage!.isEmpty
+                  ? Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Icon(Icons.person),
+                    )
+                  : Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage('$MainUrl/$profileImage'),
+                        ),
+                      ),
+                    ))
         ],
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color.fromRGBO(159, 0, 0, 1),

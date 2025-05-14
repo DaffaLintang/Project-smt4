@@ -48,7 +48,13 @@
                         <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->image }}</td>
+                        <td>
+    @if ($user->image)
+        <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" width="100">
+    @else
+        <img src="{{ asset('images/default.png') }}" alt="Default" width="100">
+    @endif
+</td>
                         <td>{{ $user->full_name }}</td>
                         <td>{{ $user->phone }}</td>
                         <td>{{ $user->birth }}</td>

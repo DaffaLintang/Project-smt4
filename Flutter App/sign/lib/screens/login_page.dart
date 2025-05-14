@@ -60,6 +60,8 @@ class LoginPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     LoginController().auth();
+                    LoginController.emailController.text = "";
+                    LoginController.passwordController.text = "";
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red[900],

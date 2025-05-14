@@ -42,6 +42,9 @@ public function store(Request $request)
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
+            'image' => null,
+            'full_name' => null,
+            'role' => 'user',
             'password' => Hash::make($validatedData['password']),
         ]);
 
@@ -49,7 +52,7 @@ public function store(Request $request)
         event(new Registered($user));
 
         // Auto login setelah registrasi
-        Auth::login($user);
+        // Auth::login($user);
 
         // **Pastikan Laravel hanya merespons JSON jika request adalah AJAX**
         if ($request->ajax() || $request->expectsJson()) {
@@ -61,7 +64,7 @@ public function store(Request $request)
         }
 
         // Redirect hanya untuk request non-AJAX
-        return redirect('/dashboard');
+        return redirect('/');
 
     } catch (ValidationException $e) {
         return response()->json([

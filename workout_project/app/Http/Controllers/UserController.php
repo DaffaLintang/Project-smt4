@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
+
 
 class UserController extends Controller
 {
@@ -29,9 +31,36 @@ class UserController extends Controller
     }
 
     public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
+{
+    $user = User::findOrFail($id);
+    return view('admin.users.edit', compact('user'));
+}
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $id,
+        'full_name' => 'nullable|string|max:255',
+        'phone' => 'nullable|string|max:15',
+        'birth' => 'nullable|date',
+        'weight' => 'nullable|numeric',
+        'height' => 'nullable|numeric',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $user = User::findOrFail($id);
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->full_name = $request->full_name;
+    $user->phone = $request->phone;
+    $user->birth = $request->birth;
+    $user->weight = $request->weight;
+    $user->height = $request->height;
+
+    // Jika ada upload gambar baru
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('profiles', 'public');
+        $user->image = $imagePath;
     }
 
     public function update(Request $request, $id)
@@ -47,15 +76,19 @@ class UserController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        try {
-            $user = User::findOrFail($id);
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->full_name = $request->full_name;
-            $user->phone = $request->phone;
-            $user->birth = $request->birth;
-            $user->weight = $request->weight;
-            $user->height = $request->height;
+    return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
+
+    if ($request->has('croppedImage')) {
+        $base64Image = $request->input('croppedImage');
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+        $fileName = 'profiles/' . uniqid() . '.png';
+        Storage::disk('public')->put($fileName, $imageData);
+    
+        $user->image = $fileName;
+        $user->save();
+    }
+    
+}
 
             // Jika ada upload gambar baru
             if ($request->hasFile('image')) {
