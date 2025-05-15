@@ -281,7 +281,7 @@
             </div>
         </div>
     </div>
-iyaaa mendfing diem ooo
+
     <!-- MODAL FORGOT PASSWORD -->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
@@ -293,7 +293,8 @@ iyaaa mendfing diem ooo
                 <p class="text-xs md:text-sm text-gray-600 text-center mb-4 md:mb-6">
                     Masukkan email yang terdaftar. Kami akan mengirimkan token verifikasi ke email Anda.
                 </p>
-                <form id="forgotPasswordEmailForm" class="space-y-3 md:space-y-4">
+                <form id="forgotPasswordEmailForm" class="space-y-3 md:space-y-4" method="POST" action="{{ route('password.email') }}">
+                    @csrf
                     <div>
                         <label class="block text-gray-700 mb-1">Masukkan email</label>
                         <input type="email" id="forgotEmail" name="email" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Masukkan email Anda" required>
@@ -552,26 +553,46 @@ iyaaa mendfing diem ooo
 
             // Forgot password form submission
             if (forgotPasswordEmailForm) {
-                forgotPasswordEmailForm.addEventListener("submit", function (e) {
+                forgotPasswordEmailForm.addEventListener("submit", async function (e) {
                     e.preventDefault();
-                    
                     const email = document.getElementById("forgotEmail").value;
-                    
-                    // Simulasi pengiriman email (ganti dengan API call yang sebenarnya)
-                    if (email === "test@example.com") {
-                        emailSuccess.textContent = "Token telah dikirim ke email Anda!";
-                        emailSuccess.classList.remove("hidden");
-                        emailError.classList.add("hidden");
-                        
-                        // Tampilkan form token setelah 1 detik
-                        setTimeout(() => {
-                            emailStep.classList.add("hidden");
-                            tokenStep.classList.remove("hidden");
-                        }, 1000);
-                    } else {
-                        emailError.textContent = "Email tidak terdaftar dalam sistem";
+                    emailError.classList.add("hidden");
+                    emailSuccess.classList.add("hidden");
+                    try {
+                        const response = await fetch("{{ route('password.email') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ email })
+                        });
+                        let data;
+                        try {
+                            data = await response.json();
+                        } catch (err) {
+                            data = {};
+                        }
+                        if (response.ok) {
+                            emailSuccess.textContent = "Token telah dikirim ke email Anda!";
+                            emailSuccess.classList.remove("hidden");
+                            setTimeout(() => {
+                                emailStep.classList.add("hidden");
+                                tokenStep.classList.remove("hidden");
+                            }, 1000);
+                        } else {
+                            if (data.errors && data.errors.email) {
+                                emailError.textContent = data.errors.email[0];
+                            } else if (data.message) {
+                                emailError.textContent = data.message;
+                            } else {
+                                emailError.textContent = "Terjadi kesalahan. Coba lagi.";
+                            }
+                            emailError.classList.remove("hidden");
+                        }
+                    } catch (err) {
+                        emailError.textContent = "Gagal terhubung ke server.";
                         emailError.classList.remove("hidden");
-                        emailSuccess.classList.add("hidden");
                     }
                 });
             }
@@ -638,41 +659,27 @@ iyaaa mendfing diem ooo
 
             if (loginForm) {
                 loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
+                    // Hapus e.preventDefault(); agar form submit ke backend
+                    // Validasi dasar di sisi client (opsional, bisa dihapus jika ingin full backend)
                     const email = document.getElementById('loginEmail').value;
                     const password = document.getElementById('passwordInput').value;
-
-                    // Basic validation
                     if (!email || !password) {
                         showError('Mohon isi semua field yang diperlukan');
+                        e.preventDefault();
                         return;
                     }
-
-                    // Email format validation
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(email)) {
                         showError('Format email tidak valid');
+                        e.preventDefault();
                         return;
                     }
-
-                    // Password validation
                     if (password.length < 6) {
                         showError('Password harus minimal 6 karakter');
+                        e.preventDefault();
                         return;
                     }
-
-                    // Simulasi validasi login (ganti dengan API call yang sebenarnya)
-                    if (email === 'admin@mail.com' && password === '123456') {
-                        // Login berhasil
-                        this.submit();
-                    } else {
-                        if (email !== 'admin@mail.com') {
-                            showError('Email tidak terdaftar');
-                        } else {
-                            showError('Password yang Anda masukkan salah');
-                        }
-                    }
+                    // Sisanya biarkan backend Laravel yang memproses dan mengirim notifikasi error jika email/password salah
                 });
             }
 
