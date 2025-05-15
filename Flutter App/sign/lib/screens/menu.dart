@@ -115,7 +115,7 @@ class _MenuState extends State<Menu> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(BMICalculatorApp());
+                                  Get.to(BMICalculatorScreen());
                                 },
                                 child: Container(
                                   height: 50,

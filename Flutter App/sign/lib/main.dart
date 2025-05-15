@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginPage(),
         '/forgot-password': (context) => ForgotPassword(),
         '/signup': (context) => SignUpPage(),
-        '/bmi': (context) => BMICalculatorApp(),
+        '/bmi': (context) => BMICalculatorScreen(),
         '/menu': (context) => Menu(),
       },
     );
