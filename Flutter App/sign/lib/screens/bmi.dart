@@ -47,7 +47,8 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
 
     double weight = double.parse(_weightController.text);
     double height = double.parse(_heightController.text);
-    double bmi = weight / ((height / 100) * (height / 100));
+    double bmi = weight / (height * height);
+
 
     setState(() {
       if (bmi < 18.5) {
