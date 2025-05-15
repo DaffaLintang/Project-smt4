@@ -17,13 +17,11 @@ class _ChartWorkoutState extends State<ChartWorkout> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi tanggal dari awal minggu (Senin)
-    final now = DateTime.now();
-    final monday = now.subtract(Duration(days: now.weekday - 1));
-    weekDates = List.generate(7, (index) => monday.add(Duration(days: index)));
-
-    // Pastikan hari ini ada dan selalu di urutan terakhir
-    reorderWeekDates();
+    final today = DateTime.now();
+    weekDates = List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+      return DateTime(date.year, date.month, date.day);
+    });
   }
 
   void reorderWeekDates() {
