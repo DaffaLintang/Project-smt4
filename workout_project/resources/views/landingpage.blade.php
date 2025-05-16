@@ -7,17 +7,60 @@
     <!-- Tailwind CSS and Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {"50":"#fef2f2","100":"#fee2e2","200":"#fecaca","300":"#fca5a5","400":"#f87171","500":"#ef4444","600":"#dc2626","700":"#b91c1c","800":"#991b1b","900":"#7f1d1d","950":"#450a0a"}
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- SweetAlert2 CDN -->
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ALERT HTML (hanya jika kamu tidak pakai SweetAlert) -->
+@if (session('login_success'))
+    <div class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50">
+        {{ session('login_success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow z-50">
+        {{ $errors->first('email') }}
+    </div>
+@endif
+
+<!-- ALERT SWEETALERT SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Login berhasil
+    @if (session('login_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('login_success')),
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    // Registrasi berhasil
+    @if (session('register_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('register_success')),
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
+
+    // Login gagal
+    @if (session('login_failed')) // Atau ganti sesuai nama session error login kamu
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal',
+            text: @json(session('login_failed')),
+            confirmButtonText: 'Coba Lagi'
+        });
+    @endif
+});
+</script>
+
 </head>
 <body class="bg-white text-black">
     <!-- Responsive Navbar -->
@@ -276,7 +319,7 @@
             </div>
         </div>
     </div>
-iyaaa mendfing diem ooo
+ 
     <!-- MODAL FORGOT PASSWORD -->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
@@ -336,37 +379,33 @@ iyaaa mendfing diem ooo
 
     <!-- Custom Scripts -->
     <script>
-        
-    // document.getElementById('signupForm').addEventListener('submit', async function (e) {
-    //     e.preventDefault();
+    
+    document.addEventListener('DOMContentLoaded', function () {
+    // Menampilkan SweetAlert ketika registrasi berhasil
+    @if (session('register_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session("register_success") }}',  // Menampilkan pesan sukses dari session
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
 
-    //     const name = document.getElementById('name').value;
-    //     const email = document.getElementById('email').value;
-    //     const password = document.getElementById('password').value;
-    //     const password_confirmation = document.getElementById('password_confirmation').value;
+    // Menampilkan SweetAlert ketika terjadi error pada registrasi
+    @if ($errors->any() && old('name')) // Cek jika error terjadi pada sign up
+        Swal.fire({
+            icon: 'error',
+            title: 'Registrasi Gagal',
+            html: `{!! implode('<br>', $errors->all()) !!}`,  // Menampilkan daftar error
+            confirmButtonText: 'OK'
+        });
 
-    //     if (password !== password_confirmation) {
-    //         alert('Passwords do not match!');
-    //         return;
-    //     }
+        // Buka kembali modal signup
+        document.getElementById('signupModal').classList.remove('hidden');
+    @endif
+});
 
-    //     const response = await fetch('http://localhost:5000/signup', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ name, email, password })
-    //     });
-
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //         alert(data.message);
-    //         document.getElementById('signupForm').reset();
-    //     } else {
-    //         alert(data.message);
-    //     }
-    // });
-
-
-        
         // Home image animation script
         document.addEventListener("DOMContentLoaded", function() {
             // Feature card toggle
@@ -512,11 +551,7 @@ iyaaa mendfing diem ooo
                     const password = document.getElementById("password").value;
                     const passwordConfirmation = document.getElementById("password_confirmation").value;
                     
-                    // Basic validation
-                    if (password !== passwordConfirmation) {
-                        alert("Passwords do not match!");
-                        return;
-                    }
+                     
                     
                     // // Here you would normally send data to server
                     // // For now, just show a success message
