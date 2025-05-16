@@ -22,7 +22,8 @@ class BMICalculatorScreen extends StatelessWidget {
             child: profileImage == null || profileImage!.isEmpty
                 ? Icon(Icons.person, color: Colors.white)
                 : CircleAvatar(
-                    backgroundImage: NetworkImage('$MainUrl/$profileImage'),
+                    backgroundImage:
+                        NetworkImage('$MainUrl/storage/$profileImage'),
                   ),
           )
         ],

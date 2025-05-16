@@ -17,7 +17,6 @@ class SignupController extends GetxController {
     String password = passwordController.text.trim();
     String passwordConfirm =
         passwordConfirmController.text.trim(); // ambil benar
-    print("asdad");
     try {
       if (email.isEmpty || password.isEmpty || passwordConfirm.isEmpty) {
         Get.snackbar('Error', 'Email atau Password Tidak Boleh Kosong',
@@ -38,6 +37,7 @@ class SignupController extends GetxController {
         };
         RegProvider().register(data).then((value) {
           print("Status code : ${value.statusCode}");
+          print("Status code : ${value.body}");
           if (value.statusCode == 201) {
             emailController.clear();
             passwordController.clear();
