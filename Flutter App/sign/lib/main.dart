@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/splash', // Ganti ke splash screen
+      initialRoute: '/', // Ganti ke splash screen
       builder: EasyLoading.init(),
       routes: {
         '/splash': (context) => SplashScreen(),
