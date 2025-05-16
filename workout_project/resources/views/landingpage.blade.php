@@ -265,11 +265,6 @@
                 </div>
             @endif
 
-            <!-- Error Messages (JS, tetap ada untuk validasi client-side) -->
-            <div id="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm hidden">
-                <p id="errorMessage"></p>
-            </div>
-
             <!-- Form Login Laravel Breeze -->
             <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
@@ -305,7 +300,7 @@
         </div>
     </div>
 
-    <!-- MODAL FORGOT PASSWORD (ubah: hapus step token, hanya tampilkan pesan sukses)-->
+    <!-- MODAL FORGOT PASSWORD -->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
             <button id="closeForgotModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
@@ -353,6 +348,11 @@
         <div class="bg-white p-4 md:p-6 rounded-lg w-full max-w-xs md:max-w-md shadow-lg relative mx-4">
             <button id="closeSignupModal" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl font-bold mb-4 text-center">SIGN UP</h2>
+
+            <!-- Error Messages -->
+            <div id="signupError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm hidden"></div>
+            <div id="signupSuccess" class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm hidden"></div>
+
             <form id="signupForm" action="{{ route('register') }}" method="POST">
             @csrf
                 <label class="block mb-1 text-gray-700">Enter Name</label>
@@ -381,14 +381,12 @@
 
     <!-- Custom Scripts -->
     <script>
-    // Buka modal login jika ada error login dari backend
-    @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loginModal').classList.remove('hidden');
-        });
-    @endif
-
     document.addEventListener("DOMContentLoaded", function() {
+        // Buka modal login jika ada error
+        @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
+            document.getElementById('loginModal').classList.remove('hidden');
+        @endif
+
         // Feature card toggle
         function toggleCard(element) {
             let allCards = document.querySelectorAll(".feature-card");
@@ -407,46 +405,7 @@
         }
         window.toggleCard = toggleCard;
 
-        // Handle smooth scrolling
-        document.querySelectorAll('.scroll-link').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 60,
-                        behavior: 'smooth'
-                    });
-                }
-
-                // Close mobile menu when link is clicked
-                const navbarMenu = document.getElementById('navbar-cta');
-                if (navbarMenu.classList.contains('block')) {
-                    document.querySelector('[data-collapse-toggle="navbar-cta"]').click();
-                }
-
-                // Active nav state
-                document.querySelectorAll('.nav-link').forEach(nav => {
-                    nav.classList.remove('bg-black', 'text-white');
-                    nav.classList.add('text-gray-500');
-                });
-                this.classList.add('bg-black', 'text-white');
-                this.classList.remove('text-gray-500');
-
-                // Home image animation
-                if (targetId === "home") {
-                    const homeImage = document.getElementById("homeImage");
-                    homeImage.classList.add("active");
-                    setTimeout(() => {
-                        homeImage.classList.remove("active");
-                    }, 1000);
-                }
-            });
-        });
-
-        // Modal functions
+        // Modal elements
         const loginButton = document.querySelector(".btn-login");
         const aboutLoginButton = document.getElementById("aboutLoginButton");
         const signupButton = document.querySelector(".btn-signup");
@@ -460,94 +419,159 @@
         const signupLink = document.querySelector(".signup-link");
         const forgotPasswordLink = document.querySelector(".forgot-password-link");
 
-        // Login modal
-        loginButton.addEventListener("click", () => {
-            loginModal.classList.remove("hidden");
-        });
+        // Login modal handlers
+        if (loginButton) {
+            loginButton.addEventListener("click", () => {
+                loginModal.classList.remove("hidden");
+            });
+        }
 
-        aboutLoginButton.addEventListener("click", () => {
-            loginModal.classList.remove("hidden");
-        });
+        if (aboutLoginButton) {
+            aboutLoginButton.addEventListener("click", () => {
+                loginModal.classList.remove("hidden");
+            });
+        }
 
-        closeLoginModal.addEventListener("click", () => {
-            loginModal.classList.add("hidden");
-        });
+        if (closeLoginModal) {
+            closeLoginModal.addEventListener("click", () => {
+                window.location.reload();
+            });
+        }
 
-        // Sign up modal
-        signupButton.addEventListener("click", () => {
-            signupModal.classList.remove("hidden");
-        });
+        // Sign up modal handlers
+        if (signupButton) {
+            signupButton.addEventListener("click", () => {
+                signupModal.classList.remove("hidden");
+            });
+        }
 
-        closeSignupModal.addEventListener("click", () => {
-            signupModal.classList.add("hidden");
-        });
+        if (closeSignupModal) {
+            closeSignupModal.addEventListener("click", () => {
+                signupModal.classList.add("hidden");
+                window.location.reload();
+            });
+        }
 
-        // Forgot password modal
-        forgotPasswordLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            loginModal.classList.add("hidden");
-            forgotPasswordModal.classList.remove("hidden");
-        });
+        // Forgot password modal handlers
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                loginModal.classList.add("hidden");
+                forgotPasswordModal.classList.remove("hidden");
+            });
+        }
 
-        closeForgotModal.addEventListener("click", () => {
-            forgotPasswordModal.classList.add("hidden");
-        });
+        if (closeForgotModal) {
+            closeForgotModal.addEventListener("click", () => {
+                forgotPasswordModal.classList.add("hidden");
+            });
+        }
 
         // Toggle between login and signup
-        loginLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            signupModal.classList.add("hidden");
-            loginModal.classList.remove("hidden");
-        });
+        if (loginLink) {
+            loginLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                signupModal.classList.add("hidden");
+                loginModal.classList.remove("hidden");
+            });
+        }
 
-        signupLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            loginModal.classList.add("hidden");
-            signupModal.classList.remove("hidden");
-        });
+        if (signupLink) {
+            signupLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                loginModal.classList.add("hidden");
+                signupModal.classList.remove("hidden");
+            });
+        }
 
         // Password visibility toggle
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('passwordInput');
 
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-        });
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            });
+        }
 
-        // Form submissions
+        // Sign up form validation
         const signupForm = document.getElementById("signupForm");
-        const forgotPasswordEmailForm = document.getElementById("forgotPasswordEmailForm");
-        const forgotPasswordTokenForm = document.getElementById("forgotPasswordTokenForm");
-        const emailStep = document.getElementById("emailStep");
-        const tokenStep = document.getElementById("tokenStep");
-        const emailError = document.getElementById("emailError");
-        const emailSuccess = document.getElementById("emailSuccess");
-        const tokenError = document.getElementById("tokenError");
-        const tokenSuccess = document.getElementById("tokenSuccess");
+        const signupError = document.getElementById("signupError");
+        const signupSuccess = document.getElementById("signupSuccess");
 
-        // Sign up form submission
         if (signupForm) {
             signupForm.addEventListener("submit", function (e) {
-                // e.preventDefault();
-
-                // // Get form values
-                // const name = document.getElementById("name").value;
-                // const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
                 const passwordConfirmation = document.getElementById("password_confirmation").value;
 
-                // Basic validation
+                // Reset error messages
+                if (signupError) {
+                    signupError.classList.add("hidden");
+                    signupError.textContent = "";
+                }
+                if (signupSuccess) {
+                    signupSuccess.classList.add("hidden");
+                    signupSuccess.textContent = "";
+                }
+
                 if (password !== passwordConfirmation) {
-                    alert("Passwords do not match!");
+                    e.preventDefault();
+                    if (signupError) {
+                        signupError.textContent = "Password tidak cocok!";
+                        signupError.classList.remove("hidden");
+                    }
+                }
+
+                if (password.length < 8) {
+                    e.preventDefault();
+                    if (signupError) {
+                        signupError.textContent = "Password harus minimal 8 karakter!";
+                        signupError.classList.remove("hidden");
+                    }
+                }
+            });
+        }
+
+        // Login form validation
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('passwordInput').value;
+
+                if (!email || !password) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Please fill in all required fields',
+                        confirmButtonColor: '#ef4444'
+                    });
                     return;
                 }
 
-                // // Here you would normally send data to server
-                // // For now, just show a success message
-                // alert("Sign Up Successful! You can now login with your credentials.");
-                // signupModal.classList.add("hidden");
-                // loginModal.classList.remove("hidden");
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid email format',
+                        confirmButtonColor: '#ef4444'
+                    });
+                    return;
+                }
+
+                if (password.length < 6) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Password must be at least 6 characters',
+                        confirmButtonColor: '#ef4444'
+                    });
+                    return;
+                }
             });
         }
 
@@ -556,8 +580,12 @@
             forgotPasswordEmailForm.addEventListener("submit", async function (e) {
                 e.preventDefault();
                 const email = document.getElementById("forgotEmail").value;
-                emailError.classList.add("hidden");
-                emailSuccess.classList.add("hidden");
+                const emailError = document.getElementById("emailError");
+                const emailSuccess = document.getElementById("emailSuccess");
+
+                if (emailError) emailError.classList.add("hidden");
+                if (emailSuccess) emailSuccess.classList.add("hidden");
+
                 try {
                     const response = await fetch("{{ route('password.email') }}", {
                         method: "POST",
@@ -567,171 +595,59 @@
                         },
                         body: JSON.stringify({ email })
                     });
-                    let data;
-                    try {
-                        data = await response.json();
-                    } catch (err) {
-                        data = {};
-                    }
+
+                    const data = await response.json();
+
                     if (response.ok) {
-                        emailSuccess.textContent = "Link reset password telah dikirim ke email Anda!";
-                        emailSuccess.classList.remove("hidden");
+                        if (emailSuccess) {
+                            emailSuccess.textContent = "Password reset link has been sent to your email!";
+                            emailSuccess.classList.remove("hidden");
+                        }
                         setTimeout(() => {
-                            document.getElementById('forgotPasswordModal').classList.add('hidden');
+                            forgotPasswordModal.classList.add("hidden");
+                            loginModal.classList.remove("hidden");
                         }, 3000);
                     } else {
-                        if (data.errors && data.errors.email) {
-                            emailError.textContent = data.errors.email[0];
-                        } else if (data.message) {
-                            emailError.textContent = data.message;
-                        } else {
-                            emailError.textContent = "Terjadi kesalahan. Coba lagi.";
+                        if (emailError) {
+                            if (data.errors && data.errors.email) {
+                                emailError.textContent = data.errors.email[0];
+                            } else if (data.message) {
+                                emailError.textContent = data.message;
+                            } else {
+                                emailError.textContent = "An error occurred. Please try again.";
+                            }
+                            emailError.classList.remove("hidden");
                         }
-                        emailError.classList.remove("hidden");
                     }
                 } catch (err) {
-                    emailError.textContent = "Gagal terhubung ke server.";
-                    emailError.classList.remove("hidden");
+                    if (emailError) {
+                        emailError.textContent = "Failed to connect to server.";
+                        emailError.classList.remove("hidden");
+                    }
                 }
             });
-        }
-
-        if (forgotPasswordTokenForm) {
-            forgotPasswordTokenForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const token = document.getElementById("tokenVerification").value;
-
-                // Simulasi verifikasi token (ganti dengan API call yang sebenarnya)
-                if (token === "123456") {
-                    tokenSuccess.textContent = "Token valid! Link reset password telah dikirim ke email Anda.";
-                    tokenSuccess.classList.remove("hidden");
-                    tokenError.classList.add("hidden");
-
-                    // Kembali ke form login setelah 3 detik
-                    setTimeout(() => {
-                        forgotPasswordModal.classList.add("hidden");
-                        loginModal.classList.remove("hidden");
-                    }, 3000);
-                } else {
-                    tokenError.textContent = "Token tidak valid. Silakan coba lagi.";
-                    tokenError.classList.remove("hidden");
-                    tokenSuccess.classList.add("hidden");
-                }
-            });
-        }
-
-        // Active nav handler when scrolling
-        function updateActiveNav() {
-            const sections = document.querySelectorAll("section");
-            const navLinks = document.querySelectorAll(".nav-link");
-
-            let current = "";
-
-            sections.forEach((section) => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.scrollY >= sectionTop - 100) {
-                    current = section.getAttribute("id");
-                }
-            });
-
-            navLinks.forEach((link) => {
-                link.classList.remove("bg-black", "text-white");
-                link.classList.add("text-gray-500");
-                if (link.getAttribute("href") === "#" + current) {
-                    link.classList.add("bg-black", "text-white");
-                    link.classList.remove("text-gray-500");
-                }
-            });
-        }
-
-        window.addEventListener("scroll", updateActiveNav);
-
-        // Initialize active nav on page load
-        updateActiveNav();
-
-        // Login form submission
-        const loginForm = document.getElementById('loginForm');
-        const loginError = document.getElementById('loginError');
-        const errorMessage = document.getElementById('errorMessage');
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                // Hapus e.preventDefault(); agar form submit ke backend
-                // Validasi dasar di sisi client (opsional, bisa dihapus jika ingin full backend)
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('passwordInput').value;
-                if (!email || !password) {
-                    showError('Mohon isi semua field yang diperlukan');
-                    e.preventDefault();
-                    return;
-                }
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    showError('Format email tidak valid');
-                    e.preventDefault();
-                    return;
-                }
-                if (password.length < 6) {
-                    showError('Password harus minimal 6 karakter');
-                    e.preventDefault();
-                    return;
-                }
-                // Sisanya biarkan backend Laravel yang memproses dan mengirim notifikasi error jika email/password salah
-            });
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            loginError.classList.remove('hidden');
-            // SweetAlert juga untuk validasi client
-            Swal.fire({
-                icon: 'error',
-                title: 'Login Gagal',
-                text: message,
-                confirmButtonColor: '#ef4444'
-            });
-            // Sembunyikan error setelah 3 detik
-            setTimeout(() => {
-                loginError.classList.add('hidden');
-            }, 3000);
         }
 
         // Reset Password Modal Logic
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
         const token = window.location.pathname.match(/reset-password\/([^\/]+)/)?.[1];
-        const email = getQueryParam('email');
-        if (token) {
-            document.getElementById('resetPasswordModal').classList.remove('hidden');
-            document.getElementById('resetToken').value = token;
-            if (email) {
-                document.getElementById('resetEmail').value = email;
-            }
-        }
+        const email = new URLSearchParams(window.location.search).get('email');
+        const resetPasswordModal = document.getElementById('resetPasswordModal');
         const closeResetModal = document.getElementById('closeResetModal');
+
+        if (token && resetPasswordModal) {
+            resetPasswordModal.classList.remove('hidden');
+            const resetToken = document.getElementById('resetToken');
+            const resetEmail = document.getElementById('resetEmail');
+            if (resetToken) resetToken.value = token;
+            if (resetEmail && email) resetEmail.value = email;
+        }
+
         if (closeResetModal) {
             closeResetModal.addEventListener('click', function() {
-                document.getElementById('resetPasswordModal').classList.add('hidden');
+                if (resetPasswordModal) {
+                    resetPasswordModal.classList.add('hidden');
+                }
             });
-        }
-    });
-
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const menuItems = document.getElementById('menu-items');
-        menuItems.classList.toggle('hidden');
-    });
-
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-        const menuItems = document.getElementById('menu-items');
-        const mobileButton = document.getElementById('mobile-menu-button');
-        if (!menuItems.contains(event.target) && !mobileButton.contains(event.target) && !menuItems.classList.contains('hidden')) {
-            menuItems.classList.add('hidden');
         }
     });
     </script>
