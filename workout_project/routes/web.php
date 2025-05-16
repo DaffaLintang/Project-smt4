@@ -102,5 +102,13 @@ Route::get('/test-mongodb', function () {
     }
 });
 
+// Test route untuk melihat halaman reset password
+Route::get('/test-reset-password', function () {
+    return view('auth.halamanforgotpw', [
+        'token' => 'test-token',
+        'email' => 'test@example.com'
+    ]);
+});
+
 // Pastikan untuk memuat file auth
 require __DIR__.'/auth.php';
