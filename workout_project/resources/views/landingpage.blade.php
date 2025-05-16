@@ -7,60 +7,21 @@
     <!-- Tailwind CSS and Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SweetAlert2 CDN -->
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- ALERT HTML (hanya jika kamu tidak pakai SweetAlert) -->
-@if (session('login_success'))
-    <div class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50">
-        {{ session('login_success') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow z-50">
-        {{ $errors->first('email') }}
-    </div>
-@endif
-
-<!-- ALERT SWEETALERT SCRIPT -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Login berhasil
-    @if (session('login_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('login_success')),
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
-
-    // Registrasi berhasil
-    @if (session('register_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('register_success')),
-            timer: 2500,
-            showConfirmButton: false
-        });
-    @endif
-
-    // Login gagal
-    @if (session('login_failed')) // Atau ganti sesuai nama session error login kamu
-        Swal.fire({
-            icon: 'error',
-            title: 'Login Gagal',
-            text: @json(session('login_failed')),
-            confirmButtonText: 'Coba Lagi'
-        });
-    @endif
-});
-</script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#fef2f2","100":"#fee2e2","200":"#fecaca","300":"#fca5a5","400":"#f87171","500":"#ef4444","600":"#dc2626","700":"#b91c1c","800":"#991b1b","900":"#7f1d1d","950":"#450a0a"}
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .swal2-noanimation { animation: none !important; }
+    </style>
 </head>
 <body class="bg-white text-black">
     <!-- Responsive Navbar -->
@@ -138,23 +99,23 @@ document.addEventListener('DOMContentLoaded', function () {
                             DAFTAR SEKARANG
                         </button>
                     </div>
-            
+
                     <!-- IMAGE -->
                     <div class="md:w-1/2 mt-8 md:mt-0 flex justify-center relative">
                         <div class="relative">
                             <!-- Red Gradient Background -->
                             <div class="absolute w-full md:w-[500px] h-[350px] md:h-[450px] bg-gradient-to-b from-red-700 via-red-600 to-white rounded-full blur-2xl opacity-80 z-0 transform translate-y-20 md:translate-y-40"></div>
-            
+
                             <!-- Gym Person Image -->
                             <img src="assets/img/OrangGym.png" alt="Fitness Model"
-                            class="relative w-full max-w-[250px] md:max-w-[300px] lg:max-w-[450px] h-auto 
-                                object-cover drop-shadow-lg transform translate-y-8 z-10">                   
+                            class="relative w-full max-w-[250px] md:max-w-[300px] lg:max-w-[450px] h-auto
+                                object-cover drop-shadow-lg transform translate-y-8 z-10">
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <!-- SECTION FEATURE -->
         <section id="feature" class="min-h-screen flex flex-col items-center justify-center bg-white py-16">
             <h2 class="text-4xl md:text-5xl font-bold italic mb-8 md:mb-16 shadow-lg px-4 text-center">WHY CHOOSE US</h2>
@@ -201,9 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="relative w-full md:w-1/2 flex justify-center md:justify-start order-1 md:order-1">
                         <!-- Background red blur -->
                         <div class="absolute w-[200px] md:w-[300px] h-[300px] md:h-[400px] bg-gradient-to-b from-red-700 via-red-600 to-white rounded-full blur-2xl opacity-80 z-0 translate-y-40"></div>
-                        
+
                         <!-- Girl image -->
-                        <img src="assets/img/cewe.png" alt="Model" 
+                        <img src="assets/img/cewe.png" alt="Model"
                              class="relative w-[220px] md:w-[300px] lg:w-[380px] max-w-full h-auto object-contain z-10 transform translate-y-20">
                     </div>
 
@@ -326,9 +287,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     </button>
                 </div>
                 <!-- Forgot Password -->
-                <div class="text-right mb-4">
-                    <a href="#" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
-                </div>
+                <!-- ini sudah sesuai -->
+<div class="text-right mb-4">
+  <a href="{{ route('password.request') }}" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
+</div>
+
                 <!-- Login Button -->
                 <button type="submit" class="w-full bg-red-700 text-white py-2 rounded-full hover:bg-black transition-all">
                     LOGIN
@@ -341,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </div>
     </div>
- 
-    <!-- MODAL FORGOT PASSWORD -->
+
+    <!-- MODAL FORGOT PASSWORD (ubah: hapus step token, hanya tampilkan pesan sukses)-->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
             <button id="closeForgotModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
@@ -418,50 +381,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <!-- Custom Scripts -->
     <script>
-    
-    document.addEventListener('DOMContentLoaded', function () {
-    // Menampilkan SweetAlert ketika registrasi berhasil
-    @if (session('register_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '{{ session("register_success") }}',  // Menampilkan pesan sukses dari session
-            timer: 2500,
-            showConfirmButton: false
+    // Buka modal login jika ada error login dari backend
+    @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginModal').classList.remove('hidden');
         });
     @endif
 
-    // Menampilkan SweetAlert ketika terjadi error pada registrasi
-    @if ($errors->any() && old('name')) // Cek jika error terjadi pada sign up
-        Swal.fire({
-            icon: 'error',
-            title: 'Registrasi Gagal',
-            html: `{!! implode('<br>', $errors->all()) !!}`,  // Menampilkan daftar error
-            confirmButtonText: 'OK'
-        });
+    document.addEventListener("DOMContentLoaded", function() {
+        // Feature card toggle
+        function toggleCard(element) {
+            let allCards = document.querySelectorAll(".feature-card");
 
-        // Buka kembali modal signup
-        document.getElementById('signupModal').classList.remove('hidden');
-    @endif
-});
+            // Reset all cards to default color and remove raised effect
+            allCards.forEach(card => {
+                card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
+                card.classList.add("bg-gray-400", "shadow-xl");
+            });
 
-        // Home image animation script
-        document.addEventListener("DOMContentLoaded", function() {
-            // Feature card toggle
-            function toggleCard(element) {
-                let allCards = document.querySelectorAll(".feature-card");
-
-                // Reset all cards to default color and remove raised effect
-                allCards.forEach(card => {
-                    card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
-                    card.classList.add("bg-gray-400", "shadow-xl");
-                });
-
-                // If clicked card was not active, make it black and add raised effect
-                if (!element.classList.contains("active-card")) {
-                    element.classList.remove("bg-gray-400", "shadow-xl");
-                    element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
-                }
+            // If clicked card was not active, make it black and add raised effect
+            if (!element.classList.contains("active-card")) {
+                element.classList.remove("bg-gray-400", "shadow-xl");
+                element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
             }
         }
         window.toggleCard = toggleCard;
@@ -472,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 const targetId = this.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
-                
+
                 if (targetElement) {
                     window.scrollTo({
                         top: targetElement.offsetTop - 60,
@@ -568,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Password visibility toggle
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('passwordInput');
-        
+
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -589,19 +530,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (signupForm) {
             signupForm.addEventListener("submit", function (e) {
                 // e.preventDefault();
-                
+
                 // // Get form values
                 // const name = document.getElementById("name").value;
                 // const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
                 const passwordConfirmation = document.getElementById("password_confirmation").value;
-                
+
                 // Basic validation
                 if (password !== passwordConfirmation) {
                     alert("Passwords do not match!");
                     return;
                 }
-                
+
                 // // Here you would normally send data to server
                 // // For now, just show a success message
                 // alert("Sign Up Successful! You can now login with your credentials.");
@@ -614,78 +555,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (forgotPasswordEmailForm) {
             forgotPasswordEmailForm.addEventListener("submit", async function (e) {
                 e.preventDefault();
-                loginModal.classList.add("hidden");
-                forgotPasswordModal.classList.remove("hidden");
-            });
-
-            closeForgotModal.addEventListener("click", () => {
-                forgotPasswordModal.classList.add("hidden");
-            });
-
-            // Toggle between login and signup
-            loginLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                signupModal.classList.add("hidden");
-                loginModal.classList.remove("hidden");
-            });
-
-            signupLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                loginModal.classList.add("hidden");
-                signupModal.classList.remove("hidden");
-            });
-
-            // Password visibility toggle
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('passwordInput');
-            
-            togglePassword.addEventListener('click', function () {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-            });
-
-            // Form submissions
-            const signupForm = document.getElementById("signupForm");
-            const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-            const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
-            const forgotPasswordError = document.getElementById("forgotPasswordError");
-
-            // Sign up form submission
-            if (signupForm) {
-                signupForm.addEventListener("submit", function (e) {
-                    // e.preventDefault();
-                    
-                    // // Get form values
-                    // const name = document.getElementById("name").value;
-                    // const email = document.getElementById("email").value;
-                    const password = document.getElementById("password").value;
-                    const passwordConfirmation = document.getElementById("password_confirmation").value;
-                    
-                     
-                    
-                    // // Here you would normally send data to server
-                    // // For now, just show a success message
-                    // alert("Sign Up Successful! You can now login with your credentials.");
-                    // signupModal.classList.add("hidden");
-                    // loginModal.classList.remove("hidden");
-                });
-            }
-
-            // Forgot password form submission
-            if (forgotPasswordForm) {
-                forgotPasswordForm.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById("forgotEmail").value;
-                    const token = document.getElementById("tokenVerification").value;
-                    
-                    // Simulate verification (replace with actual API call)
-                    if (token === "123456") { // Example verification token
-                        forgotPasswordSuccess.textContent = "Password reset link sent to your email!";
-                        forgotPasswordSuccess.classList.remove("hidden");
-                        forgotPasswordError.classList.add("hidden");
-                        
-                        // Close modal after success
+                const email = document.getElementById("forgotEmail").value;
+                emailError.classList.add("hidden");
+                emailSuccess.classList.add("hidden");
+                try {
+                    const response = await fetch("{{ route('password.email') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify({ email })
+                    });
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (err) {
+                        data = {};
+                    }
+                    if (response.ok) {
+                        emailSuccess.textContent = "Link reset password telah dikirim ke email Anda!";
+                        emailSuccess.classList.remove("hidden");
                         setTimeout(() => {
                             document.getElementById('forgotPasswordModal').classList.add('hidden');
                         }, 3000);
@@ -709,15 +599,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (forgotPasswordTokenForm) {
             forgotPasswordTokenForm.addEventListener("submit", function (e) {
                 e.preventDefault();
-                
+
                 const token = document.getElementById("tokenVerification").value;
-                
+
                 // Simulasi verifikasi token (ganti dengan API call yang sebenarnya)
                 if (token === "123456") {
                     tokenSuccess.textContent = "Token valid! Link reset password telah dikirim ke email Anda.";
                     tokenSuccess.classList.remove("hidden");
                     tokenError.classList.add("hidden");
-                    
+
                     // Kembali ke form login setelah 3 detik
                     setTimeout(() => {
                         forgotPasswordModal.classList.add("hidden");
@@ -735,9 +625,9 @@ document.addEventListener('DOMContentLoaded', function () {
         function updateActiveNav() {
             const sections = document.querySelectorAll("section");
             const navLinks = document.querySelectorAll(".nav-link");
-            
+
             let current = "";
-            
+
             sections.forEach((section) => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
@@ -745,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     current = section.getAttribute("id");
                 }
             });
-            
+
             navLinks.forEach((link) => {
                 link.classList.remove("bg-black", "text-white");
                 link.classList.add("text-gray-500");
@@ -755,9 +645,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        
+
         window.addEventListener("scroll", updateActiveNav);
-        
+
         // Initialize active nav on page load
         updateActiveNav();
 
