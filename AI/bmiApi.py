@@ -43,6 +43,6 @@ def predict_obesity():
         prediction = model.predict(input_scaled)
         predicted_category = label_encoder.inverse_transform(prediction)
 
-        return jsonify({"prediction": predicted_category[0]})
+        return jsonify({"prediction":   (predicted_category[0])})
     except Exception as e:
         return jsonify({'error': str(e)})

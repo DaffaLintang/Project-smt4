@@ -7,10 +7,12 @@ import 'screens/login_page.dart';
 import 'screens/forgot_password.dart';
 import 'screens/signup_page.dart';
 import 'screens/bmi.dart';
+import 'screens/splash_screen.dart'; // Tambahkan import splash
 
 void main() async {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
   await SpUtil.getInstance();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,13 +20,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/splash', // Ganti ke splash screen
       builder: EasyLoading.init(),
       routes: {
+        '/splash': (context) => SplashScreen(),
         '/': (context) => LoginPage(),
         '/forgot-password': (context) => ForgotPassword(),
         '/signup': (context) => SignUpPage(),
-        '/bmi': (context) => BMICalculatorApp(),
+        '/bmi': (context) => BMICalculatorScreen(),
         '/menu': (context) => Menu(),
       },
     );

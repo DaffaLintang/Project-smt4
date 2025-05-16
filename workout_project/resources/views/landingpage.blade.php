@@ -7,60 +7,21 @@
     <!-- Tailwind CSS and Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SweetAlert2 CDN -->
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- ALERT HTML (hanya jika kamu tidak pakai SweetAlert) -->
-@if (session('login_success'))
-    <div class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50">
-        {{ session('login_success') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow z-50">
-        {{ $errors->first('email') }}
-    </div>
-@endif
-
-<!-- ALERT SWEETALERT SCRIPT -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Login berhasil
-    @if (session('login_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('login_success')),
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
-
-    // Registrasi berhasil
-    @if (session('register_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('register_success')),
-            timer: 2500,
-            showConfirmButton: false
-        });
-    @endif
-
-    // Login gagal
-    @if (session('login_failed')) // Atau ganti sesuai nama session error login kamu
-        Swal.fire({
-            icon: 'error',
-            title: 'Login Gagal',
-            text: @json(session('login_failed')),
-            confirmButtonText: 'Coba Lagi'
-        });
-    @endif
-});
-</script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#fef2f2","100":"#fee2e2","200":"#fecaca","300":"#fca5a5","400":"#f87171","500":"#ef4444","600":"#dc2626","700":"#b91c1c","800":"#991b1b","900":"#7f1d1d","950":"#450a0a"}
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .swal2-noanimation { animation: none !important; }
+    </style>
 </head>
 <body class="bg-white text-black">
     <!-- Responsive Navbar -->
@@ -282,13 +243,38 @@ document.addEventListener('DOMContentLoaded', function () {
             <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl font-bold mb-4 md:mb-6 text-center">LOGIN</h2>
 
+            <!-- Error Messages (Blade) -->
+            @if(session('error'))
+                <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if(session('status'))
+                <div class="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg text-sm">
+                    {{ session('status') }}
+                </div>
+            @endif
+            @if($errors->has('email'))
+                <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {{ $errors->first('email') }}
+                </div>
+            @endif
+            @if($errors->has('password'))
+                <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {{ $errors->first('password') }}
+                </div>
+            @endif
+
+            <!-- Error Messages (JS, tetap ada untuk validasi client-side) -->
+            <div id="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm hidden">
+                <p id="errorMessage"></p>
+            </div>
+
             <!-- Form Login Laravel Breeze -->
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
-
                 <label class="block mb-1 text-gray-700">Enter email</label>
-                <input type="email" name="email" class="w-full p-2 border-2 border-red-600 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your email" required>
-
+                <input type="email" name="email" id="loginEmail" class="w-full p-2 border-2 border-red-600 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your email" required>
                 <label class="block mb-1 text-gray-700">Enter Password</label>
                 <div class="relative mb-4">
                     <input id="passwordInput" type="password" name="password" class="w-full p-2 border-2 border-red-600 rounded-full focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your password" required>
@@ -300,18 +286,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         </svg>
                     </button>
                 </div>
-                
                 <!-- Forgot Password -->
                 <div class="text-right mb-4">
                     <a href="#" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
                 </div>
-
                 <!-- Login Button -->
                 <button type="submit" class="w-full bg-red-700 text-white py-2 rounded-full hover:bg-black transition-all">
                     LOGIN
                 </button>
             </form>
-
             <!-- Link to Register -->
             <div class="text-center mt-6">
                 <p class="text-gray-700 mb-2">Don't Have an Account?</p>
@@ -319,29 +302,46 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </div>
     </div>
- 
-    <!-- MODAL FORGOT PASSWORD -->
+
+    <!-- MODAL FORGOT PASSWORD (ubah: hapus step token, hanya tampilkan pesan sukses)-->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
             <button id="closeForgotModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
             <h2 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center">FORGOT PASSWORD</h2>
-            <p class="text-xs md:text-sm text-gray-600 text-center mb-4 md:mb-6">
-                Enter your registered email. We will send you a token to recover your account.
-            </p>
-            <form id="forgotPasswordForm" class="space-y-3 md:space-y-4">
+            <form id="forgotPasswordEmailForm" class="space-y-3 md:space-y-4" method="POST" action="{{ route('password.email') }}">
+                @csrf
                 <div>
-                    <label class="block text-gray-700 mb-1">Enter email</label>
-                    <input type="email" id="forgotEmail" name="email" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Enter your email" required>
+                    <label class="block text-gray-700 mb-1">Masukkan email</label>
+                    <input type="email" id="forgotEmail" name="email" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Masukkan email Anda" required>
                 </div>
-                <div>
-                    <label class="block text-gray-700 mb-1">Token Verification</label>
-                    <input type="text" id="tokenVerification" name="token" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Enter your token" required>
-                </div>
-
-                <p id="forgotPasswordError" class="hidden text-red-600 text-xs md:text-sm text-center mt-2">incorrect verification token</p>
-                <p id="forgotPasswordSuccess" class="hidden text-green-600 text-xs md:text-sm text-center mt-2"></p>
-
+                <p id="emailError" class="hidden text-red-600 text-xs md:text-sm text-center mt-2"></p>
+                <p id="emailSuccess" class="hidden text-green-600 text-xs md:text-sm text-center mt-2"></p>
                 <button type="submit" class="w-full bg-red-700 text-white py-2 md:py-3 rounded-full hover:bg-black transition-all">SEND</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL RESET PASSWORD (tambahan baru)-->
+    <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
+            <button id="closeResetModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
+            <h2 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center">RESET PASSWORD</h2>
+            <form id="resetPasswordForm" method="POST" action="{{ route('password.update') }}">
+                @csrf
+                <input type="hidden" name="token" id="resetToken">
+                <div>
+                    <label class="block text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" id="resetEmail" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1">Password Baru</label>
+                    <input type="password" name="password" id="resetPassword" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1">Konfirmasi Password</label>
+                    <input type="password" name="password_confirmation" id="resetPasswordConfirmation" class="w-full p-2 md:p-3 border-2 border-red-400 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                </div>
+                <button type="submit" class="w-full bg-red-700 text-white py-2 md:py-3 rounded-full hover:bg-black transition-all mt-4">RESET PASSWORD</button>
             </form>
         </div>
     </div>
@@ -379,260 +379,359 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <!-- Custom Scripts -->
     <script>
-    
-    document.addEventListener('DOMContentLoaded', function () {
-    // Menampilkan SweetAlert ketika registrasi berhasil
-    @if (session('register_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '{{ session("register_success") }}',  // Menampilkan pesan sukses dari session
-            timer: 2500,
-            showConfirmButton: false
+    // Buka modal login jika ada error login dari backend
+    @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginModal').classList.remove('hidden');
         });
     @endif
 
-    // Menampilkan SweetAlert ketika terjadi error pada registrasi
-    @if ($errors->any() && old('name')) // Cek jika error terjadi pada sign up
-        Swal.fire({
-            icon: 'error',
-            title: 'Registrasi Gagal',
-            html: `{!! implode('<br>', $errors->all()) !!}`,  // Menampilkan daftar error
-            confirmButtonText: 'OK'
-        });
+    document.addEventListener("DOMContentLoaded", function() {
+        // Feature card toggle
+        function toggleCard(element) {
+            let allCards = document.querySelectorAll(".feature-card");
 
-        // Buka kembali modal signup
-        document.getElementById('signupModal').classList.remove('hidden');
-    @endif
-});
+            // Reset all cards to default color and remove raised effect
+            allCards.forEach(card => {
+                card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
+                card.classList.add("bg-gray-400", "shadow-xl");
+            });
 
-        // Home image animation script
-        document.addEventListener("DOMContentLoaded", function() {
-            // Feature card toggle
-            function toggleCard(element) {
-                let allCards = document.querySelectorAll(".feature-card");
-
-                // Reset all cards to default color and remove raised effect
-                allCards.forEach(card => {
-                    card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
-                    card.classList.add("bg-gray-400", "shadow-xl");
-                });
-
-                // If clicked card was not active, make it black and add raised effect
-                if (!element.classList.contains("active-card")) {
-                    element.classList.remove("bg-gray-400", "shadow-xl");
-                    element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
-                }
+            // If clicked card was not active, make it black and add raised effect
+            if (!element.classList.contains("active-card")) {
+                element.classList.remove("bg-gray-400", "shadow-xl");
+                element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
             }
-            window.toggleCard = toggleCard;
+        }
+        window.toggleCard = toggleCard;
 
-            // Handle smooth scrolling
-            document.querySelectorAll('.scroll-link').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 60,
-                            behavior: 'smooth'
-                        });
-                    }
-
-                    // Close mobile menu when link is clicked
-                    const navbarMenu = document.getElementById('navbar-cta');
-                    if (navbarMenu.classList.contains('block')) {
-                        document.querySelector('[data-collapse-toggle="navbar-cta"]').click();
-                    }
-
-                    // Active nav state
-                    document.querySelectorAll('.nav-link').forEach(nav => {
-                        nav.classList.remove('bg-black', 'text-white');
-                        nav.classList.add('text-gray-500');
+        // Handle smooth scrolling
+        document.querySelectorAll('.scroll-link').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 60,
+                        behavior: 'smooth'
                     });
-                    this.classList.add('bg-black', 'text-white');
-                    this.classList.remove('text-gray-500');
+                }
 
-                    // Home image animation
-                    if (targetId === "home") {
-                        const homeImage = document.getElementById("homeImage");
-                        homeImage.classList.add("active");
-                        setTimeout(() => {
-                            homeImage.classList.remove("active");
-                        }, 1000);
+                // Close mobile menu when link is clicked
+                const navbarMenu = document.getElementById('navbar-cta');
+                if (navbarMenu.classList.contains('block')) {
+                    document.querySelector('[data-collapse-toggle="navbar-cta"]').click();
+                }
+
+                // Active nav state
+                document.querySelectorAll('.nav-link').forEach(nav => {
+                    nav.classList.remove('bg-black', 'text-white');
+                    nav.classList.add('text-gray-500');
+                });
+                this.classList.add('bg-black', 'text-white');
+                this.classList.remove('text-gray-500');
+
+                // Home image animation
+                if (targetId === "home") {
+                    const homeImage = document.getElementById("homeImage");
+                    homeImage.classList.add("active");
+                    setTimeout(() => {
+                        homeImage.classList.remove("active");
+                    }, 1000);
+                }
+            });
+        });
+
+        // Modal functions
+        const loginButton = document.querySelector(".btn-login");
+        const aboutLoginButton = document.getElementById("aboutLoginButton");
+        const signupButton = document.querySelector(".btn-signup");
+        const loginModal = document.getElementById("loginModal");
+        const signupModal = document.getElementById("signupModal");
+        const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+        const closeLoginModal = document.getElementById("closeModal");
+        const closeSignupModal = document.getElementById("closeSignupModal");
+        const closeForgotModal = document.getElementById("closeForgotModal");
+        const loginLink = document.querySelector(".login-link");
+        const signupLink = document.querySelector(".signup-link");
+        const forgotPasswordLink = document.querySelector(".forgot-password-link");
+
+        // Login modal
+        loginButton.addEventListener("click", () => {
+            loginModal.classList.remove("hidden");
+        });
+
+        aboutLoginButton.addEventListener("click", () => {
+            loginModal.classList.remove("hidden");
+        });
+
+        closeLoginModal.addEventListener("click", () => {
+            loginModal.classList.add("hidden");
+        });
+
+        // Sign up modal
+        signupButton.addEventListener("click", () => {
+            signupModal.classList.remove("hidden");
+        });
+
+        closeSignupModal.addEventListener("click", () => {
+            signupModal.classList.add("hidden");
+        });
+
+        // Forgot password modal
+        forgotPasswordLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginModal.classList.add("hidden");
+            forgotPasswordModal.classList.remove("hidden");
+        });
+
+        closeForgotModal.addEventListener("click", () => {
+            forgotPasswordModal.classList.add("hidden");
+        });
+
+        // Toggle between login and signup
+        loginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            signupModal.classList.add("hidden");
+            loginModal.classList.remove("hidden");
+        });
+
+        signupLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginModal.classList.add("hidden");
+            signupModal.classList.remove("hidden");
+        });
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('passwordInput');
+        
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+
+        // Form submissions
+        const signupForm = document.getElementById("signupForm");
+        const forgotPasswordEmailForm = document.getElementById("forgotPasswordEmailForm");
+        const forgotPasswordTokenForm = document.getElementById("forgotPasswordTokenForm");
+        const emailStep = document.getElementById("emailStep");
+        const tokenStep = document.getElementById("tokenStep");
+        const emailError = document.getElementById("emailError");
+        const emailSuccess = document.getElementById("emailSuccess");
+        const tokenError = document.getElementById("tokenError");
+        const tokenSuccess = document.getElementById("tokenSuccess");
+
+        // Sign up form submission
+        if (signupForm) {
+            signupForm.addEventListener("submit", function (e) {
+                // e.preventDefault();
+                
+                // // Get form values
+                // const name = document.getElementById("name").value;
+                // const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                const passwordConfirmation = document.getElementById("password_confirmation").value;
+                
+                // Basic validation
+                if (password !== passwordConfirmation) {
+                    alert("Passwords do not match!");
+                    return;
+                }
+                
+                // // Here you would normally send data to server
+                // // For now, just show a success message
+                // alert("Sign Up Successful! You can now login with your credentials.");
+                // signupModal.classList.add("hidden");
+                // loginModal.classList.remove("hidden");
+            });
+        }
+
+        // Forgot password form submission
+        if (forgotPasswordEmailForm) {
+            forgotPasswordEmailForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const email = document.getElementById("forgotEmail").value;
+                emailError.classList.add("hidden");
+                emailSuccess.classList.add("hidden");
+                try {
+                    const response = await fetch("{{ route('password.email') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify({ email })
+                    });
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (err) {
+                        data = {};
                     }
-                });
-            });
-
-            // Modal functions
-            const loginButton = document.querySelector(".btn-login");
-            const aboutLoginButton = document.getElementById("aboutLoginButton");
-            const signupButton = document.querySelector(".btn-signup");
-            const loginModal = document.getElementById("loginModal");
-            const signupModal = document.getElementById("signupModal");
-            const forgotPasswordModal = document.getElementById("forgotPasswordModal");
-            const closeLoginModal = document.getElementById("closeModal");
-            const closeSignupModal = document.getElementById("closeSignupModal");
-            const closeForgotModal = document.getElementById("closeForgotModal");
-            const loginLink = document.querySelector(".login-link");
-            const signupLink = document.querySelector(".signup-link");
-            const forgotPasswordLink = document.querySelector(".forgot-password-link");
-
-            // Login modal
-            loginButton.addEventListener("click", () => {
-                loginModal.classList.remove("hidden");
-            });
-
-            aboutLoginButton.addEventListener("click", () => {
-                loginModal.classList.remove("hidden");
-            });
-
-            closeLoginModal.addEventListener("click", () => {
-                loginModal.classList.add("hidden");
-            });
-
-            // Sign up modal
-            signupButton.addEventListener("click", () => {
-                signupModal.classList.remove("hidden");
-            });
-
-            closeSignupModal.addEventListener("click", () => {
-                signupModal.classList.add("hidden");
-            });
-
-            // Forgot password modal
-            forgotPasswordLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                loginModal.classList.add("hidden");
-                forgotPasswordModal.classList.remove("hidden");
-            });
-
-            closeForgotModal.addEventListener("click", () => {
-                forgotPasswordModal.classList.add("hidden");
-            });
-
-            // Toggle between login and signup
-            loginLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                signupModal.classList.add("hidden");
-                loginModal.classList.remove("hidden");
-            });
-
-            signupLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                loginModal.classList.add("hidden");
-                signupModal.classList.remove("hidden");
-            });
-
-            // Password visibility toggle
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('passwordInput');
-            
-            togglePassword.addEventListener('click', function () {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-            });
-
-            // Form submissions
-            const signupForm = document.getElementById("signupForm");
-            const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-            const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
-            const forgotPasswordError = document.getElementById("forgotPasswordError");
-
-            // Sign up form submission
-            if (signupForm) {
-                signupForm.addEventListener("submit", function (e) {
-                    // e.preventDefault();
-                    
-                    // // Get form values
-                    // const name = document.getElementById("name").value;
-                    // const email = document.getElementById("email").value;
-                    const password = document.getElementById("password").value;
-                    const passwordConfirmation = document.getElementById("password_confirmation").value;
-                    
-                     
-                    
-                    // // Here you would normally send data to server
-                    // // For now, just show a success message
-                    // alert("Sign Up Successful! You can now login with your credentials.");
-                    // signupModal.classList.add("hidden");
-                    // loginModal.classList.remove("hidden");
-                });
-            }
-
-            // Forgot password form submission
-            if (forgotPasswordForm) {
-                forgotPasswordForm.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById("forgotEmail").value;
-                    const token = document.getElementById("tokenVerification").value;
-                    
-                    // Simulate verification (replace with actual API call)
-                    if (token === "123456") { // Example verification token
-                        forgotPasswordSuccess.textContent = "Password reset link sent to your email!";
-                        forgotPasswordSuccess.classList.remove("hidden");
-                        forgotPasswordError.classList.add("hidden");
-                        
-                        // Close modal after success
+                    if (response.ok) {
+                        emailSuccess.textContent = "Link reset password telah dikirim ke email Anda!";
+                        emailSuccess.classList.remove("hidden");
                         setTimeout(() => {
-                            forgotPasswordModal.classList.add("hidden");
-                            loginModal.classList.remove("hidden");
+                            document.getElementById('forgotPasswordModal').classList.add('hidden');
                         }, 3000);
                     } else {
-                        forgotPasswordError.textContent = "Incorrect verification token. Please try again.";
-                        forgotPasswordError.classList.remove("hidden");
-                        forgotPasswordSuccess.classList.add("hidden");
+                        if (data.errors && data.errors.email) {
+                            emailError.textContent = data.errors.email[0];
+                        } else if (data.message) {
+                            emailError.textContent = data.message;
+                        } else {
+                            emailError.textContent = "Terjadi kesalahan. Coba lagi.";
+                        }
+                        emailError.classList.remove("hidden");
                     }
-                });
-            }
+                } catch (err) {
+                    emailError.textContent = "Gagal terhubung ke server.";
+                    emailError.classList.remove("hidden");
+                }
+            });
+        }
 
-            // Active nav handler when scrolling
-            function updateActiveNav() {
-                const sections = document.querySelectorAll("section");
-                const navLinks = document.querySelectorAll(".nav-link");
+        if (forgotPasswordTokenForm) {
+            forgotPasswordTokenForm.addEventListener("submit", function (e) {
+                e.preventDefault();
                 
-                let current = "";
+                const token = document.getElementById("tokenVerification").value;
                 
-                sections.forEach((section) => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    if (window.scrollY >= sectionTop - 100) {
-                        current = section.getAttribute("id");
-                    }
-                });
-                
-                navLinks.forEach((link) => {
-                    link.classList.remove("bg-black", "text-white");
-                    link.classList.add("text-gray-500");
-                    if (link.getAttribute("href") === "#" + current) {
-                        link.classList.add("bg-black", "text-white");
-                        link.classList.remove("text-gray-500");
-                    }
-                });
-            }
+                // Simulasi verifikasi token (ganti dengan API call yang sebenarnya)
+                if (token === "123456") {
+                    tokenSuccess.textContent = "Token valid! Link reset password telah dikirim ke email Anda.";
+                    tokenSuccess.classList.remove("hidden");
+                    tokenError.classList.add("hidden");
+                    
+                    // Kembali ke form login setelah 3 detik
+                    setTimeout(() => {
+                        forgotPasswordModal.classList.add("hidden");
+                        loginModal.classList.remove("hidden");
+                    }, 3000);
+                } else {
+                    tokenError.textContent = "Token tidak valid. Silakan coba lagi.";
+                    tokenError.classList.remove("hidden");
+                    tokenSuccess.classList.add("hidden");
+                }
+            });
+        }
+
+        // Active nav handler when scrolling
+        function updateActiveNav() {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll(".nav-link");
             
-            window.addEventListener("scroll", updateActiveNav);
+            let current = "";
             
-            // Initialize active nav on page load
-            updateActiveNav();
-        });
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 100) {
+                    current = section.getAttribute("id");
+                }
+            });
+            
+            navLinks.forEach((link) => {
+                link.classList.remove("bg-black", "text-white");
+                link.classList.add("text-gray-500");
+                if (link.getAttribute("href") === "#" + current) {
+                    link.classList.add("bg-black", "text-white");
+                    link.classList.remove("text-gray-500");
+                }
+            });
+        }
+        
+        window.addEventListener("scroll", updateActiveNav);
+        
+        // Initialize active nav on page load
+        updateActiveNav();
 
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menuItems = document.getElementById('menu-items');
-            menuItems.classList.toggle('hidden');
-        });
+        // Login form submission
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const errorMessage = document.getElementById('errorMessage');
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const menuItems = document.getElementById('menu-items');
-            const mobileButton = document.getElementById('mobile-menu-button');
-            if (!menuItems.contains(event.target) && !mobileButton.contains(event.target) && !menuItems.classList.contains('hidden')) {
-                menuItems.classList.add('hidden');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                // Hapus e.preventDefault(); agar form submit ke backend
+                // Validasi dasar di sisi client (opsional, bisa dihapus jika ingin full backend)
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('passwordInput').value;
+                if (!email || !password) {
+                    showError('Mohon isi semua field yang diperlukan');
+                    e.preventDefault();
+                    return;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('Format email tidak valid');
+                    e.preventDefault();
+                    return;
+                }
+                if (password.length < 6) {
+                    showError('Password harus minimal 6 karakter');
+                    e.preventDefault();
+                    return;
+                }
+                // Sisanya biarkan backend Laravel yang memproses dan mengirim notifikasi error jika email/password salah
+            });
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            loginError.classList.remove('hidden');
+            // SweetAlert juga untuk validasi client
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: message,
+                confirmButtonColor: '#ef4444'
+            });
+            // Sembunyikan error setelah 3 detik
+            setTimeout(() => {
+                loginError.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Reset Password Modal Logic
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        const token = window.location.pathname.match(/reset-password\/([^\/]+)/)?.[1];
+        const email = getQueryParam('email');
+        if (token) {
+            document.getElementById('resetPasswordModal').classList.remove('hidden');
+            document.getElementById('resetToken').value = token;
+            if (email) {
+                document.getElementById('resetEmail').value = email;
             }
-        });
+        }
+        const closeResetModal = document.getElementById('closeResetModal');
+        if (closeResetModal) {
+            closeResetModal.addEventListener('click', function() {
+                document.getElementById('resetPasswordModal').classList.add('hidden');
+            });
+        }
+    });
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const menuItems = document.getElementById('menu-items');
+        menuItems.classList.toggle('hidden');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const menuItems = document.getElementById('menu-items');
+        const mobileButton = document.getElementById('mobile-menu-button');
+        if (!menuItems.contains(event.target) && !mobileButton.contains(event.target) && !menuItems.classList.contains('hidden')) {
+            menuItems.classList.add('hidden');
+        }
+    });
     </script>
 
     <!-- Add responsive styles -->

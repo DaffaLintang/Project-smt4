@@ -19,9 +19,11 @@ class LoginController extends GetxController {
         Get.snackbar('Error', 'Email atau Password Tidak Boleh Kosong',
             backgroundColor: Colors.red, colorText: Colors.white);
       } else {
+print('${email}|${password}');
         EasyLoading.show();
         var data = {"email": email, "password": password};
         LoginProvider().auth(data).then((value) {
+          print(value.statusCode);
           if (value.statusCode == 200) {
             email = '';
             password = '';

@@ -63,7 +63,10 @@
                         <td>{{ $user->created_at }}</td>
                         <td>{{ $user->updated_at }}</td>
                         <td>
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Ubah</a>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal" 
+                                onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->phone }}', '{{ $user->birth }}', '{{ $user->weight }}', '{{ $user->height }}', '{{ $user->image }}')">
+                                Ubah
+                            </button>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
@@ -146,3 +149,58 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function editUser(id, name, email, fullName, phone, birth, weight, height, image) {
+    document.getElementById('editUserId').value = id;
+    document.getElementById('editName').value = name;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editFullName').value = fullName;
+    document.getElementById('editPhone').value = phone;
+    document.getElementById('editBirth').value = birth;
+    document.getElementById('editWeight').value = weight;
+    document.getElementById('editHeight').value = height;
+    
+    // Set the form action URL untuk update user
+    document.getElementById('editUserForm').action = `/users/${id}`;
+    
+    // Update preview gambar jika ada
+    if (image) {
+        document.getElementById('previewImage').src = `/storage/${image}`;
+    }
+}
+
+// Tambahkan event listener untuk form submit
+document.getElementById('editUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+            modal.hide();
+            
+            // Refresh halaman
+            window.location.reload();
+        } else {
+            alert('Terjadi kesalahan saat mengupdate data');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengupdate data');
+    });
+});
+</script>
+@endpush

@@ -67,7 +67,7 @@ class _MenuState extends State<Menu> {
                         borderRadius: BorderRadius.circular(50),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage('$MainUrl/$profileImage'),
+                          image: NetworkImage('$MainUrl/storage/$profileImage'),
                         ),
                       ),
                     )),
@@ -115,7 +115,7 @@ class _MenuState extends State<Menu> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(BMICalculatorApp());
+                                  Get.to(BMICalculatorScreen());
                                 },
                                 child: Container(
                                   height: 50,

@@ -391,7 +391,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               )
                             : (user!.image != null
                                 ? Image.network(
-                                    '$MainUrl/${user!.image}',
+                                    '$MainUrl/storage/${user!.image}',
                                     fit: BoxFit.cover,
                                     width: 100,
                                     height: 100,
