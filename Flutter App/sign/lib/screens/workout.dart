@@ -98,7 +98,8 @@ class _WorkoutRecomendationState extends State<WorkoutRecomendation> {
                             borderRadius: BorderRadius.circular(50),
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage('$MainUrl/$profileImage'),
+                              image: NetworkImage(
+                                  '$MainUrl/storage/$profileImage'),
                             ),
                           ),
                         ))
