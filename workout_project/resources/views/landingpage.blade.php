@@ -282,9 +282,11 @@
                     </button>
                 </div>
                 <!-- Forgot Password -->
-                <div class="text-right mb-4">
-                    <a href="#" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
-                </div>
+                <!-- ini sudah sesuai -->
+<div class="text-right mb-4">
+  <a href="{{ route('password.request') }}" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
+</div>
+
                 <!-- Login Button -->
                 <button type="submit" class="w-full bg-red-700 text-white py-2 rounded-full hover:bg-black transition-all">
                     LOGIN

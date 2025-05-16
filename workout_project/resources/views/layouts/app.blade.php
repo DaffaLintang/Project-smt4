@@ -271,7 +271,31 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Tambahkan di dalam <head> atau sebelum </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+
+        @if (session('login_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: '{{ session("login_success") }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if ($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal',
+            text: '{{ $errors->first("email") }}',
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
+    
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');

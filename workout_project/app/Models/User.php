@@ -6,10 +6,13 @@ use MongoDB\Laravel\Eloquent\Model as Eloquent;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Eloquent implements AuthenticatableContract
+class User extends Eloquent implements AuthenticatableContract, CanResetPasswordContract
 {
-    use HasApiTokens, Authenticatable;
+    use HasApiTokens, Authenticatable, CanResetPassword, Notifiable;
 
     protected $connection = 'mongodb';
 
