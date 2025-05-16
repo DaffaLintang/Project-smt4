@@ -7,21 +7,60 @@
     <!-- Tailwind CSS and Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {"50":"#fef2f2","100":"#fee2e2","200":"#fecaca","300":"#fca5a5","400":"#f87171","500":"#ef4444","600":"#dc2626","700":"#b91c1c","800":"#991b1b","900":"#7f1d1d","950":"#450a0a"}
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .swal2-noanimation { animation: none !important; }
-    </style>
+    <!-- SweetAlert2 CDN -->
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ALERT HTML (hanya jika kamu tidak pakai SweetAlert) -->
+@if (session('login_success'))
+    <div class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50">
+        {{ session('login_success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow z-50">
+        {{ $errors->first('email') }}
+    </div>
+@endif
+
+<!-- ALERT SWEETALERT SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Login berhasil
+    @if (session('login_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('login_success')),
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    // Registrasi berhasil
+    @if (session('register_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('register_success')),
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
+
+    // Login gagal
+    @if (session('login_failed')) // Atau ganti sesuai nama session error login kamu
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal',
+            text: @json(session('login_failed')),
+            confirmButtonText: 'Coba Lagi'
+        });
+    @endif
+});
+</script>
+
 </head>
 <body class="bg-white text-black">
     <!-- Responsive Navbar -->
@@ -302,8 +341,8 @@
             </div>
         </div>
     </div>
-
-    <!-- MODAL FORGOT PASSWORD (ubah: hapus step token, hanya tampilkan pesan sukses)-->
+ 
+    <!-- MODAL FORGOT PASSWORD -->
     <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 md:p-8 rounded-xl w-full max-w-xs md:max-w-md shadow-2xl relative mx-4">
             <button id="closeForgotModal" class="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
@@ -379,28 +418,50 @@
 
     <!-- Custom Scripts -->
     <script>
-    // Buka modal login jika ada error login dari backend
-    @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loginModal').classList.remove('hidden');
+    
+    document.addEventListener('DOMContentLoaded', function () {
+    // Menampilkan SweetAlert ketika registrasi berhasil
+    @if (session('register_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session("register_success") }}',  // Menampilkan pesan sukses dari session
+            timer: 2500,
+            showConfirmButton: false
         });
     @endif
 
-    document.addEventListener("DOMContentLoaded", function() {
-        // Feature card toggle
-        function toggleCard(element) {
-            let allCards = document.querySelectorAll(".feature-card");
+    // Menampilkan SweetAlert ketika terjadi error pada registrasi
+    @if ($errors->any() && old('name')) // Cek jika error terjadi pada sign up
+        Swal.fire({
+            icon: 'error',
+            title: 'Registrasi Gagal',
+            html: `{!! implode('<br>', $errors->all()) !!}`,  // Menampilkan daftar error
+            confirmButtonText: 'OK'
+        });
 
-            // Reset all cards to default color and remove raised effect
-            allCards.forEach(card => {
-                card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
-                card.classList.add("bg-gray-400", "shadow-xl");
-            });
+        // Buka kembali modal signup
+        document.getElementById('signupModal').classList.remove('hidden');
+    @endif
+});
 
-            // If clicked card was not active, make it black and add raised effect
-            if (!element.classList.contains("active-card")) {
-                element.classList.remove("bg-gray-400", "shadow-xl");
-                element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
+        // Home image animation script
+        document.addEventListener("DOMContentLoaded", function() {
+            // Feature card toggle
+            function toggleCard(element) {
+                let allCards = document.querySelectorAll(".feature-card");
+
+                // Reset all cards to default color and remove raised effect
+                allCards.forEach(card => {
+                    card.classList.remove("bg-black", "active-card", "scale-105", "shadow-2xl");
+                    card.classList.add("bg-gray-400", "shadow-xl");
+                });
+
+                // If clicked card was not active, make it black and add raised effect
+                if (!element.classList.contains("active-card")) {
+                    element.classList.remove("bg-gray-400", "shadow-xl");
+                    element.classList.add("bg-black", "active-card", "scale-105", "shadow-2xl");
+                }
             }
         }
         window.toggleCard = toggleCard;
@@ -553,27 +614,78 @@
         if (forgotPasswordEmailForm) {
             forgotPasswordEmailForm.addEventListener("submit", async function (e) {
                 e.preventDefault();
-                const email = document.getElementById("forgotEmail").value;
-                emailError.classList.add("hidden");
-                emailSuccess.classList.add("hidden");
-                try {
-                    const response = await fetch("{{ route('password.email') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                        },
-                        body: JSON.stringify({ email })
-                    });
-                    let data;
-                    try {
-                        data = await response.json();
-                    } catch (err) {
-                        data = {};
-                    }
-                    if (response.ok) {
-                        emailSuccess.textContent = "Link reset password telah dikirim ke email Anda!";
-                        emailSuccess.classList.remove("hidden");
+                loginModal.classList.add("hidden");
+                forgotPasswordModal.classList.remove("hidden");
+            });
+
+            closeForgotModal.addEventListener("click", () => {
+                forgotPasswordModal.classList.add("hidden");
+            });
+
+            // Toggle between login and signup
+            loginLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                signupModal.classList.add("hidden");
+                loginModal.classList.remove("hidden");
+            });
+
+            signupLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                loginModal.classList.add("hidden");
+                signupModal.classList.remove("hidden");
+            });
+
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('passwordInput');
+            
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            });
+
+            // Form submissions
+            const signupForm = document.getElementById("signupForm");
+            const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+            const forgotPasswordSuccess = document.getElementById("forgotPasswordSuccess");
+            const forgotPasswordError = document.getElementById("forgotPasswordError");
+
+            // Sign up form submission
+            if (signupForm) {
+                signupForm.addEventListener("submit", function (e) {
+                    // e.preventDefault();
+                    
+                    // // Get form values
+                    // const name = document.getElementById("name").value;
+                    // const email = document.getElementById("email").value;
+                    const password = document.getElementById("password").value;
+                    const passwordConfirmation = document.getElementById("password_confirmation").value;
+                    
+                     
+                    
+                    // // Here you would normally send data to server
+                    // // For now, just show a success message
+                    // alert("Sign Up Successful! You can now login with your credentials.");
+                    // signupModal.classList.add("hidden");
+                    // loginModal.classList.remove("hidden");
+                });
+            }
+
+            // Forgot password form submission
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById("forgotEmail").value;
+                    const token = document.getElementById("tokenVerification").value;
+                    
+                    // Simulate verification (replace with actual API call)
+                    if (token === "123456") { // Example verification token
+                        forgotPasswordSuccess.textContent = "Password reset link sent to your email!";
+                        forgotPasswordSuccess.classList.remove("hidden");
+                        forgotPasswordError.classList.add("hidden");
+                        
+                        // Close modal after success
                         setTimeout(() => {
                             document.getElementById('forgotPasswordModal').classList.add('hidden');
                         }, 3000);
