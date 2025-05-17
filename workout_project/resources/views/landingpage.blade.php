@@ -528,6 +528,23 @@
                         signupError.classList.remove("hidden");
                     }
                 }
+
+                // Jika validasi berhasil, tampilkan SweetAlert
+                if (password === passwordConfirmation && password.length >= 8) {
+                    e.preventDefault();
+                    signupModal.classList.add("hidden");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Akun Anda berhasil dibuat!',
+                        confirmButtonColor: '#ef4444',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = window.location.href;
+                    });
+                }
             });
         }
 
@@ -669,5 +686,8 @@
             }
         }
     </style>
+
+    @include('auth.modalfgt')
+
 </body>
 </html>
