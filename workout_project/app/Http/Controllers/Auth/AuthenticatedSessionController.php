@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Session;
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +36,10 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
-    $user = Auth::guard('web')->user(); // pakai guard web juga di sini
+    $user = Auth::guard('web')->user();
+
+    // Flash message untuk SweetAlert
+    Session::flash('login_success', 'Login berhasil!');
 
     if ($user->role === 'admin') {
         return redirect()->route('admin.dashboard');
@@ -44,6 +49,7 @@ class AuthenticatedSessionController extends Controller
 
     return redirect()->route('home');
 }
+
 
 
     /**

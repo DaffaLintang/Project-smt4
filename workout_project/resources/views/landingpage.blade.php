@@ -99,23 +99,23 @@
                             DAFTAR SEKARANG
                         </button>
                     </div>
-            
+
                     <!-- IMAGE -->
                     <div class="md:w-1/2 mt-8 md:mt-0 flex justify-center relative">
                         <div class="relative">
                             <!-- Red Gradient Background -->
                             <div class="absolute w-full md:w-[500px] h-[350px] md:h-[450px] bg-gradient-to-b from-red-700 via-red-600 to-white rounded-full blur-2xl opacity-80 z-0 transform translate-y-20 md:translate-y-40"></div>
-            
+
                             <!-- Gym Person Image -->
                             <img src="assets/img/OrangGym.png" alt="Fitness Model"
-                            class="relative w-full max-w-[250px] md:max-w-[300px] lg:max-w-[450px] h-auto 
-                                object-cover drop-shadow-lg transform translate-y-8 z-10">                   
+                            class="relative w-full max-w-[250px] md:max-w-[300px] lg:max-w-[450px] h-auto
+                                object-cover drop-shadow-lg transform translate-y-8 z-10">
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <!-- SECTION FEATURE -->
         <section id="feature" class="min-h-screen flex flex-col items-center justify-center bg-white py-16">
             <h2 class="text-4xl md:text-5xl font-bold italic mb-8 md:mb-16 shadow-lg px-4 text-center">WHY CHOOSE US</h2>
@@ -162,9 +162,9 @@
                     <div class="relative w-full md:w-1/2 flex justify-center md:justify-start order-1 md:order-1">
                         <!-- Background red blur -->
                         <div class="absolute w-[200px] md:w-[300px] h-[300px] md:h-[400px] bg-gradient-to-b from-red-700 via-red-600 to-white rounded-full blur-2xl opacity-80 z-0 translate-y-40"></div>
-                        
+
                         <!-- Girl image -->
-                        <img src="assets/img/cewe.png" alt="Model" 
+                        <img src="assets/img/cewe.png" alt="Model"
                              class="relative w-[220px] md:w-[300px] lg:w-[380px] max-w-full h-auto object-contain z-10 transform translate-y-20">
                     </div>
 
@@ -282,9 +282,11 @@
                     </button>
                 </div>
                 <!-- Forgot Password -->
-                <div class="text-right mb-4">
-                    <a href="#" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
-                </div>
+                <!-- ini sudah sesuai -->
+<div class="text-right mb-4">
+  <a href="{{ route('password.request') }}" class="text-red-600 text-sm hover:underline forgot-password-link">Forgot Password?</a>
+</div>
+
                 <!-- Login Button -->
                 <button type="submit" class="w-full bg-red-700 text-white py-2 rounded-full hover:bg-black transition-all">
                     LOGIN
@@ -485,7 +487,7 @@
         // Password visibility toggle
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('passwordInput');
-        
+
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function () {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -502,7 +504,7 @@
             signupForm.addEventListener("submit", function (e) {
                 const password = document.getElementById("password").value;
                 const passwordConfirmation = document.getElementById("password_confirmation").value;
-                
+
                 // Reset error messages
                 if (signupError) {
                     signupError.classList.add("hidden");
@@ -553,7 +555,7 @@
             loginForm.addEventListener('submit', function(e) {
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('passwordInput').value;
-                
+
                 if (!email || !password) {
                     e.preventDefault();
                     Swal.fire({
@@ -597,20 +599,21 @@
                 const email = document.getElementById("forgotEmail").value;
                 const emailError = document.getElementById("emailError");
                 const emailSuccess = document.getElementById("emailSuccess");
-                
+
                 if (emailError) emailError.classList.add("hidden");
                 if (emailSuccess) emailSuccess.classList.add("hidden");
 
                 try {
-                    const response = await fetch("{{ route('password.email') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                        },
-                        body: JSON.stringify({ email })
-                    });
-
+                        const response = await fetch("{{ route('password.email') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json", // ← Tambahkan ini
+                                "X-Requested-With": "XMLHttpRequest",
+                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ email })
+                        });
                     const data = await response.json();
 
                     if (response.ok) {
@@ -637,6 +640,7 @@
                 } catch (err) {
                     if (emailError) {
                         emailError.textContent = "Failed to connect to server.";
+                        //emailError.textContent = err;
                         emailError.classList.remove("hidden");
                     }
                 }
