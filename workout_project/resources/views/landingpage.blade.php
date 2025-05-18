@@ -544,7 +544,7 @@
                         timerProgressBar: true,
                         showConfirmButton: false
                     }).then(() => {
-                        window.location.href = window.location.href;
+                        signupForm.submit();
                     });
                 }
             });
@@ -561,7 +561,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Please fill in all required fields',
+                        text: 'Mohon isi semua field yang diperlukan',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
@@ -573,7 +573,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Invalid email format',
+                        text: 'Format email tidak valid',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
@@ -584,11 +584,56 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Password must be at least 6 characters',
+                        text: 'Password harus minimal 6 karakter',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
                 }
+
+                // Tambahkan event listener untuk response sukses
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(loginForm);
+                    
+                    fetch(loginForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Login!',
+                                text: 'Anda login sebagai user, silahkan login melalui aplikasi mobile',
+                                confirmButtonColor: '#ef4444',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = data.redirect || '/';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Terjadi kesalahan saat login',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan saat login',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    });
+                });
             });
         }
 
