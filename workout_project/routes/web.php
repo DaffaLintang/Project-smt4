@@ -7,6 +7,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController; // pastikan ini sudah di-import
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ResultController;
@@ -14,9 +15,6 @@ use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\LatihanController;
 use App\Http\Controllers\DashboardController;
 use App\Models\Histori;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Auth\NewPasswordController;
 
 // Halaman Landing Page
 Route::get('/', function () {
@@ -43,22 +41,20 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    // Gunakan controller untuk forgot password supaya lebih bersih dan maintainable
+    // Forgot Password
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 
+    // Register
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 });
 
-// Reset Password Routes
-Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
-    ->middleware('guest')
-    ->name('password.reset');
+Route::middleware('guest')->group(function () {
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('password', [NewPasswordController::class, 'store'])->name('password.update');
+});
 
-Route::put('/reset-password', [NewPasswordController::class, 'store'])
-    ->middleware('guest')
-    ->name('password.update');
 
 // Logout
 Route::post('/logout', function () {
@@ -80,6 +76,7 @@ Route::resource('results', ResultController::class);
 Route::get('/admin/workouts', [WorkoutController::class, 'index'])->name('admin.workouts');
 Route::resource('workouts', WorkoutController::class);
 
+// Workout Distribution (API)
 Route::get('/workout-distribution', function () {
     $data = Histori::select('kesulitan')
         ->get()
@@ -96,7 +93,7 @@ Route::get('/workout-distribution', function () {
 // Admin Latihan
 Route::get('/admin/latihan', [LatihanController::class, 'index'])->name('admin.latihan');
 
-// Test route untuk melihat halaman reset password
+// Test route untuk melihat halaman reset password (debug/testing)
 Route::get('/test-reset-password', function () {
     return view('auth.halamanforgotpw', [
         'token' => 'test-token',
@@ -104,5 +101,5 @@ Route::get('/test-reset-password', function () {
     ]);
 });
 
-// Pastikan untuk memuat file auth
+// Pastikan memuat file auth tambahan jika ada
 require __DIR__.'/auth.php';
