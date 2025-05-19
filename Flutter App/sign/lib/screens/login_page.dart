@@ -79,17 +79,17 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 10),
 
               // Forgot Password tetap di tengah
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/forgot-password');
-                  },
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ),
+              // Center(
+              //   child: TextButton(
+              //     onPressed: () {
+              //       Navigator.pushNamed(context, '/forgot-password');
+              //     },
+              //     child: Text(
+              //       'Forgot Password?',
+              //       style: TextStyle(color: Colors.blue),
+              //     ),
+              //   ),
+              // ),
               SizedBox(height: 50), // Mengurangi tinggi agar lebih ke atas
 
               // "Don't Have an Account?" tetap di tengah

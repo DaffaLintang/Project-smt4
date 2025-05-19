@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:sign/apiVar.dart';
 import 'package:sp_util/sp_util.dart';
 import '../controllers/bmi_controller.dart';
@@ -23,7 +22,8 @@ class BMICalculatorScreen extends StatelessWidget {
             child: profileImage == null || profileImage!.isEmpty
                 ? Icon(Icons.person, color: Colors.white)
                 : CircleAvatar(
-                    backgroundImage: NetworkImage('$MainUrl/$profileImage'),
+                    backgroundImage:
+                        NetworkImage('$MainUrl/storage/$profileImage'),
                   ),
           )
         ],
@@ -37,8 +37,8 @@ class BMICalculatorScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 20),
                   Text("Hitung BMI mu Sekarang",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 35),
                   Row(
                     children: [
@@ -68,7 +68,8 @@ class BMICalculatorScreen extends StatelessWidget {
                           child: buildButton(
                               "CALCULATE", controller.calculateAndSendBMI)),
                       SizedBox(width: 25),
-                      Expanded(child: buildButton("RESET", controller.resetFields)),
+                      Expanded(
+                          child: buildButton("RESET", controller.resetFields)),
                     ],
                   ),
                   SizedBox(height: 30),

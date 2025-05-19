@@ -38,44 +38,52 @@ public function store(Request $request)
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Buat user baru
+        // Buat user
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
+            'image' => null,
+            'full_name' => null,
+            'role' => 'user',
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // Event untuk proses registrasi
-        event(new Registered($user));
+        event(new Registered($user)); // Event opsional
+        Auth::login($user); // Auto-login
 
-        // Auto login setelah registrasi
-        Auth::login($user);
-
-        // **Pastikan Laravel hanya merespons JSON jika request adalah AJAX**
+        // AJAX request
         if ($request->ajax() || $request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Registration successful!',
+                'message' => 'Registrasi berhasil! Selamat datang, ' . $user->name,
                 'redirect' => url('/dashboard')
-            ], 200);
+            ]);
         }
 
-        // Redirect hanya untuk request non-AJAX
-        return redirect('/dashboard');
+        // Redirect dengan session flash untuk request biasa
+        return redirect()->intended('/dashboard')->with('register_success', 'Registrasi berhasil! Selamat datang, ' . $user->name);
 
     } catch (ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'errors' => $e->errors()
-        ], 422);
-        
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
+        throw $e;
+
     } catch (\Exception $e) {
         \Log::error('Registration failed', ['error' => $e->getMessage()]);
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Terjadi kesalahan. Silakan coba lagi.'
+            ], 500);
+        }
 
-        return response()->json([
-            'success' => false,
-            'error' => 'Something went wrong. Please try again.'
-        ], 500);
+        return redirect()->back()->withErrors(['general' => 'Terjadi kesalahan. Silakan coba lagi.']);
     }
 }
+
+
 }

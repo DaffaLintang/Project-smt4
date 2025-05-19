@@ -14,6 +14,9 @@ use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\LatihanController;
 use App\Http\Controllers\DashboardController;
 use App\Models\Histori;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 // Halaman Landing Page
 Route::get('/', function () {
@@ -39,13 +42,23 @@ Route::get('/admin/bmi', [App\Http\Controllers\Admin\BMIController::class, 'inde
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-    
+
+    // Gunakan controller untuk forgot password supaya lebih bersih dan maintainable
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 });
+
+// Reset Password Routes
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::put('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
 
 // Logout
 Route::post('/logout', function () {
@@ -83,23 +96,12 @@ Route::get('/workout-distribution', function () {
 // Admin Latihan
 Route::get('/admin/latihan', [LatihanController::class, 'index'])->name('admin.latihan');
 
-Route::get('/test-mongodb', function () {
-    try {
-        // Cek koneksi MongoDB
-        $databaseName = DB::connection('mongodb')->getDatabaseName();
-        
-        // Cek apakah model User dapat diakses
-        $user = \App\Models\User::first(); // Mengambil data pengguna pertama
-
-        if ($user) {
-            return "Koneksi MongoDB berhasil ke database: " . $databaseName . ". Pengguna pertama: " . $user->name;
-        } else {
-            return "Koneksi MongoDB berhasil ke database: " . $databaseName . ". Tidak ada pengguna yang ditemukan.";
-        }
-        
-    } catch (\Exception $e) {
-        return "Gagal terhubung ke MongoDB: " . $e->getMessage();
-    }
+// Test route untuk melihat halaman reset password
+Route::get('/test-reset-password', function () {
+    return view('auth.halamanforgotpw', [
+        'token' => 'test-token',
+        'email' => 'test@example.com'
+    ]);
 });
 
 // Pastikan untuk memuat file auth

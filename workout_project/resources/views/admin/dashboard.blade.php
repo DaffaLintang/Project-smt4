@@ -95,6 +95,18 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+    @if (session('register_success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('register_success')),
+            timer: 2500,
+            showConfirmButton: false
+        });
+    @endif
+});
 fetch('/workout-distribution')
     .then(response => response.json())
     .then(data => {

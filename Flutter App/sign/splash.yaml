@@ -1,14 +1,14 @@
 flutter_native_splash:
   color: "#FFFFFF"
-  color_dark: "#272727"
-  image: assets/image/splash.png
-  image_dark: assets/image/splash.png
+  color_dark: "#FFFFFF"
+  image: assets/image/RekomFit.png
+  image_dark: assets/image/RekomFit.png
   android: true
   ios: true
   web: false
 
   android_12:
     color: "#FFFFFF"
-    color_dark: "#272727"
-    image: assets/image/splash.png
-    image_dark: assets/image/splash.png
+    color_dark: "#FFFFFF"
+    image: assets/image/RekomFit.png
+    image_dark: assets/image/RekomFit.png

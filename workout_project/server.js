@@ -1,20 +1,59 @@
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const app = express();
+const PORT = 5000;
 
-// Koneksi ke MongoDB
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// Koneksi MongoDB
 mongoose.connect('mongodb://localhost:27017/workout_db', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', () => console.log('Connected to MongoDB'));
 
-// Skema dan Model
+// --- MODEL ---
+
+// Model untuk Histori Workout
 const Histori = mongoose.model('historis', new mongoose.Schema({
   kesulitan: String
 }));
 
-// Route untuk data chart
+// Model untuk User
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+});
+const User = mongoose.model('User', userSchema);
+
+// --- ROUTES ---
+
+// Route untuk Sign Up
+app.post('/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'Email already registered' });
+
+    const newUser = new User({ name, email, password });
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+  console.error('Signup error:', error);
+  res.status(500).json({ message: 'Server error' });
+}
+});
+
+// Route untuk data chart workout
 app.get('/workout-distribution', async (req, res) => {
   try {
     const counts = await Histori.aggregate([
@@ -32,7 +71,7 @@ app.get('/workout-distribution', async (req, res) => {
   }
 });
 
-const PORT = 3000;
+// --- RUN SERVER ---
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

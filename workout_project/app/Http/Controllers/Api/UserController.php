@@ -129,7 +129,7 @@ class UserController extends Controller
 
         $image = $request->file('image');
         $imagePath = $image->store('profiles', 'public');
-        $data['image'] = 'storage/' . $imagePath;
+        $data['image'] = '/' . $imagePath;
     }
 
     $user->update($data);
