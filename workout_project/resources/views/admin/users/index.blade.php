@@ -67,11 +67,14 @@
                                 onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->phone }}', '{{ $user->birth }}', '{{ $user->weight }}', '{{ $user->height }}', '{{ $user->image }}')">
                                 Ubah
                             </button>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
-                            </form>
+<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">Hapus</button>
+
+<form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+</form>
+
+
                         </td>
                     </tr>
                 @empty
@@ -152,6 +155,26 @@
 
 @push('scripts')
 <script>
+document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+        const userId = this.getAttribute('data-id');
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: "Data akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`delete-form-${userId}`).submit();
+            }
+        });
+    });
+});
+
 function editUser(id, name, email, fullName, phone, birth, weight, height, image) {
     document.getElementById('editUserId').value = id;
     document.getElementById('editName').value = name;

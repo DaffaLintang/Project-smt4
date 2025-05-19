@@ -30,7 +30,6 @@
                     <th>Level</th>
                     <th>Rating</th>
                     <th>Rating Description</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,14 +44,6 @@
                         <td>{{ $workout->Level }}</td>
                         <td>{{ $workout->Rating }}</td>
                         <td>{{ $workout->RatingDesc }}</td>
-                        <td>
-                            <a href="{{ route('workouts.edit', $workout['Unnamed: 0']) }}" class="btn btn-warning btn-sm mb-1">Edit</a>
-                            <form action="{{ route('workouts.destroy', $workout['Unnamed: 0']) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                            </form>
-                        </td>
                     </tr>
                 @endforeach
             </tbody>
