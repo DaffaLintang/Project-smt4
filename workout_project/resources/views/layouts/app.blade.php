@@ -21,7 +21,6 @@
             padding: 0;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             background: white;
@@ -72,7 +71,6 @@
             color: #9F0000;
         }
 
-        /* Content */
         .content {
             margin-left: 250px;
             padding: 0;
@@ -81,7 +79,6 @@
             background: white;
         }
 
-        /* Navbar */
         .navbar-custom {
             background-color: #9F0000;
             padding: 15px;
@@ -111,7 +108,6 @@
             left: auto;
         }
 
-        /* Overlay */
         .overlay {
             display: none;
             position: fixed;
@@ -127,7 +123,6 @@
             display: block;
         }
 
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .sidebar {
                 left: -250px;
@@ -170,24 +165,24 @@
         <button onclick="toggleSidebar()" class="menu-btn">
             <i class="fas fa-bars"></i>
         </button>
+
         @php
-    $user = Auth::user();
-@endphp
+            $user = Auth::user();
+        @endphp
 
-<div class="dropdown user-profile ms-auto">
-    @if ($user && $user->image)
-        <img src="{{ asset('storage/' . $user->image) }}" alt="Foto Profil" width="40" height="40" class="rounded-circle">
-    @else
-        <img src="{{ asset('images/default.png') }}" alt="Default" width="40" height="40" class="rounded-circle">
-    @endif
-
+        <div class="dropdown user-profile ms-auto">
+            @if ($user && $user->image)
+                <img src="{{ asset('storage/' . $user->image) }}" alt="Foto Profil" class="rounded-circle">
+            @else
+                <img src="{{ asset('images/default.png') }}" alt="Default" class="rounded-circle">
+            @endif
 
             <a class="text-white text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ Auth::user()->name }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="{{ route('admin.users') }}">Profile</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="{{ route('admin.users') }}">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST">
@@ -211,12 +206,15 @@
             <!-- DASHBOARD -->
             <div class="mb-2">
                 <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none mt-3"
-                   data-bs-toggle="collapse" href="#dashboardMenu" role="button" aria-expanded="false" aria-controls="dashboardMenu">
+                   data-bs-toggle="collapse" href="#dashboardMenu" role="button"
+                   aria-expanded="{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }}"
+                   aria-controls="dashboardMenu">
                     <span class="fw-bold">DASHBOARD</span>
                     <i class="bi bi-chevron-down"></i>
                 </a>
-                <div class="collapse show" id="dashboardMenu">
-                    <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                <div class="collapse {{ request()->routeIs('admin.dashboard') ? 'show' : '' }}" id="dashboardMenu">
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.dashboard') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-fire me-2"></i> Dashboard
                     </a>
                 </div>
@@ -225,24 +223,26 @@
             <!-- DATA MASTER -->
             <div class="mb-2">
                 <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none"
-                   data-bs-toggle="collapse" href="#dataMasterMenu" role="button" aria-expanded="false" aria-controls="dataMasterMenu">
+                   data-bs-toggle="collapse" href="#dataMasterMenu" role="button"
+                   aria-expanded="{{ request()->is('admin/users*') || request()->is('admin/latihan*') || request()->is('admin/results*') || request()->is('admin/workouts*') || request()->is('admin/bmi*') ? 'true' : 'false' }}"
+                   aria-controls="dataMasterMenu">
                     <span class="fw-bold">DATA MASTER</span>
                     <i class="bi bi-chevron-down"></i>
                 </a>
-                <div class="collapse" id="dataMasterMenu">
-                    <a href="{{ route('admin.users') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                <div class="collapse {{ request()->is('admin/users*') || request()->is('admin/latihan*') || request()->is('admin/results*') || request()->is('admin/workouts*') || request()->is('admin/bmi*') ? 'show' : '' }}" id="dataMasterMenu">
+                    <a href="{{ route('admin.users') }}" class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.users') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-people me-2"></i> Manajemen Pengguna
                     </a>
-                    <a href="{{ route('admin.latihan') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                    <a href="{{ route('admin.latihan') }}" class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.latihan') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-graph-up-arrow me-2"></i> Manajemen Latihan
                     </a>
-                    <a href="{{ route('admin.results') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                    <a href="{{ route('admin.results') }}" class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.results') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-check2-circle me-2"></i> Manajemen Result
                     </a>
-                    <a href="{{ route('admin.workouts') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                    <a href="{{ route('admin.workouts') }}" class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.workouts') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-lightbulb me-2"></i> Manajemen Workout
                     </a>
-                    <a href="{{ route('admin.bmi') }}" class="d-flex align-items-center text-secondary text-decoration-none py-2">
+                    <a href="{{ route('admin.bmi') }}" class="d-flex align-items-center text-decoration-none py-2 {{ request()->routeIs('admin.bmi') ? 'active' : 'text-secondary' }}">
                         <i class="bi bi-activity me-2"></i> Manajemen BMI
                     </a>
                 </div>
@@ -263,7 +263,7 @@
             </div>
         </div>
 
-        <!-- KONTEN HALAMAN -->
+        <!-- KONTEN -->
         <div class="content p-4">
             @yield('content')
         </div>
@@ -271,31 +271,29 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Tambahkan di dalam <head> atau sebelum </body> -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-
         @if (session('login_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Sukses',
-            text: '{{ session("login_success") }}',
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses',
+                text: '{{ session("login_success") }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
 
-    @if ($errors->any())
-        Swal.fire({
-            icon: 'error',
-            title: 'Login Gagal',
-            text: '{{ $errors->first("email") }}',
-            timer: 2500,
-            showConfirmButton: false
-        });
-    @endif
-    
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: '{{ $errors->first("email") }}',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
