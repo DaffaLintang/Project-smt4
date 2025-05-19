@@ -37,7 +37,6 @@ class _MenuState extends State<Menu> {
 
   Future<void> fetchResult() async {
     histori = await riwayatController.getDetailRiwayat();
-    print('Histori fetched: ${histori!.length}');
     setState(() {});
   }
 

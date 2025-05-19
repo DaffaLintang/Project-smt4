@@ -51,7 +51,7 @@ class _ChartWorkoutState extends State<ChartWorkout> {
 
     for (var item in historiList) {
       if (item == null) continue;
-      final date = item.result.data.createdAt;
+      final date = item.createAtHistori;
       for (int i = 0; i < weekDates.length; i++) {
         if (date.year == weekDates[i].year &&
             date.month == weekDates[i].month &&
