@@ -11,6 +11,7 @@
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.9",
+        "laravel/ui": "*",
         "mongodb/laravel-mongodb": "^5.4",
         "open-admin-org/open-admin": "^1.0"
     },

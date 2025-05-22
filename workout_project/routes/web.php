@@ -69,8 +69,11 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // Admin Users
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-Route::resource('users', UserController::class);
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::resource('users', UserController::class)->except(['index', 'update']);
+});
 
 // Admin Results
 Route::get('/admin/results', [ResultController::class, 'index'])->name('admin.results');
@@ -79,6 +82,7 @@ Route::resource('results', ResultController::class);
 // Admin Workouts
 Route::get('/admin/workouts', [WorkoutController::class, 'index'])->name('admin.workouts');
 Route::resource('workouts', WorkoutController::class);
+
 
 Route::get('/workout-distribution', function () {
     $data = Histori::select('kesulitan')

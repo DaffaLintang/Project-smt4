@@ -428,7 +428,7 @@
 
         if (aboutLoginButton) {
             aboutLoginButton.addEventListener("click", () => {
-                loginModal.classList.remove("hidden");
+                signupModal.classList.remove("hidden");
             });
         }
 
@@ -713,6 +713,42 @@
                 }
             });
         }
+
+        // --- ACTIVE NAVBAR SECTION ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = ['home', 'about', 'feature', 'download'];
+        const sectionElements = sections.map(id => document.getElementById(id));
+
+        function setActiveNav() {
+            let scrollPos = window.scrollY || window.pageYOffset;
+            let offset = 120; // adjust if needed for sticky navbar height
+            let found = false;
+            for (let i = sectionElements.length - 1; i >= 0; i--) {
+                const section = sectionElements[i];
+                if (section && scrollPos + offset >= section.offsetTop) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('bg-black', 'text-white');
+                        link.classList.add('text-gray-500');
+                    });
+                    const activeLink = document.getElementById('nav-' + sections[i]);
+                    if (activeLink) {
+                        activeLink.classList.add('bg-black', 'text-white');
+                        activeLink.classList.remove('text-gray-500');
+                    }
+                    found = true;
+                    break;
+                }
+            }
+            // Jika tidak ada section yang cocok (misal di paling atas), reset semua
+            if (!found) {
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-black', 'text-white');
+                    link.classList.add('text-gray-500');
+                });
+            }
+        }
+        window.addEventListener('scroll', setActiveNav);
+        setActiveNav(); // jalankan saat load
     });
     </script>
 

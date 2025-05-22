@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 
@@ -46,38 +47,50 @@ public function update(Request $request, $id)
         'birth' => 'nullable|date',
         'weight' => 'nullable|numeric',
         'height' => 'nullable|numeric',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 
-    $user = User::findOrFail($id);
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->full_name = $request->full_name;
-    $user->phone = $request->phone;
-    $user->birth = $request->birth;
-    $user->weight = $request->weight;
-    $user->height = $request->height;
+    try {
+        $user = User::findOrFail($id);
+        
+        // Update data dasar
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->full_name = $request->full_name;
+        $user->phone = $request->phone;
+        $user->birth = $request->birth;
+        $user->weight = $request->weight;
+        $user->height = $request->height;
 
-    // Jika ada upload gambar baru
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('profiles', 'public');
-        $user->image = $imagePath;
-    }
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
 
-    $user->save();
+            // Store new image
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('profiles', $imageName, 'public');
+            $user->image = $imagePath;
+        }
 
-    return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
-
-    if ($request->has('croppedImage')) {
-        $base64Image = $request->input('croppedImage');
-        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
-        $fileName = 'profiles/' . uniqid() . '.png';
-        Storage::disk('public')->put($fileName, $imageData);
-    
-        $user->image = $fileName;
         $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pengguna berhasil diperbarui',
+            'user' => $user
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Error updating user: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat mengupdate data: ' . $e->getMessage()
+        ], 500);
     }
-    
 }
 
     public function destroy($id)
