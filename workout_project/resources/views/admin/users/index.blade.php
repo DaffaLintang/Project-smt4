@@ -90,12 +90,14 @@
                                 data-bs-target="#editUserModal{{ $user->id }}">
                                 Edit
                             </button>
-                            {{-- <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Ubah</a> --}}
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
-                            </form>
+<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">Hapus</button>
+
+<form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+</form>
+
+
                         </td>
                     </tr>
                     <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">

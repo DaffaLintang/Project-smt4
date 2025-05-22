@@ -45,7 +45,6 @@
                     <th>Level</th>
                     <th>Rating</th>
                     <th>Rating Description</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,26 +59,6 @@
                         <td>{{ $workout->Level }}</td>
                         <td>{{ $workout->Rating }}</td>
                         <td>{{ $workout->RatingDesc }}</td>
-                        <td>
-                           <button type="button"
-                                class="btn btn-warning btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editWorkoutModal{{ $workout->_id }}">
-                                Edit
-                            </button>
-                          {{-- <button type="button" 
-                                class="btn btn-warning btn-sm mb-1 btn-edit" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#editWorkoutModal"
-                                data-workout='@json($workout)'>
-                                Edit
-                            </button> --}}
-                            <form action="{{ route('workouts.destroy', $workout->_id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus workout ini?')">Hapus</button>
-                            </form>
-                        </td>
                     </tr>
                     <div class="modal fade" id="editWorkoutModal{{ $workout->_id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
