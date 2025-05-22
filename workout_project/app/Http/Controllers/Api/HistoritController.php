@@ -7,7 +7,8 @@ use App\Http\Resources\HistoriResource;
 use App\Models\Histori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use MongoDB\BSON\ObjectId; // << WAJIB! Untuk bikin ObjectId
+use MongoDB\BSON\ObjectId;
+use Carbon\Carbon;
 
 class HistoritController extends Controller
 {
@@ -46,6 +47,8 @@ class HistoritController extends Controller
             'repetisi'    => $request->repetisi,
             'kesulitan'   => $request->kesulitan,
             'catatan'     => $request->catatan,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
 
         return new HistoriResource($histori,true, 'Histori berhasil ditambahkan!');

@@ -21,7 +21,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 // Halaman Landing Page
 Route::get('/', function () {
     return view('landingpage');
-});
+})->name('landingpage');
 
 // Admin Dashboard (Hanya untuk Admin)
 Route::get('/admin', [DashboardController::class, 'index'])
