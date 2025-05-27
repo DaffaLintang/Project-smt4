@@ -530,6 +530,23 @@
                         signupError.classList.remove("hidden");
                     }
                 }
+
+                // Jika validasi berhasil, tampilkan SweetAlert
+                if (password === passwordConfirmation && password.length >= 8) {
+                    e.preventDefault();
+                    signupModal.classList.add("hidden");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Akun Anda berhasil dibuat!',
+                        confirmButtonColor: '#ef4444',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    }).then(() => {
+                        signupForm.submit();
+                    });
+                }
             });
         }
 
@@ -544,7 +561,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Please fill in all required fields',
+                        text: 'Mohon isi semua field yang diperlukan',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
@@ -556,7 +573,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Invalid email format',
+                        text: 'Format email tidak valid',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
@@ -567,11 +584,56 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Password must be at least 6 characters',
+                        text: 'Password harus minimal 6 karakter',
                         confirmButtonColor: '#ef4444'
                     });
                     return;
                 }
+
+                // Tambahkan event listener untuk response sukses
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(loginForm);
+                    
+                    fetch(loginForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Login!',
+                                text: 'Anda login sebagai user, silahkan login melalui aplikasi mobile',
+                                confirmButtonColor: '#ef4444',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = data.redirect || '/';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Terjadi kesalahan saat login',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan saat login',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    });
+                });
             });
         }
 
@@ -587,15 +649,16 @@
                 if (emailSuccess) emailSuccess.classList.add("hidden");
 
                 try {
-                    const response = await fetch("{{ route('password.email') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                        },
-                        body: JSON.stringify({ email })
-                    });
-
+                        const response = await fetch("{{ route('password.email') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json", // ← Tambahkan ini
+                                "X-Requested-With": "XMLHttpRequest",
+                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ email })
+                        });
                     const data = await response.json();
 
                     if (response.ok) {
@@ -622,6 +685,7 @@
                 } catch (err) {
                     if (emailError) {
                         emailError.textContent = "Failed to connect to server.";
+                        //emailError.textContent = err;
                         emailError.classList.remove("hidden");
                     }
                 }
@@ -671,5 +735,8 @@
             }
         }
     </style>
+
+    @include('auth.modalfgt')
+
 </body>
 </html>

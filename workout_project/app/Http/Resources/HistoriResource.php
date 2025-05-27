@@ -22,6 +22,8 @@ class HistoriResource extends JsonResource
             'kesulitan' => $this->kesulitan,
             'catatan' => $this->catatan,
             'result' => new ResultResource($this->result),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 

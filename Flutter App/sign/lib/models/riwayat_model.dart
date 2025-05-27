@@ -5,6 +5,7 @@ class Histori {
   final String kesulitan;
   final String catatan;
   final ResultWrapper result;
+  final DateTime createAtHistori;
 
   Histori({
     required this.id,
@@ -13,6 +14,7 @@ class Histori {
     required this.kesulitan,
     required this.catatan,
     required this.result,
+    required this.createAtHistori,
   });
 
   factory Histori.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Histori {
       kesulitan: json['kesulitan'],
       catatan: json['catatan'],
       result: ResultWrapper.fromJson(json['result']),
+      createAtHistori: DateTime.parse(json['created_at']),
     );
   }
 }
