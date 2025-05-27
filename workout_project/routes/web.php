@@ -110,3 +110,11 @@ Route::get('/test-reset-password', function () {
 
 // Pastikan untuk memuat file auth
 require __DIR__.'/auth.php';
+
+Route::get('/monthly-users', [DashboardController::class, 'getMonthlyUsers'])->name('monthly.users');
+
+// BMI Routes
+Route::get('/bmi', [App\Http\Controllers\BMIController::class, 'index'])->name('bmi.index');
+Route::get('/bmi/create', [App\Http\Controllers\BMIController::class, 'create'])->name('bmi.create');
+Route::post('/bmi', [App\Http\Controllers\BMIController::class, 'store'])->name('bmi.store');
+Route::get('/bmi/{id}', [App\Http\Controllers\BMIController::class, 'show'])->name('bmi.show');

@@ -20,16 +20,14 @@
     @endif
 
     {{-- Form Pencarian --}}
-    <form action="{{ route('workouts.index') }}" method="GET" class="mb-4">
-        <div class="row g-2">
-            <div class="col-12 col-md-8">
-                <input type="text" name="search" class="form-control" placeholder="Cari workout..." value="{{ request('search') }}">
-            </div>
-            <div class="col-12 col-md-4">
-                <button type="submit" class="btn btn-outline-primary w-100">Search</button>
-            </div>
+    <div class="row g-2 mb-4">
+        <div class="col-12">
+            <form method="GET" action="{{ url('admin/workouts') }}" class="mb-4">
+    <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari workout...">
+</form>
+
         </div>
-    </form>
+    </div>
 
     {{-- Table Responsive --}}
     <div class="table-responsive">
@@ -49,7 +47,7 @@
             </thead>
             <tbody>
                 @foreach ($workouts as $workout)
-                    <tr>
+                    <tr class="table-row">
                         <td>{{ $workout->_id }}</td>
                         <td>{{ $workout->Title }}</td>
                         <td>{{ $workout->Desc }}</td>
@@ -310,5 +308,20 @@
     });
 </script>
 
+<script>
+// function filterTable(searchText) {
+//     searchText = searchText.toLowerCase();
+//     const rows = document.getElementsByClassName('table-row');
+    
+//     for (let row of rows) {
+//         let text = row.textContent.toLowerCase();
+//         if (text.includes(searchText)) {
+//             row.style.display = '';
+//         } else {
+//             row.style.display = 'none';
+//         }
+//     }
+// }
+</script>
 @endpush
 @endsection

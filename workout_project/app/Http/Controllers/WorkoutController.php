@@ -7,22 +7,26 @@ use App\Models\Workout;
 
 class WorkoutController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Workout::query();
+public function index(Request $request)
+{
+    $search = $request->input('search');
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('Title', 'like', "%{$search}%")
-                  ->orWhere('Desc', 'like', "%{$search}%");
-        }
+    $query = Workout::query();
 
-        $workouts = $query->paginate(25);
-
-        return view('admin.workouts.index', [
-            'workouts' => $workouts
-        ]);
+    if ($search) {
+        $query->where(function($q) use ($search) {
+            $q->where('Title', 'like', "%{$search}%")
+              ->orWhere('Type', 'like', "%{$search}%")
+              ->orWhere('BodyPart', 'like', "%{$search}%")
+              ->orWhere('Equipment', 'like', "%{$search}%")
+              ->orWhere('Level', 'like', "%{$search}%");
+        });
     }
+
+    $workouts = $query->paginate(25)->appends(['search' => $search]);
+
+    return view('admin.workouts.index', compact('workouts'));
+}
 
     public function create()
     {

@@ -182,7 +182,7 @@
                     <div class="relative">
                         <div class="flex items-center gap-2">
                             <img src="assets/img/logo.png" alt="Logo" class="w-8 md:w-12">
-                            <h3 class="text-xl md:text-2xl font-bold">NAMA APLIKASI</h3>
+                            <h3 class="text-xl md:text-2xl font-bold">RekomFit</h3>
                         </div>
                         <p class="text-sm mt-3 leading-relaxed">Nikmati pengalaman workout terbaik! Download sekarang dan mulai latihanmu!</p>
                     </div>
@@ -772,7 +772,7 @@
         }
     </style>
 
-    @include('auth.modalfgt')
+    {{-- @include('auth.modalfgt') --}}
 
 </body>
 </html>
