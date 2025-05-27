@@ -65,8 +65,11 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // Admin Users
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-Route::resource('users', UserController::class);
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::resource('users', UserController::class)->except(['index', 'update']);
+});
 
 // Admin Results
 Route::get('/admin/results', [ResultController::class, 'index'])->name('admin.results');
@@ -76,7 +79,6 @@ Route::resource('results', ResultController::class);
 Route::get('/admin/workouts', [WorkoutController::class, 'index'])->name('admin.workouts');
 Route::resource('workouts', WorkoutController::class);
 
-// Workout Distribution (API)
 Route::get('/workout-distribution', function () {
     $data = Histori::select('kesulitan')
         ->get()
@@ -103,3 +105,11 @@ Route::get('/test-reset-password', function () {
 
 // Pastikan memuat file auth tambahan jika ada
 require __DIR__.'/auth.php';
+
+Route::get('/monthly-users', [DashboardController::class, 'getMonthlyUsers'])->name('monthly.users');
+
+// BMI Routes
+Route::get('/bmi', [App\Http\Controllers\BMIController::class, 'index'])->name('bmi.index');
+Route::get('/bmi/create', [App\Http\Controllers\BMIController::class, 'create'])->name('bmi.create');
+Route::post('/bmi', [App\Http\Controllers\BMIController::class, 'store'])->name('bmi.store');
+Route::get('/bmi/{id}', [App\Http\Controllers\BMIController::class, 'show'])->name('bmi.show');

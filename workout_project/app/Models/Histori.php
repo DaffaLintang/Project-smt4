@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\BSON\Regex;
 
 class Histori extends Model
 {
@@ -18,6 +18,15 @@ class Histori extends Model
         'durasi', 'repetisi', 'kesulitan', 'catatan', 'id_user', 'id_result'
     ];
 
+    // Pastikan field yang bisa dicari
+    protected $searchable = [
+        'durasi',
+        'repetisi',
+        'kesulitan',
+        'catatan',
+        'id_user'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
@@ -26,5 +35,34 @@ class Histori extends Model
     public function result()
     {
         return $this->belongsTo(Result::class, 'id_result');
+    }
+
+    // Method untuk pencarian
+    public static function search($search)
+    {
+        if (empty($search)) {
+            return static::query();
+        }
+
+        $searchTerm = new Regex($search, 'i');
+        
+        return static::raw(function($collection) use ($searchTerm) {
+            return $collection->aggregate([
+                [
+                    '$match' => [
+                        '$or' => [
+                            ['durasi' => $searchTerm],
+                            ['repetisi' => $searchTerm],
+                            ['kesulitan' => $searchTerm],
+                            ['catatan' => $searchTerm],
+                            ['id_user' => $searchTerm]
+                        ]
+                    ]
+                ],
+                [
+                    '$sort' => ['created_at' => -1]
+                ]
+            ])->toArray();
+        });
     }
 }

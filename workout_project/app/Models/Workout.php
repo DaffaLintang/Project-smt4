@@ -8,16 +8,18 @@ class Workout extends Model
 {
     protected $connection = 'mongodb'; // ✅ Wajib
     protected $collection = 'workouts'; // ✅ Nama koleksi di MongoDB
+    protected $primaryKey = '_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'Unnamed: 0',
-        'title',
-        'desc',
-        'type',
-        'bodypart',
-        'equipment',
-        'level',
-        'rating',
-        'rating_desc'
+        'Title',
+        'Desc',
+        'Type',
+        'BodyPart',
+        'Equipment',
+        'Level',
+        'Rating',
+        'RatingDesc'
     ];
 }

@@ -4,12 +4,9 @@
 <div class="container mt-4">
     <h2>Manajemen Result</h2>
 
-    <form action="{{ route('admin.results') }}" method="GET" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Cari result..." value="{{ request('search') }}">
-            <button type="submit" class="btn btn-outline-primary">Search</button>
-        </div>
-    </form>
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari result..." oninput="filterTable(this.value)">
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success">
@@ -35,7 +32,7 @@
             </thead>
             <tbody>
                 @forelse ($results as $result)
-                    <tr>
+                    <tr class="table-row">
                         <td>{{ $result->_id }}</td>
                         <td>{{ $result->title }}</td>
                         <td>{{ $result->desc }}</td>
@@ -58,4 +55,20 @@
 
     {{ $results->links() }}
 </div>
+
+<script>
+function filterTable(searchText) {
+    searchText = searchText.toLowerCase();
+    const rows = document.getElementsByClassName('table-row');
+    
+    for (let row of rows) {
+        let text = row.textContent.toLowerCase();
+        if (text.includes(searchText)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+}
+</script>
 @endsection

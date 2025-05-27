@@ -79,15 +79,19 @@
 
     <div class="row mt-4">
         <div class="col-md-6">
-            <div class="chart-container">
-                <h5>Pengguna Aktif Bulanan</h5>
-                <canvas id="userChart"></canvas>
+            <div class="card p-4">
+                <div class="chart-container" style="height: 400px;">
+                    <h5 class="text-center mb-4">Statistik Login Pengguna per Bulan</h5>
+                    <canvas id="userChart"></canvas>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="chart-container">
-                <h5>Distribusi Level Kesulitan Latihan</h5>
-                <canvas id="workoutChart"></canvas>
+            <div class="card p-4">
+                <div class="chart-container" style="height: 400px;">
+                    <h5 class="text-center mb-4">Distribusi Level Kesulitan Latihan</h5>
+                    <canvas id="workoutChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -95,64 +99,138 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
-    @if (session('register_success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('register_success')),
-            timer: 2500,
-            showConfirmButton: false
-        });
-    @endif
-});
-fetch('/workout-distribution')
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('workoutChart').getContext('2d');
+        @if (session('register_success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: @json(session('register_success')),
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
 
-        new Chart(ctx, {
-            type: 'bar',
+        const userCtx = document.getElementById('userChart').getContext('2d');
+        const monthlyUserChart = new Chart(userCtx, {
+            type: 'line',
             data: {
-                labels: ['Beginner', 'Intermediate', 'Expert'],
+                labels: @json($monthlyUserLabels ?? []),
                 datasets: [{
-                    data: [data.Beginner, data.Intermediate, data.Expert],
-                    backgroundColor: ['green', 'orange', 'red']
+                    label: 'Jumlah Login Pengguna',
+                    data: @json($monthlyUserData ?? []),
+                    borderColor: 'rgb(220, 53, 69)',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    tension: 0,
+                    fill: true,
+                    pointBackgroundColor: 'rgb(220, 53, 69)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    borderWidth: 3
                 }]
             },
             options: {
                 responsive: true,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeOutBounce'
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#ddd',
+                        borderWidth: 1,
+                        padding: 10,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' Login';
+                            }
+                        }
+                    }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            font: {
-                                size: 12
-                            }
+                            stepSize: 1
                         }
-                    },
-                    x: {
-                        ticks: {
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
                     }
                 }
             }
         });
+
+        fetch('/workout-distribution')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('workoutChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Beginner', 'Intermediate', 'Expert'],
+                        datasets: [{
+                            label: 'Jumlah Workout',
+                            data: [data.Beginner, data.Intermediate, data.Expert],
+                            backgroundColor: ['#4CAF50', '#FF9800', '#f44336']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 10
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
     });
 </script>
 

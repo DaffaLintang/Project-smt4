@@ -43,17 +43,5 @@
         </div>
     </div>
 
-    <!-- SETTING Section -->
-    <div class="mb-2">
-        <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none"
-           data-bs-toggle="collapse" href="#settingMenu" role="button" aria-expanded="false" aria-controls="settingMenu">
-            <span class="fw-bold">SETTING</span>
-            <i class="bi bi-chevron-down"></i>
-        </a>
-        <div class="collapse" id="settingMenu">
-            <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                <i class="bi bi-people me-2"></i> Manajemen Admin
-            </a>
-        </div>
-    </div>
+   
 </div>

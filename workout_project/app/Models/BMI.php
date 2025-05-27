@@ -24,5 +24,3 @@ class BMI extends Model
         'ObesityCategory'
     ];
 }
-
-

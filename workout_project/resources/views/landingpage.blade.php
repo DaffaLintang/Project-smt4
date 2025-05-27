@@ -182,7 +182,7 @@
                     <div class="relative">
                         <div class="flex items-center gap-2">
                             <img src="assets/img/logo.png" alt="Logo" class="w-8 md:w-12">
-                            <h3 class="text-xl md:text-2xl font-bold">NAMA APLIKASI</h3>
+                            <h3 class="text-xl md:text-2xl font-bold">RekomFit</h3>
                         </div>
                         <p class="text-sm mt-3 leading-relaxed">Nikmati pengalaman workout terbaik! Download sekarang dan mulai latihanmu!</p>
                     </div>
@@ -428,7 +428,7 @@
 
         if (aboutLoginButton) {
             aboutLoginButton.addEventListener("click", () => {
-                loginModal.classList.remove("hidden");
+                signupModal.classList.remove("hidden");
             });
         }
 
@@ -713,6 +713,42 @@
                 }
             });
         }
+
+        // --- ACTIVE NAVBAR SECTION ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = ['home', 'about', 'feature', 'download'];
+        const sectionElements = sections.map(id => document.getElementById(id));
+
+        function setActiveNav() {
+            let scrollPos = window.scrollY || window.pageYOffset;
+            let offset = 120; // adjust if needed for sticky navbar height
+            let found = false;
+            for (let i = sectionElements.length - 1; i >= 0; i--) {
+                const section = sectionElements[i];
+                if (section && scrollPos + offset >= section.offsetTop) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('bg-black', 'text-white');
+                        link.classList.add('text-gray-500');
+                    });
+                    const activeLink = document.getElementById('nav-' + sections[i]);
+                    if (activeLink) {
+                        activeLink.classList.add('bg-black', 'text-white');
+                        activeLink.classList.remove('text-gray-500');
+                    }
+                    found = true;
+                    break;
+                }
+            }
+            // Jika tidak ada section yang cocok (misal di paling atas), reset semua
+            if (!found) {
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-black', 'text-white');
+                    link.classList.add('text-gray-500');
+                });
+            }
+        }
+        window.addEventListener('scroll', setActiveNav);
+        setActiveNav(); // jalankan saat load
     });
     </script>
 
@@ -736,6 +772,7 @@
         }
     </style>
 
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -763,6 +800,9 @@
 @endif
 
     @include('auth.modalfgt')
+=======
+    {{-- @include('auth.modalfgt') --}}
+>>>>>>> 4244159495b7d38a8331f249d7232e860f9221b5
 
 </body>
 </html>
