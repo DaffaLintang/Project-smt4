@@ -227,15 +227,16 @@
         color: #9ca3af;
         background-color: #fff;
         border-color: #e5e7eb;
+        display: none !important;
     }
-    
+
     /* Custom styling untuk panah navigasi */
     .pagination svg {
         width: 16px;
         height: 16px;
         vertical-align: middle;
     }
-    
+
     /* Styling untuk container paginasi */
     .pagination-container {
         background-color: #fff;
@@ -261,7 +262,7 @@
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
         background-position: right 0.5rem center;
         background-repeat: no-repeat;
-        background-size: 1.5em 1.5em;
+        background-size: 10px 10px;
         padding-right: 2.5rem;
     }
     select:focus {
@@ -301,7 +302,7 @@
     function filterTable(searchText) {
         searchText = searchText.toLowerCase();
         const rows = document.getElementsByClassName('table-row');
-        
+
         for (let row of rows) {
             let text = row.textContent.toLowerCase();
             if (text.includes(searchText)) {
@@ -330,10 +331,10 @@
         document.querySelectorAll('.edit-user-form').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const modalElement = this.closest('.modal');
-                
+
                 // Tampilkan konfirmasi terlebih dahulu
                 Swal.fire({
                     title: 'Yakin ingin mengubah?',
@@ -362,7 +363,7 @@
                             if (modal) {
                                 modal.hide();
                             }
-                            
+
                             if (data.success) {
                                 // Tampilkan pesan sukses dengan animasi
                                 Swal.fire({

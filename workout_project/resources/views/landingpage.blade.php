@@ -772,7 +772,6 @@
         }
     </style>
 
-<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -800,9 +799,6 @@
 @endif
 
     @include('auth.modalfgt')
-=======
-    {{-- @include('auth.modalfgt') --}}
->>>>>>> 4244159495b7d38a8331f249d7232e860f9221b5
 
 </body>
 </html>

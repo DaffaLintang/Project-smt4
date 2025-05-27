@@ -1,7 +1,7 @@
 <!-- Tombol untuk membuka modal -->
-<button id="openResetModal" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-black">
+{{-- <button id="openResetModal" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-black">
   Buka Modal Reset Password
-</button>
+</button> --}}
 
 <!-- Modal -->
 <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
@@ -45,7 +45,7 @@
                 class="w-full bg-red-700 text-white py-3 rounded-full hover:bg-black transition-all">
                 RESET PASSWORD
             </button>
-        </form> 
+        </form>
     </div>
 </div>
 
