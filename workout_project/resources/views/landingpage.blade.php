@@ -594,7 +594,7 @@
                 loginForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const formData = new FormData(loginForm);
-                    
+
                     fetch(loginForm.action, {
                         method: 'POST',
                         body: formData,
@@ -735,6 +735,32 @@
             }
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+@if(Session::has('login_warning'))
+<script>
+    Swal.fire({
+        title: 'Peringatan',
+        text: '{{ Session::get('login_warning') }}',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        customClass: {
+            confirmButton: 'my-confirm-button'
+        },
+        didOpen: () => {
+            const confirmBtn = document.querySelector('.my-confirm-button');
+            if (confirmBtn) {
+                confirmBtn.style.backgroundColor = '#dc3545'; // merah Bootstrap
+                confirmBtn.style.color = '#fff';               // teks putih
+                confirmBtn.style.fontWeight = 'bold';          // teks tebal
+                confirmBtn.style.border = 'none';              // tanpa border
+            }
+        }
+    });
+</script>
+@endif
 
     @include('auth.modalfgt')
 
