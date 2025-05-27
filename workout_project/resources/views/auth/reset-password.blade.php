@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-<x-guest-layout>
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,7 +63,6 @@
 
 <div class="reset-container">
     <h2>Reset Password</h2>
->>>>>>> 349eb8f902e4e167584829958e965f4e12bcf4ba
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
