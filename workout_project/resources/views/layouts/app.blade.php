@@ -202,7 +202,7 @@
     <div class="wrapper d-flex">
         <!-- SIDEBAR -->
         <div id="sidebar" class="sidebar bg-light">
-            <h5>Smart Workout</h5>
+            <h5>RekomFit</h5>
 
             <!-- DASHBOARD -->
             <div class="mb-2">

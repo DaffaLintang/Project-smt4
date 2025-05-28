@@ -47,6 +47,10 @@
                 @endforelse
             </tbody>
         </table>
+ <div id="pagination-container">
+        {{ $history->links('vendor.pagination.simple-tailwind') }}
+    </div>
+
     </div>
 </div>
 

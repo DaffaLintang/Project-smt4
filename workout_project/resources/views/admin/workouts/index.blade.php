@@ -127,26 +127,10 @@
                 @endforeach
             </tbody>
         </table>
-    </div>
 
-    {{-- Pagination --}}
-    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-        <p class="m-0">Menampilkan {{ $workouts->firstItem() }} - {{ $workouts->lastItem() }} dari {{ $workouts->total() }} data</p>
-        <div class="mt-2 mt-md-0">
-            @if ($workouts->onFirstPage())
-                <button class="btn btn-secondary" disabled>⬅ Previous</button>
-            @else
-                <a href="{{ $workouts->previousPageUrl() }}" class="btn btn-primary">⬅ Previous</a>
-            @endif
-
-            @if ($workouts->hasMorePages())
-                <a href="{{ $workouts->nextPageUrl() }}" class="btn btn-primary">Next ➡</a>
-            @else
-                <button class="btn btn-secondary" disabled>Next ➡</button>
-            @endif
-        </div>
+        <div id="pagination-container">
+        {{ $workouts->links('vendor.pagination.simple-tailwind') }}
     </div>
-</div>
 
 {{-- Modal Edit --}}
 <div class="modal fade" id="editWorkoutModal{{ $workout->_id }}" tabindex="-1" aria-hidden="true">
