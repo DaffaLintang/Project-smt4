@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Dashboard') - Smart Workout</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Dashboard') - RekomFit</title>
+    <link rel="icon" type="image/png" href="assets/img/Logo.png">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -181,9 +183,9 @@
                 {{ Auth::user()->name }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="{{ route('admin.users') }}">Profile</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><hr class="dropdown-divider"></li>
+                {{-- <li><a class="dropdown-item" href="{{ route('admin.users') }}">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li> --}}
+                {{-- <li><hr class="dropdown-divider"></li> --}}
                 <li>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -201,7 +203,7 @@
     <div class="wrapper d-flex">
         <!-- SIDEBAR -->
         <div id="sidebar" class="sidebar bg-light">
-            <h5>Smart Workout</h5>
+            <h5>RekomFit</h5>
 
             <!-- DASHBOARD -->
             <div class="mb-2">
@@ -248,19 +250,7 @@
                 </div>
             </div>
 
-            <!-- SETTING -->
-            <div class="mb-2">
-                <a class="d-flex justify-content-between align-items-center text-secondary text-decoration-none"
-                   data-bs-toggle="collapse" href="#settingMenu" role="button" aria-expanded="false" aria-controls="settingMenu">
-                    <span class="fw-bold">SETTING</span>
-                    <i class="bi bi-chevron-down"></i>
-                </a>
-                <div class="collapse" id="settingMenu">
-                    <a href="#" class="d-flex align-items-center text-secondary text-decoration-none py-2">
-                        <i class="bi bi-gear me-2"></i> Manajemen Admin
-                    </a>
-                </div>
-            </div>
+
         </div>
 
         <!-- KONTEN -->
@@ -270,6 +260,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

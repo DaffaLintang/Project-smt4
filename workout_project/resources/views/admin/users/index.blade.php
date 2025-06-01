@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <div class="container mt-4">
     <h2>Manajemen Pengguna</h2>
 
     <div class="d-flex justify-content-between mb-3">
-        <div>
-            {{-- <a href="{{ route('users.create') }}" class="btn btn-primary">Tambah Pengguna</a> --}}
-        </div>
         <a href="{{ route('admin.users') }}" class="btn btn-secondary">Refresh</a>
     </div>
 
-    <form action="{{ route('admin.users') }}" method="GET" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Cari pengguna..." value="{{ request('search') }}">
-            <button type="submit" class="btn btn-outline-primary">Search</button>
-        </div>
-    </form>
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari pengguna..." oninput="filterTable(this.value)">
+    </div>
 
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="userTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -33,28 +33,24 @@
                     <th>Email</th>
                     <th>Gambar</th>
                     <th>Nama Lengkap</th>
-                    <th>Nomor Telepon</th>
-                    <th>Tanggal Lahir</th>
-                    <th>Berat Badan (Kg)</th>
-                    <th>Tinggi Badan (Cm)</th>
-                    <th>Dibuat Pada</th>
-                    <th>Terakhir di Ubah</th>
+                    <th>Telepon</th>
+                    <th>Lahir</th>
+                    <th>Berat (Kg)</th>
+                    <th>Tinggi (Cm)</th>
+                    <th>Dibuat</th>
+                    <th>Update</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($users as $user)
-                    <tr>
+                    <tr class="table-row">
                         <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
-    @if ($user->image)
-        <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" width="100">
-    @else
-        <img src="{{ asset('images/default.png') }}" alt="Default" width="100">
-    @endif
-</td>
+                            <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('images/default.png') }}" width="100" alt="Gambar">
+                        </td>
                         <td>{{ $user->full_name }}</td>
                         <td>{{ $user->phone }}</td>
                         <td>{{ $user->birth }}</td>
@@ -63,167 +59,138 @@
                         <td>{{ $user->created_at }}</td>
                         <td>{{ $user->updated_at }}</td>
                         <td>
-                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal" 
-                                onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->phone }}', '{{ $user->birth }}', '{{ $user->weight }}', '{{ $user->height }}', '{{ $user->image }}')">
-                                Ubah
-                            </button>
-<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">Hapus</button>
-
-<form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-    @csrf
-    @method('DELETE')
-</form>
-
-
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">Edit</button>
+                            <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">Hapus</button>
+                            <form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </td>
                     </tr>
+
+                    {{-- Modal Edit --}}
+                    <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data" class="edit-user-form">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Pengguna</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label>Nama</label>
+                                                <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                                <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Nama Lengkap</label>
+                                                <input type="text" name="full_name" class="form-control" value="{{ $user->full_name }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Nomor Telepon</label>
+                                                <input type="text" name="phone" class="form-control" value="{{ $user->phone }}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Tanggal Lahir</label>
+                                                <input type="date" name="birth" class="form-control" value="{{ $user->birth }}">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Berat (Kg)</label>
+                                                <input type="number" name="weight" class="form-control" value="{{ $user->weight }}">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label>Tinggi (Cm)</label>
+                                                <input type="number" name="height" class="form-control" value="{{ $user->height }}">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Gambar</label>
+                                                <input type="file" name="image" class="form-control">
+                                                @if($user->image)
+                                                    <img src="{{ asset('storage/' . $user->image) }}" alt="Image" class="mt-2" width="150">
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 @empty
-                    <tr>
-                        <td colspan="13" class="text-center">Tidak ada data pengguna.</td>
-                    </tr>
+                    <tr><td colspan="12" class="text-center">Tidak ada data pengguna.</td></tr>
                 @endforelse
             </tbody>
         </table>
+
+         <div id="pagination-container">
+        {{ $users->links('vendor.pagination.simple-tailwind') }}
     </div>
-
-    {{ $users->links() }} {{-- Tampilkan link paginasi jika ada --}}
-
-    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Edit Pengguna</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editUserForm" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <input type="hidden" id="editUserId">
-
-                        <div class="mb-3">
-                            <label for="editName" class="form-label">Nama</label>
-                            <input type="text" id="editName" name="name" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editEmail" class="form-label">Email</label>
-                            <input type="email" id="editEmail" name="email" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editFullName" class="form-label">Nama Lengkap</label>
-                            <input type="text" id="editFullName" name="full_name" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editPhone" class="form-label">Nomor Telepon</label>
-                            <input type="text" id="editPhone" name="phone" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editBirth" class="form-label">Tanggal Lahir</label>
-                            <input type="date" id="editBirth" name="birth" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editWeight" class="form-label">Berat Badan (Kg)</label>
-                            <input type="number" id="editWeight" name="weight" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editHeight" class="form-label">Tinggi Badan (Cm)</label>
-                            <input type="number" id="editHeight" name="height" class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editImage" class="form-label">Foto Profil</label>
-                            <input type="file" id="editImage" name="image" class="form-control">
-                            <img id="previewImage" src="" width="100" class="mt-2">
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-document.querySelectorAll('.btn-delete').forEach(button => {
-    button.addEventListener('click', function () {
-        const userId = this.getAttribute('data-id');
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: "Data akan dihapus permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(`delete-form-${userId}`).submit();
-            }
+    
+    // Filter Tabel
+    function filterTable(searchText) {
+        searchText = searchText.toLowerCase();
+        document.querySelectorAll('.table-row').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchText) ? '' : 'none';
+        });
+    }
+
+    // Hapus data
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.id;
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`delete-form-${userId}`).submit();
+                    }
+                });
+            });
+        });
+
+        // Konfirmasi sebelum edit disubmit
+        document.querySelectorAll('.edit-user-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
+                Swal.fire({
+                    title: 'Yakin simpan perubahan?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
         });
     });
-});
-
-function editUser(id, name, email, fullName, phone, birth, weight, height, image) {
-    document.getElementById('editUserId').value = id;
-    document.getElementById('editName').value = name;
-    document.getElementById('editEmail').value = email;
-    document.getElementById('editFullName').value = fullName;
-    document.getElementById('editPhone').value = phone;
-    document.getElementById('editBirth').value = birth;
-    document.getElementById('editWeight').value = weight;
-    document.getElementById('editHeight').value = height;
-    
-    // Set the form action URL untuk update user
-    document.getElementById('editUserForm').action = `/users/${id}`;
-    
-    // Update preview gambar jika ada
-    if (image) {
-        document.getElementById('previewImage').src = `/storage/${image}`;
-    }
-}
-
-// Tambahkan event listener untuk form submit
-document.getElementById('editUserForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Tutup modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
-            modal.hide();
-            
-            // Refresh halaman
-            window.location.reload();
-        } else {
-            alert('Terjadi kesalahan saat mengupdate data');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat mengupdate data');
-    });
-});
 </script>
 @endpush

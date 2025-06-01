@@ -5,31 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Result;
 
-
 class ResultController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $search = strtolower($request->input('search'));
-
-    $results = Result::when($search, function ($query, $search) {
-        return $query->where('title', 'like', "%$search%")
-                     ->orWhere('desc', 'like', "%$search%")
-                     ->orWhere('type', 'like', "%$search%");
-    })->paginate(5);
-
-    if ($request->ajax()) {
-        return response()->json([
-            'html' => view('admin.results.index', compact('results'))->render()
-        ]);
+    {
+        $results = Result::paginate(5);
+        return view('admin.results.index', compact('results'));
     }
-
-    return view('admin.results.index', compact('results'));
-}
-
 
     /**
      * Show the form for creating a new resource.
