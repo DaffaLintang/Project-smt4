@@ -90,19 +90,35 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    DateTime today = DateTime.now();
+
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // Tanggal awal (sekarang)
-      firstDate: DateTime(1900), // Tanggal pertama yang bisa dipilih
-      lastDate: DateTime(2101), // Tanggal terakhir yang bisa dipilih
+      initialDate: today,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
     );
 
     if (pickedDate != null) {
-      // Format tanggal menjadi yyyy-MM-dd
+      // Hilangkan jam, menit, detik dari hari ini untuk perbandingan murni tanggal
+      DateTime todayOnly = DateTime(today.year, today.month, today.day);
+      DateTime pickedOnly =
+          DateTime(pickedDate.year, pickedDate.month, pickedDate.day);
+
+      if (pickedOnly.isAtSameMomentAs(todayOnly) ||
+          pickedOnly.isAfter(todayOnly)) {
+        // Tanggal dipilih adalah hari ini atau lebih
+        Get.snackbar(
+            'Error', 'Tanggal lahir tidak boleh hari ini atau di masa depan.',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        ProfileController.dateController.clear();
+        return;
+      }
+
+      // Jika valid, format dan masukkan ke controller
       String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
       setState(() {
-        ProfileController.dateController.text =
-            formattedDate; // Set tanggal yang dipilih ke TextField
+        ProfileController.dateController.text = formattedDate;
       });
     }
   }

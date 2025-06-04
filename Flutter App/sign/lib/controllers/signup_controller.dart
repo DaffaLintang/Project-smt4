@@ -27,6 +27,9 @@ class SignupController extends GetxController {
       } else if (password != passwordConfirm) {
         Get.snackbar('Error', 'Password dan Konfirmasi Password tidak sama',
             backgroundColor: Colors.red, colorText: Colors.white);
+      } else if (password.length != 8 && passwordConfirm.length != 8) {
+        Get.snackbar('Error', 'Password dan Konfirmasi harus 8 karakter',
+            backgroundColor: Colors.red, colorText: Colors.white);
       } else {
         EasyLoading.show();
         var data = {

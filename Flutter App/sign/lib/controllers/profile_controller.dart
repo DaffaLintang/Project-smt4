@@ -99,6 +99,7 @@ class ProfileController extends GetxController {
         Get.offAll(() => Menu());
         Get.snackbar('Success', 'Data Berhasil Diperbarui',
             backgroundColor: Colors.green, colorText: Colors.white);
+      } else if (birth.isAfter) {
       } else {
         Get.snackbar('Error', 'Gagal Mengupdate Data',
             backgroundColor: Colors.red, colorText: Colors.white);

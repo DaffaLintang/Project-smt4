@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:sign/controllers/signup_controller.dart';
 import 'package:get/get.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final SignupController controller = Get.put(SignupController());
+  bool _obscurePassword = true;
+  bool _obscurePasswordConfirm = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,10 +58,22 @@ class SignUpPage extends StatelessWidget {
                 width: 350,
                 child: TextField(
                   controller: SignupController.passwordController,
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: UnderlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -64,10 +84,22 @@ class SignUpPage extends StatelessWidget {
                 width: 350,
                 child: TextField(
                   controller: SignupController.passwordConfirmController,
-                  obscureText: true,
+                  obscureText: _obscurePasswordConfirm,
                   decoration: InputDecoration(
                     labelText: 'Confirmation Password',
                     border: UnderlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePasswordConfirm
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePasswordConfirm = !_obscurePasswordConfirm;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),

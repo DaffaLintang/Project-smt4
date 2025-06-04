@@ -16,19 +16,19 @@ class DashboardController extends Controller
     {
         $totalWorkouts = Workout::count();
         $totalUsers = User::count();
-        $totalResults = Result::count(); 
+        $totalResults = Result::count();
         $totalBMI = DB::connection('mongodb')->table('obesity')->count();
 
         // Mengambil data untuk 6 bulan terakhir
         $sixMonthsAgo = now()->subMonths(5);
-        
+
         // Inisialisasi array untuk semua bulan
         $monthlyData = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthlyData[$date->format('Y-m')] = 0;
         }
-        
+
         // Menghitung jumlah login per bulan
         $loginLogs = LoginLog::where('created_at', '>=', $sixMonthsAgo)
             ->get();
@@ -77,14 +77,14 @@ class DashboardController extends Controller
     public function getMonthlyUsers()
     {
         $sixMonthsAgo = now()->subMonths(5);
-        
+
         // Inisialisasi array untuk semua bulan
         $monthlyData = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthlyData[$date->format('Y-m')] = 0;
         }
-        
+
         // Menghitung jumlah login per bulan
         $loginLogs = LoginLog::where('created_at', '>=', $sixMonthsAgo)
             ->get();
@@ -120,7 +120,7 @@ class DashboardController extends Controller
             $month = Carbon::createFromFormat('Y-m', $yearMonth)->format('F');
             $formattedData[$indonesianMonths[$month]] = $count;
         }
-        
+
         return response()->json($formattedData);
     }
 }
