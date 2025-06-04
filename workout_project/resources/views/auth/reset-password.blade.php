@@ -36,11 +36,25 @@
             margin-bottom: 5px;
         }
 
-        input[type="email"],
-        input[type="password"] {
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
             width: 100%;
-            padding: 10px;
+            padding: 10px 40px 10px 10px;
             box-sizing: border-box;
+        }
+
+        .input-group svg {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            fill: #666;
         }
 
         button {
@@ -66,6 +80,7 @@
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" value="{{ old('email', $request->email) }}" readonly>
@@ -76,7 +91,13 @@
 
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" name="password" id="password">
+            <div class="input-group">
+                <input type="password" name="password" id="password">
+                <svg id="togglePassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                    <circle cx="12" cy="12" r="2.5"/>
+                </svg>
+            </div>
             @error('password')
                 <p style="color: red; font-size: 12px;">{{ $message }}</p>
             @enderror
@@ -84,7 +105,13 @@
 
         <div class="form-group">
             <label for="password_confirmation">Confirm Password</label>
-            <input type="password" name="password_confirmation" id="password_confirmation">
+            <div class="input-group">
+                <input type="password" name="password_confirmation" id="password_confirmation">
+                <svg id="toggleConfirmPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 5c-7.633 0-11 7-11 7s3.367 7 11 7 11-7 11-7-3.367-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                    <circle cx="12" cy="12" r="2.5"/>
+                </svg>
+            </div>
             @error('password_confirmation')
                 <p style="color: red; font-size: 12px;">{{ $message }}</p>
             @enderror
@@ -93,6 +120,26 @@
         <button type="submit">Reset Password</button>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordInput = document.getElementById('password_confirmation');
+
+        toggleConfirmPassword.addEventListener('click', function () {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+        });
+    });
+</script>
 
 </body>
 </html>
