@@ -361,14 +361,49 @@
                 <label class="block mb-1 text-gray-700">Enter Email</label>
                 <input type="email" name="email" id="email" class="w-full p-2 border-2 border-red-600 rounded-full mb-3 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your email" required>
 
-                <label class="block mb-1 text-gray-700">Enter Password</label>
-                <input type="password" name="password" id="password" class="w-full p-2 border-2 border-red-600 rounded-full mb-3 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your password" required>
+             <!-- Enter Password -->
+<label class="block mb-1 text-gray-700">Enter Password</label>
+<div class="relative mb-3">
+    <input type="password" name="password" id="password" class="w-full p-2 border-2 border-red-600 rounded-full pr-10 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Enter your password" required>
+    
+    <!-- Eye Toggle Button -->
+    <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-600">
+        <!-- Eye Icon (Visible) -->
+        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <!-- Eye Slash Icon (Hidden) -->
+        <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.959 9.959 0 013.228-4.568M6.423 6.423A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.953 9.953 0 01-1.361 2.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+        </svg>
+    </button>
+</div>
 
-                <label class="block mb-1 text-gray-700">Confirm Password</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border-2 border-red-600 rounded-full mb-3 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Confirm your password" required>
+
+
+<!-- Confirm Password -->
+<label class="block mb-1 text-gray-700">Confirm Password</label>
+<div class="relative">
+    <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border-2 border-red-600 rounded-full mb-3 pr-10 focus:outline-none focus:ring-2 focus:ring-red-600" placeholder="Confirm your password" required>
+    <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-3 text-gray-600">
+        <!-- Eye Icon -->
+        <svg id="confirmEyeOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <!-- Eye Slash Icon -->
+        <svg id="confirmEyeClosed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.959 9.959 0 013.228-4.568M6.423 6.423A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.953 9.953 0 01-1.361 2.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+        </svg>
+    </button>
+</div>
 
                 <button type="submit" class="w-full bg-red-700 text-white py-2 rounded-full hover:bg-black transition-all">SIGN UP</button>
             </form>
+            
             <div class="text-center mt-4">
                 <p class="text-gray-700 mb-2">Already Have an Account?</p>
                 <a href="#" class="login-link text-red-600 hover:underline font-semibold">LOGIN</a>
@@ -381,6 +416,29 @@
 
     <!-- Custom Scripts -->
     <script>
+
+        // Toggle password
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const input = document.getElementById('password');
+    const open = document.getElementById('eyeOpen');
+    const closed = document.getElementById('eyeClosed');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+    open.classList.toggle('hidden');
+    closed.classList.toggle('hidden');
+});
+
+// Toggle confirm password
+document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+    const input = document.getElementById('password_confirmation');
+    const open = document.getElementById('confirmEyeOpen');
+    const closed = document.getElementById('confirmEyeClosed');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+    open.classList.toggle('hidden');
+    closed.classList.toggle('hidden');
+});
+
     document.addEventListener("DOMContentLoaded", function() {
         // Buka modal login jika ada error
         @if(session('error') || session('status') || $errors->has('email') || $errors->has('password'))
@@ -750,6 +808,20 @@
         window.addEventListener('scroll', setActiveNav);
         setActiveNav(); // jalankan saat load
     });
+
+      const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
+
+    togglePassword.addEventListener("click", function () {
+        const isPassword = password.type === "password";
+        password.type = isPassword ? "text" : "password";
+
+        // Toggle icons
+        eyeOpen.classList.toggle("hidden", !isPassword);
+        eyeClosed.classList.toggle("hidden", isPassword);
+    });
     </script>
 
     <!-- Add responsive styles -->
@@ -795,6 +867,29 @@
             }
         }
     });
+// Toggle password visibility
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const input = document.getElementById("password");
+        const eyeOpen = document.getElementById("eyeOpen");
+        const eyeClosed = document.getElementById("eyeClosed");
+
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        eyeOpen.classList.toggle("hidden", !isPassword);
+        eyeClosed.classList.toggle("hidden", isPassword);
+    });
+
+    document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+        const input = document.getElementById("password_confirmation");
+        const eyeOpen = document.getElementById("confirmEyeOpen");
+        const eyeClosed = document.getElementById("confirmEyeClosed");
+
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        eyeOpen.classList.toggle("hidden", !isPassword);
+        eyeClosed.classList.toggle("hidden", isPassword);
+    });
+
 </script>
 @endif
 
