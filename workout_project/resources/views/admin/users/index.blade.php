@@ -49,7 +49,9 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
-                            <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('images/default.png') }}" width="100" alt="Gambar">
+                            @if (!empty($user->image))
+                            <img src="{{ asset('storage/' . $user->image) }}" width="100" alt="Gambar">
+                        @endif
                         </td>
                         <td>{{ $user->full_name }}</td>
                         <td>{{ $user->phone }}</td>
@@ -141,7 +143,7 @@
 
 @push('scripts')
 <script>
-    
+
     // Filter Tabel
     function filterTable(searchText) {
         searchText = searchText.toLowerCase();
